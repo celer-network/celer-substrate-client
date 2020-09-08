@@ -31,12 +31,14 @@ import {
     getPayIdListInfo,
     getSignedSimplexStateArray,
     snapshotStates,
-    depositInBatch
+    depositInBatch,
+    getResolvePayByCondtionsRequest,
+    transferFrom
 } from "celer-substrate-utils";
 
 import program from 'commander';
 
-program.version('1.0.0', '-v, --version');
+program.version('1.0.2', '-v, --version');
 
 program
     .command('setBalanceLimits')
@@ -107,7 +109,7 @@ program
     .option('-c, --caller <caller>', 'caller')
     .option('-i, --channelIds <channelIds>', 'Ids list of channel', (value) => { return (value || []).split(","); }, [])
     .option('-r, --receivers <receivers>', 'addresses list of receiver', (value) => { return (value || []).split(","); }, [])
-    .option('-a, --amounts <amounts>', 'amounts list of funds to deposit from caller', (value) => { return (value || []).split(","); }, [])
+    .option('-a, --msgValues <msgValues>', 'msgValues list of funds to deposit from caller', (value) => { return (value || []).split(","); }, [])
     .option('-f, --transferFromAmounts <transferFromAmounts>', 'amounts list of funds to be transfeed from Pool', (value) => { return (value || []).split(","); }, [])
     .action(async options => {
         const api = await connect();
@@ -116,7 +118,7 @@ program
             options.caller,
             options.channelIds,
             options.receivers,
-            options.amounts,
+            options.msgValues,
             options.transferFromAmounts,
         );
         await waitBlockNumber(3);
@@ -226,6 +228,7 @@ program
     .command('clearPays')
     .option('-c, --caller <caller>', 'caller')
     .option('-i, --channelId <channelId>', 'channelId')
+    .option('-n, --seqNums <seqNums>', 'sequence number list', (value) => { return (value || []).split(","); }, [])
     .option('-a, --transferFromAmounts <transferFromAmounts>', 'amounts list of funds to transfered from Pool', (value) => { return (value || []).split(","); }, [])
     .option('-f, --peerFrom <peerFrom>', 'address of the peer who owns and updates the simplex state')
     .option('-p, --peerIndex <peerIndex>', 'peerIndex of linked pay id list')
@@ -236,7 +239,7 @@ program
             api,
             [options.channelId, options.channelId],
             [[[10, 20], [30, 40]], [[50, 60], [70, 80]]],
-            [1, 1],
+            options.seqNums,
             [999999, 999999],
             options.transferFromAmounts
         );
@@ -318,6 +321,25 @@ program
     });
 
 program
+    .command('transferFrom')
+    .option('-c, --caller <caller>', 'caller')
+    .option('-f, --from <from>', 'the address which you want to transfer funds from')
+    .option('-t, --to <to>', 'the address which you want to transfer to')
+    .option('-v, --value <value>', 'amount of funds to be transferred')
+    .action(async options => {
+        const api = await connect();
+        await transferFrom(
+            api,
+            options.caller,
+            options.from,
+            options.to,
+            options.value
+        );
+        await waitBlockNumber(3);
+        process.exit(0);
+    })
+
+program
     .command('approve')
     .option('-c, --caller <caller>', 'caller')
     .option('-s, --spender <spender>', 'the address which will spend the funds')
@@ -337,7 +359,7 @@ program
     .option('-a, --amount <amount>', 'amount of funds to be transfered')
     .action(async options => {
         const api = await connect();
-        await transferToCelerWallet(api, options.caller, options.from, options.spender, options.amount);
+        await transferToCelerWallet(api, options.caller, options.from, options.walletId, options.amount);
         await waitBlockNumber(3);
         process.exit(0);
     });
@@ -370,6 +392,7 @@ program
     .command('resolvePaymentByConditions')
     .option('-c, --caller <caller>', 'caller')
     .option('-i, --channelId <channelId>', 'channelId')
+    .option('-n, --seqNums <seqNums>', 'sequence number list', (value) => { return (value || []).split(","); }, [])
     .option('-a, --transferFromAmounts <transferFromAmounts>',  'amounts of funds to be transfered from Pool', (value) => { return (value || []).split(","); }, [])
     .option('-p, --peerIndex <peerIndex>', 'peerIndex of linked pay id list')
     .option('-l, --listIndex <listIndex>', 'listIndex of linked pay id list')
@@ -378,17 +401,18 @@ program
         const api = await connect();
         let globalResult = await getCoSignedIntendSettle(
             api,
-            [options.channelId, options.channelId],
+            ['0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30', '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'],
             [[[10, 20], [30, 40]], [[50, 60], [70, 80]]],
-            [1, 1],
+            options.seqNums,
             [999999, 999999],
             options.transferFromAmounts
         );
 
+        let payRequest = await getResolvePayByCondtionsRequest(api, globalResult.condPays[options.peerIndex][options.listIndex][options.payIndex]);
         await resolvePaymentByConditions(
             api, 
             options.caller, 
-            globalResult.condPays[options.peerIndex][options.listIndex][options.payIndex]
+            payRequest
         );
         await waitBlockNumber(3);
         process.exit(0);
