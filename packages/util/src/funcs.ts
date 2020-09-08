@@ -187,7 +187,7 @@ export async function openChannel(
                 console.log('Included at block hash', status.asInBlock.toHex());
                 console.log('Events: ');
                 console.log('\t', `celerPayModule.EnableBalanceLimits [channelId(Hash)]`);
-                console.log('\t', `celerPayModule.SetBalanceLimits [channelId(Hash), balanceLimits(Blance)]`);
+                console.log('\t', `celerPayModule.SetBalanceLimits [channelId(Hash), balanceLimits(Balance)]`);
                 console.log('\t', `system.NewAccount [newAccount(AccountId)]`);
                 console.log('\t', `balances.Endowed [createdAccount(AccountId), freeBalance(Balance)]`)
                 console.log('\t', `balances.Transfer [from(AccountId), to(AccountId), value(Balance)]`)
@@ -985,6 +985,10 @@ export async function transferFrom(
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
                 console.log('Events: ');
+                console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), amount(Balance)]');
+                console.log('\t', `system.NewAccount [newAccount(AccountId)]`);
+                console.log('\t', `balances.Endowed [createdAccount(AccountId), freeBalance(Balance)]`)
+                console.log('\t', `balances.Transfer [from(AccountId), to(AccountId), value(Balance)]`)
                 console.log('\t', 'celerPayModule.Transfer [sender(AccountId), receiver(AccountId), amount(Balance)]\n');
 
                 events.forEach(({ event: { data, method, section}}) => {
@@ -1033,6 +1037,9 @@ export async function transferToCelerWallet(
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
                 console.log('Events: ');
+                console.log('\t', `system.NewAccount [newAccount(AccountId)]`);
+                console.log('\t', `balances.Endowed [createdAccount(AccountId), freeBalance(Balance)]`)
+                console.log('\t', `balances.Transfer [from(AccountId), to(AccountId), value(Balance)]`)
                 console.log('\t', 'celerPayModule.TransferToCelerWallet [walletId(Hash), from(AccountId), amount(Balance)]\n');
 
                 events.forEach(({ event: { data, method, section}}) => {
