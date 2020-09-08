@@ -1,0 +1,27 @@
+{
+  "name": "@taki_layer/cli",
+  "version": "1.0.2",
+  "description": "Celer substrate cli",
+  "main": "outDir/src/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./outDir/src/index.js",
+    "lint": "tsc --noEmit --pretty"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@polkadot/api": "^1.23.1",
+    "@taki_layer/utils": "^1.1.2",
+    "celer-types": "^1.0.4",
+    "commander": "^6.1.0"
+  },
+  "devDependencies": {
+    "@polkadot/typegen": "^1.23.1",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^3.8.2"
+  },
+  "author": "Tatsuki Hashimoto",
+  "license": "MIT"
+}
