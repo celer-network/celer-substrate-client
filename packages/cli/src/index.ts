@@ -32,11 +32,11 @@ import {
     getSignedSimplexStateArray,
     snapshotStates,
     depositInBatch
-} from "@taki_layer/utils";
+} from "celer-substrate-utils";
 
 import program from 'commander';
 
-program.version('0.0.1', '-v, --version');
+program.version('1.0.0', '-v, --version');
 
 program
     .command('setBalanceLimits')

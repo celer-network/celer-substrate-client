@@ -1,7 +1,7 @@
 {
-  "name": "@taki_layer/cli",
-  "version": "1.0.2",
-  "description": "Celer substrate cli",
+  "name": "celer-substrate-demo-cli",
+  "version": "1.0.0",
+  "description": "Celer substrate demo cli",
   "main": "outDir/src/index.js",
   "scripts": {
     "build": "tsc",
@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@polkadot/api": "^1.23.1",
-    "@taki_layer/utils": "^1.1.2",
-    "celer-types": "^1.0.4",
+    "celer-substrate-utils": "^1.1.2",
+    "celer-substrate-types": "^1.0.0",
     "commander": "^6.1.0"
   },
   "devDependencies": {

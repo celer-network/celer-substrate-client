@@ -13,7 +13,7 @@ import {
     VouchedCondPayResultOf,
     ResolvePaymentConditionsRequestOf,
     CooperativeSettleRequestOf 
-} from 'celer-types'
+} from 'celer-substrate-types';
 import { u8aToHex } from "@polkadot/util";
 
 const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';

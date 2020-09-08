@@ -1,6 +1,6 @@
 import { ApiRx } from '@polkadot/api';
 
-import * as celerDefinitions from 'celer-types/src/interfaces/definitions';
+import * as celerDefinitions from 'celer-substrate-types/src/interfaces/definitions';
 
 export async function connect (): Promise<ApiRx> {
     // extract all types from definitions - fast and dirty approach, flatted on 'types'

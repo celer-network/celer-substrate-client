@@ -1,7 +1,7 @@
 {
-  "name": "@taki_layer/utils",
+  "name": "celer-substrate-utils",
   "version": "1.1.2",
-  "description": "Celer substrate front end API",
+  "description": "Celer substrate front end utils",
   "main": "outDir/src/index.js",
   "publishConfig": {
     "access": "public"
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@polkadot/api": "^1.23.1",
-    "celer-types": "^1.0.4"
+    "celer-substrate-types": "^1.0.0"
   },
   "devDependencies": {
     "@polkadot/typegen": "^1.23.1",
