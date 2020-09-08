@@ -11,7 +11,7 @@ import {
     TransferFunction,
     Condition,
     OpenChannelRequestOf
-} from 'celer-types';
+} from 'celer-substrate-types';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { blake2AsU8a } from '@polkadot/util-crypto';
 

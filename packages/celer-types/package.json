@@ -1,6 +1,6 @@
 {
-  "name": "celer-types",
-  "version": "1.0.4",
+  "name": "celer-substrate-types",
+  "version": "1.0.0",
   "description": "Celer substrate node type definitions",
   "main": "src/interfaces/index.js",
   "publishConfig": {
