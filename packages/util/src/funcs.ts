@@ -186,6 +186,8 @@ export async function openChannel(
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
                 console.log('Events: ');
+                console.log('\t', `celerPayModule.EnableBalanceLimits [channelId(Hash)]`);
+                console.log('\t', `celerPayModule.SetBalanceLimits [channelId(Hash), balanceLimits(Blance)]`);
                 console.log('\t', `system.NewAccount [newAccount(AccountId)]`);
                 console.log('\t', `balances.Endowed [createdAccount(AccountId), freeBalance(Balance)]`)
                 console.log('\t', `balances.Transfer [from(AccountId), to(AccountId), value(Balance)]`)
