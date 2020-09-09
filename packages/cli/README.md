@@ -21,7 +21,6 @@ yarn start openChannel --caller 'alice' --zeroTotalDeposit --msgValue 0
 ```
 - Set Balance Limits
 ```
-ex)
 yarn start setBalanceLimits --caller 'alice' --channelId "0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30" --limits 20000
 ```
 
