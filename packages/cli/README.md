@@ -7,7 +7,7 @@ npm install
 ```
 yarn build
 ```
-3. Run Celer substrate local testnet
+3. Run Celer substrate local testnet. Repository is [here](https://github.com/celer-network/cChannel-substrate)
 ```
 docker run -p 9944:9944 -p 9615:9615 thashimoto19980924/celer-network:latest
 ```
