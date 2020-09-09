@@ -1,6 +1,6 @@
 {
   "name": "celer-substrate-demo-cli",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Celer substrate demo cli",
   "main": "outDir/src/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "dependencies": {
     "@polkadot/api": "^1.23.1",
     "celer-substrate-types": "^1.0.0",
-    "celer-substrate-utils": "^1.1.4",
+    "celer-substrate-utils": "^1.1.5",
     "commander": "^6.1.0"
   },
   "devDependencies": {

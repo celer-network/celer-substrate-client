@@ -38,7 +38,7 @@ import {
 
 import program from 'commander';
 
-program.version('1.0.2', '-v, --version');
+program.version('1.0.4', '-v, --version');
 
 program
     .command('setBalanceLimits')
@@ -401,7 +401,7 @@ program
         const api = await connect();
         let globalResult = await getCoSignedIntendSettle(
             api,
-            ['0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30', '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'],
+            [options.channelId, options.channelId],
             [[[10, 20], [30, 40]], [[50, 60], [70, 80]]],
             options.seqNums,
             [999999, 999999],
