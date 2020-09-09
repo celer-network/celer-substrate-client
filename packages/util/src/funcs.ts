@@ -989,7 +989,7 @@ export async function transferFrom(
                 console.log('\t', `system.NewAccount [newAccount(AccountId)]`);
                 console.log('\t', `balances.Endowed [createdAccount(AccountId), freeBalance(Balance)]`)
                 console.log('\t', `balances.Transfer [from(AccountId), to(AccountId), value(Balance)]`)
-                console.log('\t', 'celerPayModule.Transfer [sender(AccountId), receiver(AccountId), amount(Balance)]\n');
+                console.log('\t', 'celerPayModule.Transfer [from(AccountId), receiver(AccountId), amount(Balance)]\n');
 
                 events.forEach(({ event: { data, method, section}}) => {
                     const [error] = data;
@@ -1040,7 +1040,7 @@ export async function transferToCelerWallet(
                 console.log('\t', `system.NewAccount [newAccount(AccountId)]`);
                 console.log('\t', `balances.Endowed [createdAccount(AccountId), freeBalance(Balance)]`)
                 console.log('\t', `balances.Transfer [from(AccountId), to(AccountId), value(Balance)]`)
-                console.log('\t', 'celerPayModule.TransferToCelerWallet [walletId(Hash), from(AccountId), amount(Balance)]\n');
+                console.log('\t', 'celerPayModule.Transfer [from(accountId), to(AccountId), amount(Balance)]\n');
 
                 events.forEach(({ event: { data, method, section}}) => {
                     const [error] = data;
