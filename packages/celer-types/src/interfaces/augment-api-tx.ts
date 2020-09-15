@@ -6,7 +6,7 @@ import { Compact, Option, Vec } from '@polkadot/types/codec';
 import { Bytes, u32, u64, u8 } from '@polkadot/types/primitive';
 import { Extrinsic } from '@polkadot/types/interfaces/extrinsics';
 import { GrandpaEquivocationProof, KeyOwnerProof } from '@polkadot/types/interfaces/grandpa';
-import { AccountId, AccountIndex, Address, Balance, BalanceOf, Call, ChangesTrieConfiguration, Hash, KeyValue, LookupSource, Moment, Perbill, Weight } from '@polkadot/types/interfaces/runtime';
+import { AccountId, AccountIndex, Address, Balance, BalanceOf, BlockNumber, Call, ChangesTrieConfiguration, Hash, KeyValue, LookupSource, Moment, Perbill, Weight } from '@polkadot/types/interfaces/runtime';
 import { Key } from '@polkadot/types/interfaces/system';
 import { CooperativeSettleRequestOf, CooperativeWithdrawRequestOf, OpenChannelRequestOf, PayIdList, ResolvePaymentConditionsRequestOf, SignedSimplexStateArrayOf, VouchedCondPayResultOf } from 'celer-types/interfaces/celerPayModule';
 import { ApiTypes, SubmittableExtrinsic } from '@polkadot/api/types';
@@ -91,11 +91,11 @@ declare module '@polkadot/api/types/submittable' {
     };
     celerPayModule: {
       /**
-       * Approve the passed address the spend the specified amount of native token on behalf of caller.
+       * Approve the passed address the spend the specified amount of funds on behalf of caller.
        * 
        * Parameters:
        * `spender`: the address which will spend the funds
-       * `value`: amount of native token to spent
+       * `value`: amount of funds to spent
        * 
        * # <weight>
        * ## Weight
@@ -204,7 +204,7 @@ declare module '@polkadot/api/types/submittable' {
        * 
        * Parameters:
        * `spender`: the address which will spend the funds
-       * `subtracted_value`: amount of native tokent o decrease the allowance by
+       * `subtracted_value`: amount of funds to decrease the allowance by
        * 
        * # <weight>
        * ## Weight
@@ -216,19 +216,19 @@ declare module '@polkadot/api/types/submittable' {
        **/
       decreaseAllowance: AugmentedSubmittable<(spender: AccountId | string | Uint8Array, subtractedValue: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
       /**
-       * Deposit native token into the channel
+       * Deposit funds into the channel
        * 
        * Parameters:
        * `channel_id`: Id of the channel
        * `receiver`: address of the receiver
-       * `msg_value`: caller's deposit amount
+       * `msg_value`: amount of funds to deposit from caller
        * `transfer_from_amount`: amount of funds to be transfered from Pool
        * 
        * # <weight>
        * ## Weight
        * - Complexity: `O(1)`
        * - DB:
-       * - 2 storage reads `ChannelMap`
+       * - 1 storage reads `ChannelMap`
        * - 1 storage mutation `ChannelMap`
        * - 2 storage reads `Wallets`
        * - 2 storage mutation `Wallets`
@@ -240,20 +240,20 @@ declare module '@polkadot/api/types/submittable' {
        **/
       deposit: AugmentedSubmittable<(channelId: Hash | string | Uint8Array, receiver: AccountId | string | Uint8Array, msgValue: BalanceOf | AnyNumber | Uint8Array, transferFromAmount: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
       /**
-       * Deposit native tokens into the channel
+       * Deposit funds into the channel
        * 
        * Parameters:
-       * `channel_ids`: Ids of channel
-       * `receivers`: addresses of receiver
-       * `msg_values`: caller's deposit amounts
-       * `transfer_from_amounts`: amounts of funds to be transfered from Pool
+       * `channel_ids`: Id list of channel
+       * `receivers`: address list of receiver
+       * `msg_values`: amounts list of funds to deposit from caller
+       * `transfer_from_amounts`: amounts list of funds to be transfered from Pool
        * 
        * # <weight>
        * ## Weight
        * - Complexity: `O(N)`
        * - `N` channel_ids-len
        * - DB:
-       * - 2*N storage reads  `ChannelMap`
+       * - N storage reads  `ChannelMap`
        * - 2*N storage reads `Wallets`
        * - 2*N storage mutation `Wallets`
        * - N storage reads `Balances`
@@ -264,12 +264,12 @@ declare module '@polkadot/api/types/submittable' {
        **/
       depositInBatch: AugmentedSubmittable<(channelIds: Vec<Hash> | (Hash | string | Uint8Array)[], receivers: Vec<AccountId> | (AccountId | string | Uint8Array)[], msgValues: Vec<BalanceOf> | (BalanceOf | AnyNumber | Uint8Array)[], transferFromAmounts: Vec<BalanceOf> | (BalanceOf | AnyNumber | Uint8Array)[]) => SubmittableExtrinsic<ApiType>>;
       /**
-       * Celer Wallet
+       * ============================= Celer Wallet =======================================
        * Deposit native token to a wallet.
        * 
        * Parameter:
        * `wallet_id`: Id of the wallet to deposit into
-       * `msg_value`: depoist amount
+       * `msg_value`: amount of funds to deposit to wallet
        * 
        * # <weight>
        * ## Weight
@@ -281,12 +281,12 @@ declare module '@polkadot/api/types/submittable' {
        **/
       depositNativeToken: AugmentedSubmittable<(walletId: Hash | string | Uint8Array, msgValue: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
       /**
-       * Pool
+       * ========================= Pool ===================================================
        * Deposit native token into Pool
        * 
        * Parameters:
        * `receiver`: the address native token is deposited to pool
-       * `msg_value`: amount of deposit to pool
+       * `msg_value`: amount of funds to deposit to pool
        * 
        * # <weight>
        * ## Weight
@@ -313,6 +313,94 @@ declare module '@polkadot/api/types/submittable' {
        **/
       disableBalanceLimits: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
       /**
+       * Emit Amount of funds which owner allowed to a spender
+       **/
+      emitAllowance: AugmentedSubmittable<(owner: AccountId | string | Uint8Array, spender: AccountId | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit one channel's balance info
+       **/
+      emitBalanceMap: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * TODO: RPC implementation
+       * In the current version, rpc implementation included in the runtime will cause
+       * a substrate error at compile time, so I will implement it in the next version.
+       * 
+       * Emit AccountId of Ledger Operation module
+       **/
+      emitCelerLedgerId: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit AccountId of Celer Wallet module
+       **/
+      emitCelerWalletId: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit channel basic info
+       **/
+      emitChannelInfo: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit channel number if given status
+       **/
+      emitChannelStatusNum: AugmentedSubmittable<(channelStatus: u8 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit cooperative withdraw seq num
+       **/
+      emitCooperativeWithdrawSeqNum: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit dipute time out
+       **/
+      emitDisputeTimeOut: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit last_pay_resolve_deadline map of a duplex channel
+       **/
+      emitLastPayResolveDeadlineMap: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit next_pay_id_list_hash_map of a duplex channel
+       **/
+      emitNextPayIdListHashMap: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit AccountId of PayResolver module
+       **/
+      emitPayResolverId: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit migration info of the peers in the channel
+       **/
+      emitPeersMigrationInfo: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit pending_pay_out_map of a duplex channel
+       **/
+      emitPendingPayOutMap: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit Amount of funds which is pooled of specifed address
+       **/
+      emitPoolBalance: AugmentedSubmittable<(owner: AccountId | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit AccountId of Pool
+       **/
+      emitPoolId: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit channel settle open time
+       **/
+      emitSettleFinalizedTime: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit state seq_num map of a duplex channel
+       **/
+      emitStateSeqNumMap: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit one channel's total balance amount
+       **/
+      emitTotalBalance: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit transfer_out map of a duplex channel
+       **/
+      emitTransferOutMap: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit wallet info corresponding to wallet_id
+       **/
+      emitWalletInfo: AugmentedSubmittable<(walletId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Emit withdraw intent of the channel
+       **/
+      emitWithdrawIntent: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
        * Enable balance limits
        * 
        * Parameter:
@@ -332,7 +420,7 @@ declare module '@polkadot/api/types/submittable' {
        * 
        * Parameters:
        * `spender`: the address which spend the funds.
-       * `added_value`: amount of native token to increase the allowance by
+       * `added_value`: amount of funds to increase the allowance by
        * 
        * # <weight>
        * ## Weight
@@ -344,7 +432,7 @@ declare module '@polkadot/api/types/submittable' {
        **/
       increaseAllowance: AugmentedSubmittable<(spender: AccountId | string | Uint8Array, addedValue: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
       /**
-       * Intent to settle channel with an array of signed simplex states
+       * Intend to settle channel with an array of signed simplex states
        * 
        * Dev: simplex states in this array are not necessarily in the same channel,
        * which means intendSettle natively supports multi-channel batch processing.
@@ -374,7 +462,7 @@ declare module '@polkadot/api/types/submittable' {
        * Parameters:
        * `channel_id`: Id of channel
        * `amount`: amount of funds to withdraw
-       * `receipient_channel_id`: withdraw to receiver address if hash(0),
+       * `receipient_channel_id`: withdraw to receiver address if zero_hash,
        * otherwise deposit to receiver address in the recipient channel
        * 
        * # <weight>
@@ -391,7 +479,7 @@ declare module '@polkadot/api/types/submittable' {
        * 
        * Parameters:
        * `open_request`: open channel request message
-       * `msg_value`: caller's deposit amount
+       * `msg_value`: amount of funds to deposit from caller
        * 
        * # <weight>
        * ## Weight
@@ -408,7 +496,7 @@ declare module '@polkadot/api/types/submittable' {
        **/
       openChannel: AugmentedSubmittable<(openRequest: OpenChannelRequestOf | { channelInitializer?: any; sigs?: any } | string | Uint8Array, msgValue: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
       /**
-       * PayResolver
+       * ==================================== PayResolver =============================================
        * Resolve a payment by onchain getting its conditons outcomes
        * 
        * Dev: HASH_LOCK should only be used for establishing multi-hop paymetns,
@@ -445,7 +533,7 @@ declare module '@polkadot/api/types/submittable' {
        **/
       resolvePaymentByVouchedResult: AugmentedSubmittable<(vouchedPayResult: VouchedCondPayResultOf | { condPayResult?: any; sigOfSrc?: any; sigOfDest?: any } | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
       /**
-       * Celer Ledger
+       * ============================ Celer Ledger Operation =========================================
        * Set the balance limits
        * 
        * Parameters:
@@ -484,12 +572,12 @@ declare module '@polkadot/api/types/submittable' {
        **/
       snapshotStates: AugmentedSubmittable<(signedSimplexStateArray: SignedSimplexStateArrayOf | { signedSimplexStates?: any } | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
       /**
-       * Transfer native token from one address to another.
+       * Transfer funds from one address to another.
        * 
        * Parameters:
-       * `from`: the address which you want to transfer native token from
+       * `from`: the address which you want to transfer funds from
        * `to`: the address which you want to transfer to
-       * `value`: amount of native token to be transferred
+       * `value`: amount of funds to be transferred
        * 
        * # <weight>
        * ## Weight
@@ -507,8 +595,8 @@ declare module '@polkadot/api/types/submittable' {
        * 
        * Parameters:
        * `from`: the address which you want to transfer native token from
-       * `wallet_id`: Id of the wallet you want to deposit native token into
-       * `amount`: amount of native token to be transfered
+       * `wallet_id`: Id of the wallet you want to deposit funds into
+       * `amount`: amount of funds to be transfered
        * 
        * # <weight>
        * ## Weight
@@ -544,7 +632,7 @@ declare module '@polkadot/api/types/submittable' {
        * Withdraw native token from Pool
        * 
        * Parameter:
-       * `value`: amount of native token to withdraw
+       * `value`: amount of funds to withdraw from pool
        * 
        * # <weight>
        * ## Weight
@@ -558,16 +646,34 @@ declare module '@polkadot/api/types/submittable' {
     };
     grandpa: {
       /**
+       * Note that the current authority set of the GRANDPA finality gadget has
+       * stalled. This will trigger a forced authority set change at the beginning
+       * of the next session, to be enacted `delay` blocks after that. The delay
+       * should be high enough to safely assume that the block signalling the
+       * forced change will not be re-orged (e.g. 1000 blocks). The GRANDPA voters
+       * will start the new authority set using the given finalized block as base.
+       * Only callable by root.
+       **/
+      noteStalled: AugmentedSubmittable<(delay: BlockNumber | AnyNumber | Uint8Array, bestFinalizedBlockNumber: BlockNumber | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
+       * Report voter equivocation/misbehavior. This method will verify the
+       * equivocation proof and validate the given key ownership proof
+       * against the extracted offender. If both are valid, the offence
+       * will be reported.
+       **/
+      reportEquivocation: AugmentedSubmittable<(equivocationProof: GrandpaEquivocationProof | { setId?: any; equivocation?: any } | string | Uint8Array, keyOwnerProof: KeyOwnerProof | { session?: any; trieNodes?: any; validatorCount?: any } | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      /**
        * Report voter equivocation/misbehavior. This method will verify the
        * equivocation proof and validate the given key ownership proof
        * against the extracted offender. If both are valid, the offence
        * will be reported.
        * 
-       * Since the weight of the extrinsic is 0, in order to avoid DoS by
-       * submission of invalid equivocation reports, a mandatory pre-validation of
-       * the extrinsic is implemented in a `SignedExtension`.
+       * This extrinsic must be called unsigned and it is expected that only
+       * block authors will call it (validated in `ValidateUnsigned`), as such
+       * if the block author is defined it will be defined as the equivocation
+       * reporter.
        **/
-      reportEquivocation: AugmentedSubmittable<(equivocationProof: GrandpaEquivocationProof | { setId?: any; equivocation?: any } | string | Uint8Array, keyOwnerProof: KeyOwnerProof | { session?: any; trieNodes?: any; validatorCount?: any } | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+      reportEquivocationUnsigned: AugmentedSubmittable<(equivocationProof: GrandpaEquivocationProof | { setId?: any; equivocation?: any } | string | Uint8Array, keyOwnerProof: KeyOwnerProof | { session?: any; trieNodes?: any; validatorCount?: any } | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
     };
     mockBooleanCondition: {
       getOutcome: AugmentedSubmittable<(appId: Hash | string | Uint8Array, number: u8 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
@@ -756,9 +862,6 @@ declare module '@polkadot/api/types/submittable' {
        * - `O(T)` where `T` complexity of `on_timestamp_set`
        * - 1 storage read and 1 storage mutation (codec `O(1)`). (because of `DidUpdate::take` in `on_finalize`)
        * - 1 event handler `on_timestamp_set` `O(T)`.
-       * - Benchmark: 7.678 (min squares analysis)
-       * - NOTE: This benchmark was done for a runtime with insignificant `on_timestamp_set` handlers.
-       * New benchmarking is needed when adding new handlers.
        * # </weight>
        **/
       set: AugmentedSubmittable<(now: Compact<Moment> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
