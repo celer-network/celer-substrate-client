@@ -144,12 +144,12 @@ export async function openChannel(
     msgValue = 0,
     balanceLimitsEnabled = true,
     balanceLimits = 1000000,
-    channelPeerBalance0 = 1000,
-    channelPeerBalance1 = 2000,
+    channelPeerBalance1 = 1000,
+    channelPeerBalance2 = 2000,
     openDeadline = 999999, 
     disputeTimeout = 10,
     msgValueReceiver = 0,
-) {
+): Promise<string> {
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
     const bob = keyring.addFromUri('//Bob');
@@ -165,8 +165,8 @@ export async function openChannel(
         api,
         balanceLimitsEnabled,
         balanceLimits,
-        channelPeerBalance0,
         channelPeerBalance1,
+        channelPeerBalance2,
         openDeadline,
         disputeTimeout,
         zeroTotalDeposit,
@@ -205,6 +205,8 @@ export async function openChannel(
                 });
             }
         });
+    
+    return channelId;
 }
 
 export async function deposit(
@@ -1064,7 +1066,6 @@ export async function increaseAllowance(
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
     const bob = keyring.addFromUri('//Bob');
-    const charlie = keyring.addFromUri('//Charlie');
 
     let caller;
     if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
@@ -1073,8 +1074,8 @@ export async function increaseAllowance(
         caller = bob;
     }
 
-    if (_spender === 'charlie') {
-        let spender = api.registry.createType("AccountId", charlie.address);
+    if (_spender === 'bob') {
+        let spender = api.registry.createType("AccountId", bob.address);
         api.tx.celerPayModule
             .increaseAllowance(spender, addedValue)
             .signAndSend(caller)
@@ -1083,7 +1084,7 @@ export async function increaseAllowance(
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
                     console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), addedAmount(Balance)]\n');
+                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), increasedAmount(Balance)]\n');
 
                     events.forEach(({ event: { data, method, section}}) => {
                         const [error] = data;
@@ -1106,7 +1107,7 @@ export async function increaseAllowance(
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
                     console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), addedAmount(Balance)]\n');
+                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), increasedAmount(Balance)]\n');
 
                     events.forEach(({ event: { data, method, section}}) => {
                         const [error] = data;
@@ -1131,7 +1132,6 @@ export async function decreaseAllowance(
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
     const bob = keyring.addFromUri('//Bob');
-    const charlie = keyring.addFromUri('//Charlie');
 
     let caller;
     if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
@@ -1140,8 +1140,8 @@ export async function decreaseAllowance(
         caller = bob;
     }
 
-    if (_spender === 'charlie') {
-        let spender = api.registry.createType("AccountId", charlie.address);
+    if (_spender === 'bob') {
+        let spender = api.registry.createType("AccountId", bob.address);
         api.tx.celerPayModule
             .decreaseAllowance(spender, subtractedValue)
             .signAndSend(caller)
@@ -1237,7 +1237,7 @@ export async function resolvePaymentByVouchedResult(
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
     const bob = keyring.addFromUri('//Bob');
-    
+
     let caller;
     if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
         caller = alice;
@@ -1266,5 +1266,385 @@ export async function resolvePaymentByVouchedResult(
                 });
             }
         });
+}
+
+export async function emitChannelInfo(
+    api: ApiRx,
+    channelId: string
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit channel basic info");
+    api.tx.celerPayModule
+        .emitChannelInfo(channelId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.ChannelInfo [balanceLimitsEnabled(bool), BalanceLimits(Balance), ChannelStatus(u8)\n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        })
+}
+
+export async function emitSettleFinalizedTime(
+    api: ApiRx,
+    channelId: string
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit channel settle open time");
+    api.tx.celerPayModule
+        .emitSettleFinalizedTime(channelId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.SettleFinalizedTime [settleFinalizedTime(BlockNumber)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        })
+}
+
+export async function emitCooperativeWithdrawSeqNum(
+    api: ApiRx,
+    channelId: string
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit cooperative withdraw seq num");
+    api.tx.celerPayModule
+        .emitCooperativeWithdrawSeqNum(channelId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.CooperativeWithdrawSeqNum [cooperativeWithdrawSeqNum(u128)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+}
+
+export async function emitTotalBalance(
+    api: ApiRx,
+    channelId: string
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit one channel's total balance amount");
+    api.tx.celerPayModule
+        .emitTotalBalance(channelId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.TotalBalance [totalBalance(Balance)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+}
+
+export async function emitBalanceMap(
+    api: ApiRx,
+    channelId: string
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit one channel's balance info");
+    api.tx.celerPayModule
+        .emitBalanceMap(channelId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.BalanceMap [channelPeers(Vec<AccountId>), deposits(Vec<Balance>), withdrawals(Vec<Balance>)');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+}
+
+export async function emitDisputeTimeOut(
+    api: ApiRx,
+    channelId: string
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit dipute time out");
+    api.tx.celerPayModule
+        .emitDisputeTimeOut(channelId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.DisputeTimeout [disputeTimeout (Blocknumber)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+}
+
+export async function emitStateSeqNumMap(
+    api: ApiRx,
+    channelId: string
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit state seq_num map of a duplex channel");
+    api.tx.celerPayModule
+        .emitDisputeTimeOut(channelId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.StateSeqNumMap [channelPeers(Vec<AccountId>), seqNums(Vec<u128>)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+}
+
+export async function emitTransferOutMap(
+    api: ApiRx,
+    channelId: string
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit state seq_num map of a duplex channel");
+    api.tx.celerPayModule
+        .emitDisputeTimeOut(channelId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.StateSeqNumMap [channelPeers(Vec<AccountId>), seqNums(Vec<u128>)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+}
+
+export async function emitNextPayIdListHashMap(
+    api: ApiRx,
+    channelId: string
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit next_pay_id_list_hash_map of a duplex channel");
+    api.tx.celerPayModule
+        .emitNextPayIdListHashMap(channelId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.NextPayIdListHashMap [channelPeers(Vec<AccountId>), nextPayIdListHashMap(Vec<Hash>)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+}
+
+export async function emitPendingPayOutMap(
+    api: ApiRx,
+    channelId: string
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit pending_pay_out_map of a duplex channel");
+    api.tx.celerPayModule
+        .emitPendingPayOutMap(channelId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.PendingPayOutMap [channelPeers(Vec<AccountId>), pendingPayOutMap(Vec<Balance>)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+}
+
+export async function emitChannelStatusNum(
+    api: ApiRx,
+    channelStatus: number
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit channel number if given status");
+    api.tx.celerPayModule
+        .emitChannelStatusNum(channelStatus)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.ChannelStatusNums [channelStatNums(u8)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+}
+
+export async function emitPeersMigrationInfo(
+    api: ApiRx,
+    channelId: string,
+){
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit migration info of the peers in the channel");
+    api.tx.celerPayModule
+        .emitPeersMigrationInfo(channelId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.PeersMigrationInfo [channelPeers(Vec<AccountId>), deposits(Vec<Balance>), wihtdrawals(Vec<Balance>), seqNums(Vec<u128>), transferOuts(Vec<Balance>), pendingPayOut(Vec<Balance>)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+}
+
+export async function emitWalletInfo(
+    api: ApiRx,
+    walletId: string,
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit wallet info corresponding to wallet_id");
+    api.tx.celerPayModule
+        .emitWalletInfo(walletId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.WalletInfo [owners(Vec<AccountId>), walletBalances(Vec<Balance>)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+}
+
+export async function emitPoolBalance(
+    api: ApiRx,
+    _owner: string,
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+    const bob = keyring.addFromUri('//Bob');
+
+    let owner;
+    if (_owner === 'alice' || _owner === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
+        owner = alice;
+    } else if (_owner === 'bob' || _owner === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+        owner = bob;
+    }
+
+    console.log("Emit Amount of funds which is pooled of specifed address");
+    api.tx.celerPayModule
+        .emitPoolBalance(owner)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.PoolBalance [balance(Balance)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+}
+
+export async function emitAllowance(
+    api: ApiRx,
+    _owner: string,
+    _spender: string
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+    const bob = keyring.addFromUri('//Bob');
+
+    let owner;
+    if (_owner === 'alice' || _owner === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
+        owner = alice;
+    } else if (_owner === 'bob' || _owner === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+        owner = bob;
+    }
+
+    console.log('Emit Amount of funds which owner allowed to a spender');
+    if (_spender === 'bob') {
+        let spender = api.registry.createType("AccountId", bob.address);
+        api.tx.celerPayModule
+            .approve(owner, spender)
+            .signAndSend(alice)
+            .subscribe(({ events = [], status }) => {
+                if (status.isInBlock) {
+                    console.log('Events: ');
+                    console.log('\t', 'celerPayModule.Allowance [amount(Balance)]\n');
+
+                    events.forEach(({ event: { data, method, section}}) => {
+                        console.log('\t', `${section}.${method}`, data.toString());
+                    });
+                } 
+            });
+    } else if (_spender === 'celerLedgerId') {
+        let spender = '0x6d6f646c5f6c65646765725f0000000000000000000000000000000000000000';
+        api.tx.celerPayModule
+            .approve(owner, spender)
+            .signAndSend(alice)
+            .subscribe(({ events = [], status }) => {
+                if (status.isInBlock) {
+                    console.log('Events: ');
+                    console.log('\t', 'celerPayModule.Allowance [amount(Balance)]\n');
+
+                    events.forEach(({ event: { data, method, section}}) => {
+                        console.log('\t', `${section}.${method}`, data.toString());
+                    });
+                } 
+        });
+    }
 }
 

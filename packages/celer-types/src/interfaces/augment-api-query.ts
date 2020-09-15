@@ -1,7 +1,7 @@
 // Auto-generated via `yarn polkadot-types-from-chain`, do not edit
 /* eslint-disable */
 
-import { AnyNumber, ITuple } from '@polkadot/types/types';
+import { AnyNumber, ITuple, Observable } from '@polkadot/types/types';
 import { Option, Vec } from '@polkadot/types/codec';
 import { Bytes, bool, u128, u32, u8 } from '@polkadot/types/primitive';
 import { AccountData, BalanceLock } from '@polkadot/types/interfaces/balances';
@@ -12,7 +12,6 @@ import { AccountInfo, DigestOf, EventIndex, EventRecord, LastRuntimeUpgradeInfo,
 import { Multiplier } from '@polkadot/types/interfaces/txpayment';
 import { ChannelOf, PayInfoOf, WalletOf } from 'celer-types/interfaces/celerPayModule';
 import { ApiTypes } from '@polkadot/api/types';
-import { Observable } from 'rxjs';
 
 declare module '@polkadot/api/types/storage' {
   export interface AugmentedQueries<ApiType> {
@@ -41,16 +40,16 @@ declare module '@polkadot/api/types/storage' {
     };
     celerPayModule: {
       allowed: AugmentedQueryDoubleMap<ApiType, (key1: AccountId | string | Uint8Array, key2: AccountId | string | Uint8Array) => Observable<Option<BalanceOf>>>;
-      /**
-       * Pool
-       **/
-      balances: AugmentedQuery<ApiType, (arg: AccountId | string | Uint8Array) => Observable<Option<BalanceOf>>>;
       channelMap: AugmentedQuery<ApiType, (arg: Hash | string | Uint8Array) => Observable<Option<ChannelOf>>>;
       /**
        * Celer Ledger
        **/
       channelStatusNums: AugmentedQuery<ApiType, (arg: u8 | AnyNumber | Uint8Array) => Observable<Option<u8>>>;
       payInfoMap: AugmentedQuery<ApiType, (arg: Hash | string | Uint8Array) => Observable<Option<PayInfoOf>>>;
+      /**
+       * Pool
+       **/
+      poolBalances: AugmentedQuery<ApiType, (arg: AccountId | string | Uint8Array) => Observable<Option<BalanceOf>>>;
       storageVersion: AugmentedQuery<ApiType, () => Observable<Releases>>;
       /**
        * Celer Wallet
@@ -185,6 +184,7 @@ declare module '@polkadot/api/types/storage' {
     };
     transactionPayment: {
       nextFeeMultiplier: AugmentedQuery<ApiType, () => Observable<Multiplier>>;
+      storageVersion: AugmentedQuery<ApiType, () => Observable<Releases>>;
     };
   }
 
