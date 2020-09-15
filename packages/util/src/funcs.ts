@@ -1077,14 +1077,14 @@ export async function increaseAllowance(
     if (_spender === 'bob') {
         let spender = api.registry.createType("AccountId", bob.address);
         api.tx.celerPayModule
-            .approve(spender, addedValue)
+            .increaseAllowance(spender, addedValue)
             .signAndSend(caller)
             .subscribe(({ events = [], status }) => {
-                console.log('Approve :', status.type);
+                console.log('Increase allowance :', status.type);
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
                     console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), amount(Balance)]\n');
+                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), increasedAmount(Balance)]\n');
 
                     events.forEach(({ event: { data, method, section}}) => {
                         const [error] = data;
@@ -1100,14 +1100,14 @@ export async function increaseAllowance(
     } else if (_spender === 'celerLedgerId') {
         let spender = '0x6d6f646c5f6c65646765725f0000000000000000000000000000000000000000';
         api.tx.celerPayModule
-            .approve(spender, addedValue)
+            .increaseAllowance(spender, addedValue)
             .signAndSend(caller)
             .subscribe(({ events = [], status }) => {
-                console.log('Approve:', status.type);
+                console.log('Increase allowance:', status.type);
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
                     console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), amount(Balance)]\n');
+                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), increasedAmount(Balance)]\n');
 
                     events.forEach(({ event: { data, method, section}}) => {
                         const [error] = data;
@@ -1143,14 +1143,14 @@ export async function decreaseAllowance(
     if (_spender === 'bob') {
         let spender = api.registry.createType("AccountId", bob.address);
         api.tx.celerPayModule
-            .approve(spender, subtractedValue)
+            .decreaseAllowance(spender, subtractedValue)
             .signAndSend(caller)
             .subscribe(({ events = [], status }) => {
-                console.log('Approve :', status.type);
+                console.log('Decrease allowance :', status.type);
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
                     console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), amount(Balance)]\n');
+                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), decreasedAmount(Balance)]\n');
 
                     events.forEach(({ event: { data, method, section}}) => {
                         const [error] = data;
@@ -1166,14 +1166,14 @@ export async function decreaseAllowance(
     } else if (_spender === 'celerLedgerId') {
         let spender = '0x6d6f646c5f6c65646765725f0000000000000000000000000000000000000000';
         api.tx.celerPayModule
-            .approve(spender, subtractedValue)
+            .decreaseAllowance(spender, subtractedValue)
             .signAndSend(caller)
             .subscribe(({ events = [], status }) => {
-                console.log('Approve:', status.type);
+                console.log('Decrease allowance:', status.type);
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
                     console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), amount(Balance)]\n');
+                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), decreasedAmount(Balance)]\n');
 
                     events.forEach(({ event: { data, method, section}}) => {
                         const [error] = data;
