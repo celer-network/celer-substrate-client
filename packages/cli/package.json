@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@polkadot/api": "^1.23.1",
-    "celer-substrate-types": "^1.0.0",
-    "celer-substrate-utils": "^1.1.5",
+    "celer-substrate-types": "^1.0.1",
+    "celer-substrate-utils": "^1.1.6",
     "commander": "^6.1.0"
   },
   "devDependencies": {
