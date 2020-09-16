@@ -231,7 +231,7 @@ export async function deposit(
     let receiver;
     if (_receiver === 'alice' || _receiver === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
         receiver = api.registry.createType("AccountId", alice.address);   
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+    } else if (_receiver === 'bob' || _receiver === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
         receiver = api.registry.createType("AccountId", bob.address);
     }
 
@@ -264,7 +264,7 @@ export async function depositInBatch(
     _caller: string,
     _channelIds: string[],
     _receivers: string[],
-    _amounts: number[],
+    _msgValues: number[],
     _transferFromAmounts: number[],
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -282,16 +282,16 @@ export async function depositInBatch(
     for (let i = 0; i < _receivers.length; i++) {
         if (_receivers[i] === 'alice' || _receivers[i] === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
             receivers[i] = api.registry.createType("AccountId", alice.address);   
-        } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+        } else if (_receivers[i] === 'bob' || _receivers[i] === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
             receivers[i] = api.registry.createType("AccountId", bob.address);
         }
         
     }
 
-    let amounts = [];
+    let msgValues = [];
     let transferFromAmounts = [];
-    for (let i = 0; i < _amounts.length; i++) {
-        amounts[i] = api.registry.createType("BalanceOf", _amounts[i]);
+    for (let i = 0; i < _msgValues.length; i++) {
+        msgValues[i] = api.registry.createType("BalanceOf", _msgValues[i]);
         transferFromAmounts[i] = api.registry.createType("BalanceOf", _transferFromAmounts[i]);
     }
     
@@ -301,7 +301,7 @@ export async function depositInBatch(
     }
     
     api.tx.celerPayModule
-        .depositInBatch(channelIds, receivers, amounts, transferFromAmounts)
+        .depositInBatch(channelIds, receivers, msgValues, transferFromAmounts)
         .signAndSend(caller)
         .subscribe(({ events = [], status }) => {
             console.log('Deposit In Batch:', status.type);
@@ -804,7 +804,7 @@ export async function depositPool(
     let receiver;
     if (_receiver === 'alice' || _receiver === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
         receiver = api.registry.createType("AccountId", alice.address);   
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+    } else if (_receiver === 'bob' || _receiver === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
         receiver = api.registry.createType("AccountId", bob.address);
     }
 
@@ -968,14 +968,14 @@ export async function transferFrom(
     let from;
     if (_from === 'alice' || _from === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
         from = api.registry.createType("AccountId", alice.address);   
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+    } else if (_from === 'bob' || _from === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
         from = api.registry.createType("AccountId", bob.address);
     }
 
     let to;
     if (_to === 'alice' || _to === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
         to = api.registry.createType("AccountId", alice.address);   
-    } else if (_caller === 'charlie' || _caller === '5EYCAe5fKkaKKxUTp36E2KW1q785EuQDLNuCRm7k7opzCMfq') {
+    } else if (_to === 'charlie' || _to === '5EYCAe5fKkaKKxUTp36E2KW1q785EuQDLNuCRm7k7opzCMfq') {
         to = api.registry.createType("AccountId", charlie.address);
     }
 
@@ -1020,7 +1020,7 @@ export async function transferToCelerWallet(
     let from;
     if (_from === 'alice' || _from === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
         from = api.registry.createType("AccountId", alice.address);   
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+    } else if (_from === 'bob' || _from === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
         from = api.registry.createType("AccountId", bob.address);
     }
 
@@ -1498,6 +1498,29 @@ export async function emitPendingPayOutMap(
         });
 }
 
+export async function emitWithdrawIntent(
+    api: ApiRx,
+    channelId: string
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit withdraw intent of the channel");
+    api.tx.celerPayModule
+        .emitWithdrawIntent(channelId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.WithdrawIntent [intentReceiver(AccountId), intentAmount(Balance), intentRequestTime(BlockNumber), recipientChannelId(Hash)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+}
+
 export async function emitChannelStatusNum(
     api: ApiRx,
     channelStatus: number
@@ -1577,9 +1600,9 @@ export async function emitPoolBalance(
 
     let owner;
     if (_owner === 'alice' || _owner === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        owner = alice;
+        owner = api.registry.createType("AccountId", alice.address);
     } else if (_owner === 'bob' || _owner === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        owner = bob;
+        owner = api.registry.createType("AccountId", bob.address);
     }
 
     console.log("Emit Amount of funds which is pooled of specifed address");
@@ -1609,16 +1632,16 @@ export async function emitAllowance(
 
     let owner;
     if (_owner === 'alice' || _owner === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        owner = alice;
+        owner = api.registry.createType("AccountId", alice.address);
     } else if (_owner === 'bob' || _owner === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        owner = bob;
+        owner = api.registry.createType("AccountId", bob.address);
     }
 
     console.log('Emit Amount of funds which owner allowed to a spender');
     if (_spender === 'bob') {
         let spender = api.registry.createType("AccountId", bob.address);
         api.tx.celerPayModule
-            .approve(owner, spender)
+            .emitAllowance(owner, spender)
             .signAndSend(alice)
             .subscribe(({ events = [], status }) => {
                 if (status.isInBlock) {
@@ -1633,7 +1656,7 @@ export async function emitAllowance(
     } else if (_spender === 'celerLedgerId') {
         let spender = '0x6d6f646c5f6c65646765725f0000000000000000000000000000000000000000';
         api.tx.celerPayModule
-            .approve(owner, spender)
+            .emitAllowance(owner, spender)
             .signAndSend(alice)
             .subscribe(({ events = [], status }) => {
                 if (status.isInBlock) {
