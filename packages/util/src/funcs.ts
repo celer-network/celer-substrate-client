@@ -1275,17 +1275,14 @@ export async function emitCelerLedgerId(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit AccountId of Ledger Operation module");
+    console.log('\t', 'celerPayModule.CelerLedgerId [celerLedgerId(AccountId)]');
     api.tx.celerPayModule
         .emitCelerLedgerId()
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.CelerLedgerId [celerLedgerId(AccountId)]\n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1300,17 +1297,14 @@ export async function emitChannelInfo(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit channel basic info");
+    console.log('\t', 'celerPayModule.ChannelInfo [balanceLimitsEnabled(bool), BalanceLimits(Balance), ChannelStatus(u8)]');
     api.tx.celerPayModule
         .emitChannelInfo(channelId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.ChannelInfo [balanceLimitsEnabled(bool), BalanceLimits(Balance), ChannelStatus(u8)]\n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1325,17 +1319,14 @@ export async function emitSettleFinalizedTime(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit channel settle open time");
+    console.log('\t', 'celerPayModule.SettleFinalizedTime [settleFinalizedTime(BlockNumber)]');
     api.tx.celerPayModule
         .emitSettleFinalizedTime(channelId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.SettleFinalizedTime [settleFinalizedTime(BlockNumber)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         })
 
@@ -1350,17 +1341,14 @@ export async function emitCooperativeWithdrawSeqNum(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit cooperative withdraw seq num");
+    console.log('\t', 'celerPayModule.CooperativeWithdrawSeqNum [cooperativeWithdrawSeqNum(u128)]');
     api.tx.celerPayModule
         .emitCooperativeWithdrawSeqNum(channelId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.CooperativeWithdrawSeqNum [cooperativeWithdrawSeqNum(u128)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1375,17 +1363,14 @@ export async function emitTotalBalance(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit one channel's total balance amount");
+    console.log('\t', 'celerPayModule.TotalBalance [totalBalance(Balance)]');
     api.tx.celerPayModule
         .emitTotalBalance(channelId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.TotalBalance [totalBalance(Balance)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1400,17 +1385,14 @@ export async function emitBalanceMap(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit one channel's balance info");
+    console.log('\t', 'celerPayModule.BalanceMap [channelPeers(Vec<AccountId>), deposits(Vec<Balance>), withdrawals(Vec<Balance>)');
     api.tx.celerPayModule
         .emitBalanceMap(channelId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.BalanceMap [channelPeers(Vec<AccountId>), deposits(Vec<Balance>), withdrawals(Vec<Balance>)');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1425,17 +1407,14 @@ export async function emitDisputeTimeOut(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit dipute time out");
+    console.log('\t', 'celerPayModule.DisputeTimeout [disputeTimeout (Blocknumber)]');
     api.tx.celerPayModule
         .emitDisputeTimeOut(channelId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.DisputeTimeout [disputeTimeout (Blocknumber)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1450,17 +1429,14 @@ export async function emitStateSeqNumMap(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit state seq_num map of a duplex channel");
+    console.log('\t', 'celerPayModule.StateSeqNumMap [channelPeers(Vec<AccountId>), seqNums(Vec<u128>)]');
     api.tx.celerPayModule
-        .emitDisputeTimeOut(channelId)
+        .emitStateSeqNumMap(channelId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.StateSeqNumMap [channelPeers(Vec<AccountId>), seqNums(Vec<u128>)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1475,17 +1451,14 @@ export async function emitTransferOutMap(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit state seq_num map of a duplex channel");
+    console.log('\t', 'celerPayModule.StateSeqNumMap [channelPeers(Vec<AccountId>), seqNums(Vec<u128>)]');
     api.tx.celerPayModule
         .emitTransferOutMap(channelId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.StateSeqNumMap [channelPeers(Vec<AccountId>), seqNums(Vec<u128>)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1500,17 +1473,14 @@ export async function emitNextPayIdListHashMap(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit next_pay_id_list_hash_map of a duplex channel");
+    console.log('\t', 'celerPayModule.NextPayIdListHashMap [channelPeers(Vec<AccountId>), nextPayIdListHashMap(Vec<Hash>)]');
     api.tx.celerPayModule
         .emitNextPayIdListHashMap(channelId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.NextPayIdListHashMap [channelPeers(Vec<AccountId>), nextPayIdListHashMap(Vec<Hash>)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1525,17 +1495,14 @@ export async function emitLastPayResolveDeadlineMap(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit last_pay_resolve_deadline map of a duplex channel");
+    console.log('\t', 'celerPayModule.LastPayResolveDeadlineMap [channelPeers(Vec<AccountId>), stateLastPayResolveDeadline(Vec<Hash>)]');
     api.tx.celerPayModule
         .emitLastPayResolveDeadlineMap(channelId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.LastPayResolveDeadlineMap [channelPeers(Vec<AccountId>), stateLastPayResolveDeadline(Vec<Hash>)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1550,17 +1517,14 @@ export async function emitPendingPayOutMap(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit pending_pay_out_map of a duplex channel");
+    console.log('\t', 'celerPayModule.PendingPayOutMap [channelPeers(Vec<AccountId>), pendingPayOutMap(Vec<Balance>)]');
     api.tx.celerPayModule
         .emitPendingPayOutMap(channelId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.PendingPayOutMap [channelPeers(Vec<AccountId>), pendingPayOutMap(Vec<Balance>)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1575,17 +1539,14 @@ export async function emitWithdrawIntent(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit withdraw intent of the channel");
+    console.log('\t', 'celerPayModule.WithdrawIntent [intentReceiver(AccountId), intentAmount(Balance), intentRequestTime(BlockNumber), recipientChannelId(Hash)]');
     api.tx.celerPayModule
         .emitWithdrawIntent(channelId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.WithdrawIntent [intentReceiver(AccountId), intentAmount(Balance), intentRequestTime(BlockNumber), recipientChannelId(Hash)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1600,17 +1561,14 @@ export async function emitChannelStatusNum(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit channel number if given status");
+    console.log('\t', 'celerPayModule.ChannelStatusNums [channelStatNums(u8)]');
     api.tx.celerPayModule
         .emitChannelStatusNum(channelStatus)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.ChannelStatusNums [channelStatNums(u8)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1625,17 +1583,14 @@ export async function emitPeersMigrationInfo(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit migration info of the peers in the channel");
+    console.log('\t', 'celerPayModule.PeersMigrationInfo [channelPeers(Vec<AccountId>), deposits(Vec<Balance>), wihtdrawals(Vec<Balance>), seqNums(Vec<u128>), transferOuts(Vec<Balance>), pendingPayOut(Vec<Balance>)]');
     api.tx.celerPayModule
         .emitPeersMigrationInfo(channelId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.PeersMigrationInfo [channelPeers(Vec<AccountId>), deposits(Vec<Balance>), wihtdrawals(Vec<Balance>), seqNums(Vec<u128>), transferOuts(Vec<Balance>), pendingPayOut(Vec<Balance>)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1649,17 +1604,14 @@ export async function emitCelerWalletId(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit AccountId of Celer Wallet module");
+    console.log('\t', 'celerPayModule.CelerWalletId [celerWalletId(AccountId)]');
     api.tx.celerPayModule
         .emitCelerWalletId()
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.CelerWalletId [celerWalletId(AccountId)]\n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1674,17 +1626,14 @@ export async function emitWalletInfo(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit wallet info corresponding to wallet_id");
+    console.log('\t', 'celerPayModule.WalletInfo [owners(Vec<AccountId>), walletBalances(Vec<Balance>)]');
     api.tx.celerPayModule
         .emitWalletInfo(walletId)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.WalletInfo [owners(Vec<AccountId>), walletBalances(Vec<Balance>)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
             }
         });
 
@@ -1698,18 +1647,15 @@ export async function emitPoolId(
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit AccountId of Pool");
+    console.log('\t', 'celerPayModule.PoolId [poolId(AccountId)]');
     api.tx.celerPayModule
         .emitPoolId()
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.PoolId [poolId(AccountId)]\n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
-            }
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());
+            }  
         });
 
     await waitBlockNumber(1);
@@ -1731,18 +1677,15 @@ export async function emitPoolBalance(
     }
 
     console.log("Emit Amount of funds which is pooled of specifed address");
+    console.log('\t', 'celerPayModule.PoolBalance [balance(Balance)]');
     api.tx.celerPayModule
         .emitPoolBalance(owner)
         .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.PoolBalance [balance(Balance)] \n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
-            }
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());
+            }             
         });
     
     await waitBlockNumber(1);
@@ -1767,57 +1710,49 @@ export async function emitAllowance(
     console.log('Emit Amount of funds which owner allowed to a spender');
     if (_spender === 'bob') {
         let spender = api.registry.createType("AccountId", bob.address);
+        console.log('\t', 'celerPayModule.Allowance [amount(Balance)]');
         api.tx.celerPayModule
             .emitAllowance(owner, spender)
             .signAndSend(alice)
-            .subscribe(({ events = [], status }) => {
-                if (status.isInBlock) {
-                    console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Allowance [amount(Balance)]\n');
-
-                    events.forEach(({ event: { data, method, section}}) => {
-                        console.log('\t', `${section}.${method}`, data.toString());
-                    });
-                } 
+            .subscribe(({ events = []}) => {
+                for (const record of events) {
+                    const { event, } = record;
+                    console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());
+                }            
             });
     } else if (_spender === 'celerLedgerId') {
         let spender = '0x6d6f646c5f6c65646765725f0000000000000000000000000000000000000000';
+        console.log('\t', 'celerPayModule.Allowance [amount(Balance)]');
         api.tx.celerPayModule
             .emitAllowance(owner, spender)
             .signAndSend(alice)
-            .subscribe(({ events = [], status }) => {
-                if (status.isInBlock) {
-                    console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Allowance [amount(Balance)]\n');
-
-                    events.forEach(({ event: { data, method, section}}) => {
-                        console.log('\t', `${section}.${method}`, data.toString());
-                    });
-                } 
+            .subscribe(({ events = []}) => { 
+                for (const record of events) {
+                    const { event, } = record;
+                    console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());
+                }
         });
     }
 
     await waitBlockNumber(1);
 }
 
-export async function emitResolverId(
+export async function emitPayResolverId(
     api: ApiRx
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
 
     console.log("Emit AccountId of PayResolver module");
-    api.tx.celerPayModule
-        .emitCelerWalletId()
-        .signAndSend(alice)
-        .subscribe(({ events = [], status}) => {
-            if (status.isInBlock) {
-                console.log('Events: ')
-                console.log('\t', 'celerPayModule.PayResolverId [celerWalletId(AccountId)]\n');
+    console.log('\t', 'celerPayModule.PayResolverId [payResolverId(AccountId)]');
 
-                events.forEach(({ event: { data, method, section}}) => {
-                    console.log('\t', `${section}.${method}`, data.toString());
-                });                
+    api.tx.celerPayModule
+        .emitPayResolverId()
+        .signAndSend(alice)
+        .subscribe(({ events = []}) => {
+            for (const record of events) {
+                const { event, } = record;
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());
             }
         });
 
