@@ -26,9 +26,7 @@ async function main(): Promise<void> {
     await waitBlockNumber(2);
 
     await emitChannelInfo(api, channelId1);
-    await waitBlockNumber(1);
     await emitBalanceMap(api, channelId1);
-    await waitBlockNumber(1);
 
     console.log("==================================== disable balance limits ==============================")
     await disableBalanceLimits(api, 'alice', channelId1);
@@ -52,9 +50,7 @@ async function main(): Promise<void> {
     const channelId2 = await openChannel(api, 'bob', false, 1000);
     await waitBlockNumber(2);
     await emitChannelInfo(api, channelId2);
-    await waitBlockNumber(1);
     await emitPeersMigrationInfo(api, channelId2);
-    await waitBlockNumber(1);
 
     console.log("================================== deposit to channel =================================================")
     await deposit(api, 'alice', channelId1, 'bob', 1000, 100);
@@ -65,18 +61,13 @@ async function main(): Promise<void> {
     await depositInBatch(api, 'alice', [channelId1,channelId2], ['bob','alice'], [1000,1000], [100,100]);
     await waitBlockNumber(2);
     await emitWalletInfo(api, channelId1);
-    await waitBlockNumber(1);
     await emitPeersMigrationInfo(api, channelId1);
-    await waitBlockNumber(1);
     await emitWalletInfo(api, channelId2);
-    await waitBlockNumber(1);
     await emitPeersMigrationInfo(api, channelId2);
-    await waitBlockNumber(1);
 
     await depositNativeToken(api, 'alice', channelId1, 1000);
     await waitBlockNumber(2);
     await emitWalletInfo(api, channelId1);
-    await waitBlockNumber(1);
     await emitPeersMigrationInfo(api, channelId1);
     await waitBlockNumber(3);
     process.exit(0);
