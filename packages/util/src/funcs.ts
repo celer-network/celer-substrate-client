@@ -1268,6 +1268,30 @@ export async function resolvePaymentByVouchedResult(
         });
 }
 
+export async function emitCelerLedgerId(
+    api: ApiRx
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit AccountId of Ledger Operation module");
+    api.tx.celerPayModule
+        .emitCelerLedgerId()
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.CelerLedgerId [celerLedgerId(AccountId)]\n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+
+    await waitBlockNumber(1);
+}
+
 export async function emitChannelInfo(
     api: ApiRx,
     channelId: string
@@ -1282,13 +1306,15 @@ export async function emitChannelInfo(
         .subscribe(({ events = [], status}) => {
             if (status.isInBlock) {
                 console.log('Events: ')
-                console.log('\t', 'celerPayModule.ChannelInfo [balanceLimitsEnabled(bool), BalanceLimits(Balance), ChannelStatus(u8)\n');
+                console.log('\t', 'celerPayModule.ChannelInfo [balanceLimitsEnabled(bool), BalanceLimits(Balance), ChannelStatus(u8)]\n');
 
                 events.forEach(({ event: { data, method, section}}) => {
                     console.log('\t', `${section}.${method}`, data.toString());
                 });                
             }
-        })
+        });
+
+    await waitBlockNumber(1);
 }
 
 export async function emitSettleFinalizedTime(
@@ -1312,6 +1338,8 @@ export async function emitSettleFinalizedTime(
                 });                
             }
         })
+
+    await waitBlockNumber(1);
 }
 
 export async function emitCooperativeWithdrawSeqNum(
@@ -1335,6 +1363,8 @@ export async function emitCooperativeWithdrawSeqNum(
                 });                
             }
         });
+
+    await waitBlockNumber(1);
 }
 
 export async function emitTotalBalance(
@@ -1358,6 +1388,8 @@ export async function emitTotalBalance(
                 });                
             }
         });
+
+    await waitBlockNumber(1);
 }
 
 export async function emitBalanceMap(
@@ -1381,6 +1413,8 @@ export async function emitBalanceMap(
                 });                
             }
         });
+
+    await waitBlockNumber(1);
 }
 
 export async function emitDisputeTimeOut(
@@ -1404,6 +1438,8 @@ export async function emitDisputeTimeOut(
                 });                
             }
         });
+
+    await waitBlockNumber(1);
 }
 
 export async function emitStateSeqNumMap(
@@ -1427,6 +1463,8 @@ export async function emitStateSeqNumMap(
                 });                
             }
         });
+
+    await waitBlockNumber(1);
 }
 
 export async function emitTransferOutMap(
@@ -1438,7 +1476,7 @@ export async function emitTransferOutMap(
 
     console.log("Emit state seq_num map of a duplex channel");
     api.tx.celerPayModule
-        .emitDisputeTimeOut(channelId)
+        .emitTransferOutMap(channelId)
         .signAndSend(alice)
         .subscribe(({ events = [], status}) => {
             if (status.isInBlock) {
@@ -1450,6 +1488,8 @@ export async function emitTransferOutMap(
                 });                
             }
         });
+
+    await waitBlockNumber(1);
 }
 
 export async function emitNextPayIdListHashMap(
@@ -1473,6 +1513,33 @@ export async function emitNextPayIdListHashMap(
                 });                
             }
         });
+
+    await waitBlockNumber(1);
+}
+
+export async function emitLastPayResolveDeadlineMap(
+    api: ApiRx,
+    channelId: string
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit last_pay_resolve_deadline map of a duplex channel");
+    api.tx.celerPayModule
+        .emitLastPayResolveDeadlineMap(channelId)
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.LastPayResolveDeadlineMap [channelPeers(Vec<AccountId>), stateLastPayResolveDeadline(Vec<Hash>)] \n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+
+    await waitBlockNumber(1);
 }
 
 export async function emitPendingPayOutMap(
@@ -1496,6 +1563,8 @@ export async function emitPendingPayOutMap(
                 });                
             }
         });
+
+    await waitBlockNumber(1);
 }
 
 export async function emitWithdrawIntent(
@@ -1519,6 +1588,8 @@ export async function emitWithdrawIntent(
                 });                
             }
         });
+
+    await waitBlockNumber(1);
 }
 
 export async function emitChannelStatusNum(
@@ -1542,6 +1613,8 @@ export async function emitChannelStatusNum(
                 });                
             }
         });
+
+    await waitBlockNumber(1);
 }
 
 export async function emitPeersMigrationInfo(
@@ -1565,6 +1638,32 @@ export async function emitPeersMigrationInfo(
                 });                
             }
         });
+
+    await waitBlockNumber(1);
+}
+
+export async function emitCelerWalletId(
+    api: ApiRx
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit AccountId of Celer Wallet module");
+    api.tx.celerPayModule
+        .emitCelerWalletId()
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.CelerWalletId [celerWalletId(AccountId)]\n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+
+    await waitBlockNumber(1);
 }
 
 export async function emitWalletInfo(
@@ -1588,6 +1687,32 @@ export async function emitWalletInfo(
                 });                
             }
         });
+
+    await waitBlockNumber(1);
+}
+
+export async function emitPoolId(
+    api: ApiRx
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit AccountId of Pool");
+    api.tx.celerPayModule
+        .emitPoolId()
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.PoolId [poolId(AccountId)]\n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+
+    await waitBlockNumber(1);
 }
 
 export async function emitPoolBalance(
@@ -1619,6 +1744,8 @@ export async function emitPoolBalance(
                 });                
             }
         });
+    
+    await waitBlockNumber(1);
 }
 
 export async function emitAllowance(
@@ -1669,5 +1796,31 @@ export async function emitAllowance(
                 } 
         });
     }
+
+    await waitBlockNumber(1);
+}
+
+export async function emitResolverId(
+    api: ApiRx
+) {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+
+    console.log("Emit AccountId of PayResolver module");
+    api.tx.celerPayModule
+        .emitCelerWalletId()
+        .signAndSend(alice)
+        .subscribe(({ events = [], status}) => {
+            if (status.isInBlock) {
+                console.log('Events: ')
+                console.log('\t', 'celerPayModule.PayResolverId [celerWalletId(AccountId)]\n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    console.log('\t', `${section}.${method}`, data.toString());
+                });                
+            }
+        });
+
+    await waitBlockNumber(1);
 }
 

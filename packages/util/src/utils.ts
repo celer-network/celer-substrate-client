@@ -590,17 +590,24 @@ export async function getCondition(
     } else if (type === 3) {
         let hash = blake2AsU8a(api.registry.createType("u64", 1).toU8a());
         let hash_1 = u8aToHex(hash);
+
         let u8_1 = api.registry.createType("u8", 1);
+        let hex1 = u8aToHex(u8_1.toU8a());
+        let bytes1 = api.registry.createType("Bytes", hex1);
+
         let u32_10 = api.registry.createType("u32", 10);
+        let hex10 = u8aToHex(u32_10.toU8a());
+        let bytes10 = api.registry.createType("Bytes", hex10);
+
         let _numericCondition10 = {
-            conditionType: api.registry.createType("ConditionType", _conditionType.BooleanRuntimeModule),
+            conditionType: api.registry.createType("ConditionType", _conditionType.NumericRuntimeModule),
             hashLock: new Option(api.registry, "Hash", null),
             callIsFinalized: new Option(api.registry, "Call", null),
             callGetOutcome: new Option(api.registry, "Call", null),
             numericAppNum: new Option(api.registry, "u32", api.registry.createType("u32", 0)),
             numericSessionId: new Option(api.registry, "Hash", hash_1),
-            argsQueryFinalization: new Option(api.registry, "Bytes", u8_1.toU8a()),
-            argsQueryOutcome: new Option(api.registry, "Bytes", u32_10.toU8a())
+            argsQueryFinalization: new Option(api.registry, "Bytes", bytes1),
+            argsQueryOutcome: new Option(api.registry, "Bytes", bytes10)
         };
         let numericCondition10= api.registry.createType("Condition", _numericCondition10);
 
@@ -608,17 +615,24 @@ export async function getCondition(
     } else {
         let hash = blake2AsU8a(api.registry.createType("u64", 1).toU8a());
         let hash_1 = u8aToHex(hash);
+
         let u8_1 = api.registry.createType("u8", 1);
+        let hex1= u8aToHex(u8_1.toU8a());
+        let bytes1 = api.registry.createType("Bytes", hex1);
+
         let u32_25 = api.registry.createType("u32", 25);
+        let hex25 = u8aToHex(u32_25.toU8a());
+        let bytes25 = api.registry.createType("Bytes", hex25);
+
         let _numericCondition25 = {
-            conditionType: api.registry.createType("ConditionType", _conditionType.BooleanRuntimeModule),
+            conditionType: api.registry.createType("ConditionType", _conditionType.NumericRuntimeModule),
             hashLock: new Option(api.registry, "Hash", null),
             callIsFinalized: new Option(api.registry, "Call", null),
             callGetOutcome: new Option(api.registry, "Call", null),
             numericAppNum: new Option(api.registry, "u32", api.registry.createType("u32", 0)),
             numericSessionId: new Option(api.registry, "Hash", hash_1),
-            argsQueryFinalization: new Option(api.registry, "Bytes", u8_1.toU8a()),
-            argsQueryOutcome: new Option(api.registry, "Bytes", u32_25.toU8a())
+            argsQueryFinalization: new Option(api.registry, "Bytes", bytes1),
+            argsQueryOutcome: new Option(api.registry, "Bytes", bytes25),
         };
         let numericCondition25= api.registry.createType("Condition", _numericCondition25);
 
@@ -899,7 +913,7 @@ export async function getChannelPeers(api: ApiRx): Promise<AccountId[]> {
     }
 }
 
-async function encodeCondPay(
+export async function encodeCondPay(
     condPay: ConditionalPay
 ): Promise<Uint8Array> {
     let encodedCondPay = u8aConcat(
