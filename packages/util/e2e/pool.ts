@@ -23,28 +23,23 @@ async function main(): Promise<void> {
     await depositPool(api, 'alice', 'alice', 20000);
     await waitBlockNumber(1);
     await emitPoolBalance(api, 'alice');
-    await waitBlockNumber(1);
 
     await approve(api, 'alice', 'celerLedgerId', 2000);
     await waitBlockNumber(1);
     await emitAllowance(api, 'alice', 'celerLedgerId');
-    await waitBlockNumber(1);
 
     await increaseAllowance(api, 'alice', 'celerLedgerId', 1000);
     await waitBlockNumber(1);
     await emitAllowance(api, 'alice', 'celerLedgerId');
-    await waitBlockNumber(1);
 
     await decreaseAllowance(api, 'alice', 'celerLedgerId', 1000);
     await waitBlockNumber(1);
     await emitAllowance(api, 'alice', 'celerLedgerId');
-    await waitBlockNumber(1);
 
     console.log("======================== withdraw from pool ===================================")
     await withdrawFromPool(api, 'alice', 1000);
     await waitBlockNumber(1);
     await emitPoolBalance(api, 'alice');
-    await waitBlockNumber(1);
 
     console.log("=================== transfer from alice to charlie ======================================")
     await approve(api, 'alice', 'bob', 10000);
@@ -53,18 +48,15 @@ async function main(): Promise<void> {
     await transferFrom(api, 'bob', 'alice', 'charlie', 2000);
     await waitBlockNumber(1);
     await emitPoolBalance(api, 'alice');
-    await waitBlockNumber(1);
     await emitAllowance(api, 'alice', 'bob');
-    await waitBlockNumber(1);
 
-    console.log("====================== transfer to celer waiit =======================================");
+    console.log("====================== transfer to celer wallet =======================================");
     const channelId = await openChannel(api, 'alice', true, 0);
     await waitBlockNumber(1);
 
     await transferToCelerWallet(api, 'bob', 'alice', channelId, 2000);
     await waitBlockNumber(1);
     await emitPoolBalance(api, 'alice');
-    await waitBlockNumber(1);
     await emitWalletInfo(api, channelId);
     await waitBlockNumber(3);
 
