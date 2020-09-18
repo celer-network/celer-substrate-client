@@ -1,6 +1,7 @@
 import { connect } from "../src/connect";
 import { 
-   resolvePaymentByConditions, resolvePaymentByVouchedResult
+   resolvePaymentByConditions, 
+   resolvePaymentByVouchedResult, 
 } from "../src/funcs";
 import {
     waitBlockNumber, 

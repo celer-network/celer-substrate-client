@@ -33,7 +33,28 @@ import {
     snapshotStates,
     depositInBatch,
     getResolvePayByCondtionsRequest,
-    transferFrom
+    transferFrom,
+    emitCelerLedgerId,
+    emitChannelInfo,
+    emitChannelStatusNum,
+    emitPeersMigrationInfo,
+    emitCelerWalletId,
+    emitWalletInfo,
+    emitPoolBalance,
+    emitAllowance,
+    emitPayResolverId,
+    emitSettleFinalizedTime,
+    emitCooperativeWithdrawSeqNum,
+    emitTotalBalance,
+    emitBalanceMap,
+    emitDisputeTimeOut,
+    emitStateSeqNumMap,
+    emitTransferOutMap,
+    emitLastPayResolveDeadlineMap,
+    emitNextPayIdListHashMap,
+    emitPendingPayOutMap,
+    emitWithdrawIntent,
+    emitPoolId,
 } from "celer-substrate-utils";
 
 import program from 'commander';
@@ -227,7 +248,7 @@ program
 program
     .command('clearPays')
     .option('-c, --caller <caller>', 'caller')
-    .option('-i, --channelId <channelId>', 'channelId')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
     .option('-n, --seqNums <seqNums>', 'sequence number list', (value) => { return (value || []).split(","); }, [])
     .option('-a, --transferFromAmounts <transferFromAmounts>', 'amounts list of funds to transfered from Pool', (value) => { return (value || []).split(","); }, [])
     .option('-f, --peerFrom <peerFrom>', 'address of the peer who owns and updates the simplex state')
@@ -391,7 +412,7 @@ program
 program
     .command('resolvePaymentByConditions')
     .option('-c, --caller <caller>', 'caller')
-    .option('-i, --channelId <channelId>', 'channelId')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
     .option('-n, --seqNums <seqNums>', 'sequence number list', (value) => { return (value || []).split(","); }, [])
     .option('-a, --transferFromAmounts <transferFromAmounts>',  'amounts of funds to be transfered from Pool', (value) => { return (value || []).split(","); }, [])
     .option('-p, --peerIndex <peerIndex>', 'peerIndex of linked pay id list')
@@ -447,7 +468,195 @@ program
         await resolvePaymentByVouchedResult(api, options.caller, vouchedCondPayResult);
         await waitBlockNumber(3);
         process.exit(0);
-    })
+    });
+
+program
+    .command('emitCelerLedgerId')
+    .action(async options => {
+        const api = await connect();
+        await emitCelerLedgerId(api);
+        process.exit(0);
+    });
+
+program
+    .command('emitChannelInfo')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        await emitChannelInfo(api, options.channelId);
+        process.exit(0);
+    });
+
+program
+    .command('emitSettleFinalizedTime')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        await emitSettleFinalizedTime(api, options.channelId);
+        process.exit(0);
+    });
+
+program
+    .command('emitCooperativeWithdrawSeqNum')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        await emitCooperativeWithdrawSeqNum(api, options.channelId);
+        process.exit(0);
+    });
+
+program
+    .command('emitTotalBalance')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        await emitTotalBalance(api, options.channelId);
+        process.exit(0);
+    });
+
+program
+    .command('emitBalanceMap')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        await emitBalanceMap(api, options.channelId);
+        process.exit(0);
+    });
+
+program
+    .command('emitDisputeTimeOut')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        await emitDisputeTimeOut(api, options.channelId);
+        process.exit(0);
+    });
+
+program
+    .command('emitStateSeqNumMap')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        await emitStateSeqNumMap(api, options.channelId);
+        process.exit(0);
+    });
+
+program
+    .command('emitTransferOutMap')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        await emitTransferOutMap(api, options.channelId);
+        process.exit(0);
+    });
+
+program
+    .command('emitNextPayIdListHashMap')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        await emitNextPayIdListHashMap(api, options.channelId);
+        process.exit(0);
+    });
+
+program
+    .command('emitLastPayResolveDeadlineMap')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        await emitLastPayResolveDeadlineMap(api, options.channelId);
+        process.exit(0);
+    });
+
+program
+    .command('emitPendingPayOutMap')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        await emitPendingPayOutMap(api, options.channelId);
+        process.exit(0);
+    });
+
+program
+    .command('emitWithdrawIntent')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        await emitWithdrawIntent(api, options.channelId);
+        process.exit(0);
+    });
+
+program
+    .command('emitChannelStatusNum')
+    .option('-s, --channelStatus <channelStatus>', 'status of channel')
+    .action(async options => {
+        const api = await connect();
+        await emitChannelStatusNum(api, options.channelStatus);
+        process.exit(0);
+    });
+
+program
+    .command('emitPeersMigrationInfo')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        await emitPeersMigrationInfo(api, options.channelId);
+        process.exit(0);
+    });
+
+program
+    .command('emitCelerWalletId')
+    .action(async options => {
+        const api = await connect();
+        await emitCelerWalletId(api);
+        process.exit(0);
+    });
+
+program
+    .command('emitWalletInfo')
+    .option('-i, --walletId <walletId>', 'Id of the wallet')
+    .action(async options => {
+        const api = await connect();
+        await emitWalletInfo(api, options.walletId)
+        process.exit(0);
+    });
+
+program
+    .command('emitPoolId')
+    .action(async options => {
+        const api = await connect();
+        await emitPoolId(api);
+        process.exit(0);
+    });
+
+program
+    .command('emitPoolBalance')
+    .option('-o, --owner <owner>', 'the address of query balance of')
+    .action(async options => {
+        const api = await connect();
+        await emitPoolBalance(api, options.owner);
+        process.exit(0);
+    });
+
+program
+    .command('emitAllowance')
+    .option('-o, --owner <owner>', 'the address of query balance of')
+    .option('-s, --spender <spender>', 'the address which will spend the funds')
+    .action(async options => {
+        const api = await connect();
+        await emitAllowance(api, options.owner, options.spender);
+        process.exit(0);
+    });
+
+program
+    .command('emitPayResolverId')
+    .action(async options => {
+        const api = await connect();
+        await emitPayResolverId(api);
+        process.exit(0);
+    });
+
+
 
 program.parse();
 
