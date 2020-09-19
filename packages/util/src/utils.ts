@@ -152,11 +152,15 @@ export async function getCooperativeWithdrawRequest(
     isZeroHash: boolean,
     recipientChannelId?: string,
 ): Promise<any>{
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+    const bob = keyring.addFromUri('//Bob');
+
     let receiverAccount;
     if (_receiverAccount === 'alice' || _receiverAccount === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        receiverAccount = api.registry.createType("AccountId", ALICE);   
-    } else {
-        receiverAccount = api.registry.createType("AccountId", BOB);
+        receiverAccount = api.registry.createType("AccountId", alice.address);   
+    } else if (_receiverAccount === 'bob' || _receiverAccount === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+        receiverAccount = api.registry.createType("AccountId", bob.address);
     }
 
     let _accountAmtPair = {

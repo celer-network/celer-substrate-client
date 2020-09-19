@@ -176,7 +176,7 @@ export async function openChannel(
     let channelId = await caluculateChannelId(api, openChannelRequestOf);
     console.log(`channel id is ${channelId}`);
     console.log(`channelPeers[0] is bob, channelPeers[1] is alice \n`);
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 
     api.tx.celerPayModule
         .openChannel(openChannelRequestOf, api.registry.createType("Balance", msgValue))
@@ -563,7 +563,7 @@ export async function cooperativeWithdraw(
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
                 console.log('Events: ');
-                console.log('\t', 'celerPayModule.CooperativeWithdraw [channelId(Hash), withdrawnAmount(Balance), receiver(AccountId), recipientChannelId(Hash), deposits(Vec<Balnace>), withdrawals(Vec<Balance>), seqNum(u128)\n');
+                console.log('\t', 'celerPayModule.CooperativeWithdraw [channelId(Hash), withdrawnAmount(Balance), receiver(AccountId), recipientChannelId(Hash), deposits(Vec<Balnace>), withdrawals(Vec<Balance>), seqNum(u128)]\n');
 
                 events.forEach(({ event: { data, method, section}}) => {
                     const [error] = data;
@@ -1282,11 +1282,11 @@ export async function emitCelerLedgerId(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitChannelInfo(
@@ -1304,11 +1304,11 @@ export async function emitChannelInfo(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitSettleFinalizedTime(
@@ -1326,11 +1326,11 @@ export async function emitSettleFinalizedTime(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         })
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitCooperativeWithdrawSeqNum(
@@ -1348,11 +1348,11 @@ export async function emitCooperativeWithdrawSeqNum(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitTotalBalance(
@@ -1370,11 +1370,11 @@ export async function emitTotalBalance(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitBalanceMap(
@@ -1392,11 +1392,11 @@ export async function emitBalanceMap(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitDisputeTimeOut(
@@ -1414,11 +1414,11 @@ export async function emitDisputeTimeOut(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitStateSeqNumMap(
@@ -1436,11 +1436,11 @@ export async function emitStateSeqNumMap(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitTransferOutMap(
@@ -1458,11 +1458,11 @@ export async function emitTransferOutMap(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitNextPayIdListHashMap(
@@ -1480,11 +1480,11 @@ export async function emitNextPayIdListHashMap(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitLastPayResolveDeadlineMap(
@@ -1502,11 +1502,11 @@ export async function emitLastPayResolveDeadlineMap(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitPendingPayOutMap(
@@ -1524,11 +1524,11 @@ export async function emitPendingPayOutMap(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitWithdrawIntent(
@@ -1546,11 +1546,11 @@ export async function emitWithdrawIntent(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitChannelStatusNum(
@@ -1568,11 +1568,11 @@ export async function emitChannelStatusNum(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitPeersMigrationInfo(
@@ -1590,11 +1590,11 @@ export async function emitPeersMigrationInfo(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitCelerWalletId(
@@ -1611,11 +1611,11 @@ export async function emitCelerWalletId(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitWalletInfo(
@@ -1633,11 +1633,11 @@ export async function emitWalletInfo(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());                             
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitPoolId(
@@ -1654,11 +1654,11 @@ export async function emitPoolId(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());
             }  
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitPoolBalance(
@@ -1684,11 +1684,11 @@ export async function emitPoolBalance(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());
             }             
         });
     
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitAllowance(
@@ -1717,7 +1717,7 @@ export async function emitAllowance(
             .subscribe(({ events = []}) => {
                 for (const record of events) {
                     const { event, } = record;
-                    console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());
+                    console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());
                 }            
             });
     } else if (_spender === 'celerLedgerId') {
@@ -1729,12 +1729,12 @@ export async function emitAllowance(
             .subscribe(({ events = []}) => { 
                 for (const record of events) {
                     const { event, } = record;
-                    console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());
+                    console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());
                 }
         });
     }
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
 export async function emitPayResolverId(
@@ -1752,10 +1752,10 @@ export async function emitPayResolverId(
         .subscribe(({ events = []}) => {
             for (const record of events) {
                 const { event, } = record;
-                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toHuman());
+                console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());
             }
         });
 
-    await waitBlockNumber(1);
+    await waitBlockNumber(2);
 }
 
