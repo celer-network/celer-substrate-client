@@ -62,7 +62,7 @@ export default {
             conditions: 'Vec<Condition>',
             transferFunc: 'TransferFunction',
             resolveDeadline: 'BlockNumber',
-            resovleTimeout: 'BlockNumber',
+            resolveTimeout: 'BlockNumber',
         },
         ConditionalPayOf: {
             payTimestamp: 'Moment',

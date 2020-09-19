@@ -1,4 +1,4 @@
-import { AnyNumber, ITuple} from '@polkadot/types/types';
+import { AnyNumber, ITuple } from '@polkadot/types/types';
 import { Option, Vec } from '@polkadot/types/codec';
 import { Bytes, bool, u128, u32, u8 } from '@polkadot/types/primitive';
 import { AccountData, BalanceLock } from '@polkadot/types/interfaces/balances';

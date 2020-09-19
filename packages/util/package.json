@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@polkadot/api": "^1.23.1",
-    "celer-substrate-types": "^1.0.1"
+    "celer-substrate-types": "^1.0.2"
   },
   "devDependencies": {
     "@polkadot/typegen": "^1.23.1",
