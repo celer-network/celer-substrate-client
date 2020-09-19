@@ -53,6 +53,7 @@ async function main(): Promise<void> {
     await emitWalletInfo(api, channelId1);
     await emitPeersMigrationInfo(api, channelId1);
 
+    console.log("\n");
     console.log("========================= intend withdraw and veto withdraw ============================")
     await intendWithdraw(api, 'alice', channelId1, 1000);
     await waitBlockNumber(2);
@@ -62,12 +63,14 @@ async function main(): Promise<void> {
     await waitBlockNumber(2);
     await emitPeersMigrationInfo(api, channelId1);
 
+    console.log("\n");
     console.log("=============================== cooperative withdraw ====================================")
     await cooperativeWithdraw(api, 'alice', channelId1, 1, 1000, 'alice');
     await waitBlockNumber(2);
     await emitPeersMigrationInfo(api, channelId1);
     await emitWalletInfo(api, channelId1);
 
+    console.log("\n");
     console.log("================================ cooperative settle ======================================")
     const cooperativeSettleRequest = await getCooperativeSettleRequest(
         api,
@@ -80,6 +83,7 @@ async function main(): Promise<void> {
     await emitWalletInfo(api, channelId1);
     await emitChannelInfo(api, channelId1);
 
+    console.log("\n");
     console.log("================================= intend settle ============================================")
     const channelId2 = await openChannel(api, 'alice', true);
     await waitBlockNumber(2);

@@ -53,7 +53,7 @@ export interface ConditionalPay extends Struct {
   readonly conditions: Vec<Condition>;
   readonly transferFunc: TransferFunction;
   readonly resolveDeadline: BlockNumber;
-  readonly resovleTimeout: BlockNumber;
+  readonly resolveTimeout: BlockNumber;
 }
 
 /** @name ConditionalPayOf */

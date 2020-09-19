@@ -657,16 +657,17 @@ export async function getConditionalPay(
     let transferFunc = await getTransferFunc(api, transferToPeer, logicType);
 
     let _conditionalPay = {
-        payTimestamp: payTimestamp,
+        payTimestamp: api.registry.createType("Moment", payTimestamp),
         src: api.registry.createType("AccountId", src.address),
         dest: api.registry.createType("AccountId", dest.address),
-        conditions: conditions,
+        conditions: new Vec(api.registry, "Condition", conditions),
         transferFunc: transferFunc,
         resolveDeadline: api.registry.createType("BlockNumber", resolveDeadline),
         resolveTimeout: api.registry.createType("BlockNumber", resolveTimeout)
     };
-    let condPay = api.registry.createType("ConditionalPay", _conditionalPay);
     
+    let condPay = api.registry.createType("ConditionalPay", _conditionalPay);
+
     return condPay;
 }
 
@@ -941,7 +942,7 @@ export async function encodeCondPay(
        condPay.transferFunc.maxTransfer.receiver.account.toU8a(),
        condPay.transferFunc.maxTransfer.receiver.amt.toU8a(),
        condPay.resolveDeadline.toU8a(),
-       condPay.resovleTimeout.toU8a(),
+       condPay.resolveTimeout.toU8a(),
     );
 
     return encodedCondPay;
