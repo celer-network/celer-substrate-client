@@ -60,9 +60,9 @@ async function main(): Promise<void> {
     await waitBlockNumber(2);
     await emitWalletInfo(api, channelId1);
     await emitPeersMigrationInfo(api, channelId1);
+    await waitBlockNumber(3);
     
-    console.log("\n");
-    console.log("========================= intend withdraw and veto withdraw ============================")
+    console.log("\n", "========================= intend withdraw and veto withdraw ============================")
     await intendWithdraw(api, 'alice', channelId1, 1000);
     await waitBlockNumber(2);
     await emitWithdrawIntent(api, channelId1);
@@ -70,16 +70,16 @@ async function main(): Promise<void> {
     await vetoWithdraw(api, 'bob', channelId1);
     await waitBlockNumber(2);
     await emitPeersMigrationInfo(api, channelId1);
+    await waitBlockNumber(3);
 
-    console.log("\n");
-    console.log("=============================== cooperative withdraw ====================================")
+    console.log("\n", "=============================== cooperative withdraw ====================================")
     await cooperativeWithdraw(api, 'alice', channelId1, 1, 1000, 'alice');
     await waitBlockNumber(2);
     await emitPeersMigrationInfo(api, channelId1);
     await emitWalletInfo(api, channelId1);
+    await waitBlockNumber(3);
 
-    console.log("\n");
-    console.log("================================ cooperative settle ======================================")
+    console.log("\n", "================================ cooperative settle ======================================")
     const cooperativeSettleRequest = await getCooperativeSettleRequest(
         api,
         channelId1,
@@ -90,9 +90,9 @@ async function main(): Promise<void> {
     await waitBlockNumber(2);
     await emitWalletInfo(api, channelId1);
     await emitChannelInfo(api, channelId1);
+    await waitBlockNumber(3);
 
-    console.log("\n");
-    console.log("=============== intend withdraw and confirm withdraw to another channel ==================")
+    console.log("\n", "=============== intend withdraw and confirm withdraw to another channel ==================")
     const channelId2 = await openChannel(api, 'bob', false, 1000, true, 100000);
     await waitBlockNumber(2); 
     const channelId3 = await openChannel(api, 'alice', true, 0, true, 100001);
@@ -110,8 +110,7 @@ async function main(): Promise<void> {
     await emitWalletInfo(api, channelId3);
     await emitWalletInfo(api, channelId2)
     
-    console.log("\n");
-    console.log("======================== cooperative withdraw to another channel ============================")
+    console.log("\n", "======================== cooperative withdraw to another channel ============================")
     await cooperativeWithdraw(api, 'bob', channelId2, 1, 1000, 'bob', 999999, false, channelId3);
     await waitBlockNumber(3);
     await emitTotalBalance(api, channelId3);
@@ -119,8 +118,7 @@ async function main(): Promise<void> {
     await emitWalletInfo(api, channelId2);
     await emitWalletInfo(api, channelId3);
 
-    console.log("\n");
-    console.log("============================== Resolve Payment By Conditions ==========================================")
+    console.log("\n", "============================== Resolve Payment By Conditions ==========================================")
     const channelId4 = await openChannel(api, 'alice', true);
     await waitBlockNumber(2);
     await depositNativeToken(api, 'alice', channelId4, 2000);
@@ -149,17 +147,14 @@ async function main(): Promise<void> {
     }
     await waitBlockNumber(5);
 
-    console.log("\n");
-    console.log("========================= Intend Settle =====================================================")
+    console.log("\n", "=================================== Intend Settle ============================================")
     await intendSettle(api, 'alice', signedSimplexStateArray1);
     await waitBlockNumber(3);
     await emitPendingPayOutMap(api, channelId4);
     await emitTransferOutMap(api, channelId4);
     await emitLastPayResolveDeadlineMap(api, channelId4);
 
-
-    console.log("\n")
-    console.log("============================ Clear Pays ======================================================")
+    console.log("\n", "==================================== Clear Pays ================================================")
     for (let i = 0; i < 2; i++) {
         if (i === 0) {
             await clearPays(
@@ -185,9 +180,26 @@ async function main(): Promise<void> {
     await emitPendingPayOutMap(api, channelId4);
     await waitBlockNumber(3);
 
-    console.log("\n");
-    console.log("================================= Snapshot States ===============================")
-    const channelId5 = await openChannel(api, 'bob', false, 1000, true, 1000002);
+    console.log("\n", "========== Intend Settle with 0 payments (null state) ============")
+    const channelId5 = await openChannel(api, 'bob', false, 1000, true, 100004);
+    await waitBlockNumber(2);
+    let singleSignedNullState = await getSignedSimplexStateArray(
+        api,
+        [channelId5],
+        [0],
+        undefined,
+        undefined,
+        undefined,
+        [0],
+        'bob'
+    );
+    await intendSettle(api, 'bob', singleSignedNullState);
+    await waitBlockNumber(3);
+    await emitPeersMigrationInfo(api, channelId5);
+    await waitBlockNumber(3);
+
+    console.log("\n", "====== Snapshot States, Intend Withdraw and Confirm Withdraw =====")
+    const channelId6 = await openChannel(api, 'bob', false, 1000, true, 1000002);
     await waitBlockNumber(2);
     const payIdListInfo = await getPayIdListInfo(
         api,
@@ -195,7 +207,7 @@ async function main(): Promise<void> {
     );
     let signedSimplexStateArray2 = await getSignedSimplexStateArray(
         api,
-        [channelId5],
+        [channelId6],
         [5],
         [100],
         [999999],
@@ -204,9 +216,31 @@ async function main(): Promise<void> {
     );
     await snapshotStates(api, 'alice', signedSimplexStateArray2);
     await waitBlockNumber(2);
-    await emitChannelInfo(api, channelId5);
-    await waitBlockNumber(3);
+    await emitChannelInfo(api, channelId6);
 
+    await intendWithdraw(api, 'alice', channelId6, 1000, true);
+    await waitBlockNumber(10);
+
+    await confirmWithdraw(api, 'alice', channelId6);
+    await waitBlockNumber(2);
+
+    await emitPeersMigrationInfo(api, channelId6);
+    await waitBlockNumber(2);
+
+    console.log("\n", "=============== Intend Settle with a same seqNum as snapshot =======================")
+    for (let i = 0; i < 2; i++) {
+        let payRequest = await getResolvePayByCondtionsRequest(api, payIdListInfo.condPayArray[0][i]);
+        await resolvePaymentByConditions(api, 'alice', payRequest);
+        await waitBlockNumber(2);
+    }
+    await waitBlockNumber(6);
+
+    await intendSettle(api, 'alice',signedSimplexStateArray2);
+    await waitBlockNumber(3);
+    await emitChannelInfo(api, channelId6);
+    await emitPeersMigrationInfo(api, channelId6);
+
+    await waitBlockNumber(3);
     process.exit(0);
 }
 

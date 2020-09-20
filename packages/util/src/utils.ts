@@ -217,9 +217,9 @@ export async function getSignedSimplexStateArray(
     api: ApiRx,
     channelIds: string[],
     seqNums = [1, 1],
-    transferAmounts: number[],
-    lastPayResolveDeadlines: number[],
-    payIdLists: PayIdList[],
+    transferAmounts: number[] | undefined,
+    lastPayResolveDeadlines: number[] | undefined,
+    payIdLists: PayIdList[] | undefined,
     totalPendingAmounts = [0, 0],
     signers?: string | undefined,
 ): Promise<any> {
@@ -818,7 +818,7 @@ async function getSingleSignedSimplexState(
     let signer;
     if (_signer === 'alice' || _signer === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
         signer = alice;
-    } else {
+    } else if (_signer === 'bob' || _signer === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
         signer = bob;
     }
     let _simplexPaymentChannel = {

@@ -36,25 +36,21 @@ async function main(): Promise<void> {
     await waitBlockNumber(1);
     await emitAllowance(api, 'alice', 'celerLedgerId');
 
-    console.log("\n");
-    console.log("======================== withdraw from pool ===================================")
+    console.log("\n", "======================== withdraw from pool ===================================")
     await withdrawFromPool(api, 'alice', 1000);
     await waitBlockNumber(1);
     await emitPoolBalance(api, 'alice');
 
-    console.log("\n");
-    console.log("=================== transfer from alice to charlie ======================================")
+    console.log("\n", "=================== transfer from alice to charlie ======================================")
     await approve(api, 'alice', 'bob', 10000);
     await waitBlockNumber(1);
 
-    console.log("\n");
     await transferFrom(api, 'bob', 'alice', 'charlie', 2000);
     await waitBlockNumber(1);
     await emitPoolBalance(api, 'alice');
     await emitAllowance(api, 'alice', 'bob');
 
-    console.log("\n");
-    console.log("====================== transfer to celer wallet =======================================");
+    console.log("\n", "====================== transfer to celer wallet =======================================");
     const channelId = await openChannel(api, 'alice', true, 0);
     await waitBlockNumber(1);
 

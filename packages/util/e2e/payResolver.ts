@@ -39,8 +39,7 @@ async function main() {
     await resolvePaymentByConditions(api, 'alice', payRequest);
     await waitBlockNumber(2);
 
-    console.log("\n");
-    console.log("=== Resolve Payment By Conditions when the logic is BOOLEAN_AND and some conditions are false ====")
+    console.log("\n", "=== Resolve Payment By Conditions when the logic is BOOLEAN_AND and some conditions are false ====")
     conditions = await getConditions(api, 1);
     condPay = await getConditionalPay(
         api,
@@ -60,8 +59,7 @@ async function main() {
     await resolvePaymentByConditions(api, 'alice', payRequest);
     await waitBlockNumber(2);
 
-    console.log("\n");
-    console.log("=== Resolve Payment By Conditions when the logic is BOOLEAN_OR and some conditions are true ===")
+    console.log("\n", "=== Resolve Payment By Conditions when the logic is BOOLEAN_OR and some conditions are true ===")
     conditions = await getConditions(api, 2);
     condPay = await getConditionalPay(
         api,
@@ -81,8 +79,7 @@ async function main() {
     await resolvePaymentByConditions(api, 'alice', payRequest);
     await waitBlockNumber(2);
 
-    console.log("\n");
-    console.log("=== Resolve Payment By Conditions when the logic is BOOLEAN_OR and all conditions are false ===")
+    console.log("\n", "=== Resolve Payment By Conditions when the logic is BOOLEAN_OR and all conditions are false ===")
     conditions = await getConditions(api, 0);
     condPay = await getConditionalPay(
         api,
@@ -102,8 +99,7 @@ async function main() {
     await resolvePaymentByConditions(api, 'alice', payRequest);
     await waitBlockNumber(2);
 
-    console.log("\n");
-    console.log("=============== Resolve Payment By Vouched Result ========================")
+    console.log("\n", "=============== Resolve Payment By Vouched Result ========================")
     conditions = await getConditions(api, 5);
     let sharedPay = await getConditionalPay(
         api,
@@ -122,8 +118,7 @@ async function main() {
     await resolvePaymentByVouchedResult(api, 'alice', vouchedPayResult);
     await waitBlockNumber(2);
 
-    console.log("\n");
-    console.log("====== Resolve Payment By Vouched Result when the new result is larger ===================")
+    console.log("\n", "====== Resolve Payment By Vouched Result when the new result is larger ===================")
     vouchedPayResult = await getVouchedCondPayResult(
         api,
         sharedPay,
@@ -132,8 +127,7 @@ async function main() {
     await resolvePaymentByVouchedResult(api, 'alice', vouchedPayResult);
     await waitBlockNumber(2);
 
-    console.log("\n");
-    console.log("=== Resolve Payment By Conditions when the logic is NUMERIC_ADD  =======")
+    console.log("\n", "=== Resolve Payment By Conditions when the logic is NUMERIC_ADD  =======")
     conditions = await getConditions(api, 5);
     condPay = await getConditionalPay(
         api,
@@ -153,8 +147,7 @@ async function main() {
     await resolvePaymentByConditions(api, 'alice', payRequest);
     await waitBlockNumber(2);
 
-    console.log("\n");
-    console.log("=== Resolve Payment By Conditions when the logic is NUMERIC_MAX  =======")
+    console.log("\n", "=== Resolve Payment By Conditions when the logic is NUMERIC_MAX  =======")
     conditions = await getConditions(api, 5);
     condPay = await getConditionalPay(
         api,
@@ -174,8 +167,7 @@ async function main() {
     await resolvePaymentByConditions(api, 'alice', payRequest);
     await waitBlockNumber(2);
 
-    console.log("\n");
-    console.log("=== Resolve Payment By Conditions when the logic is NUMERIC_MIN  =======")
+    console.log("\n", "=== Resolve Payment By Conditions when the logic is NUMERIC_MIN  =======")
     conditions = await getConditions(api, 5);
     condPay = await getConditionalPay(
         api,
@@ -195,8 +187,7 @@ async function main() {
     await resolvePaymentByConditions(api, 'alice', payRequest);
     await waitBlockNumber(2);
 
-    console.log("\n");
-    console.log("=== ResolvePayment By Condition without conditions ===")
+    console.log("\n", "=== ResolvePayment By Condition without conditions ===")
     conditions = await getConditions(api, 6);
     condPay = await getConditionalPay(
         api,
