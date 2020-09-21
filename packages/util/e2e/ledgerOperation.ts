@@ -16,13 +16,14 @@ import {
     emitWalletInfo,
     resolvePaymentByConditions,
     emitPendingPayOutMap,
-    depositNativeToken,
     intendSettle,
     emitLastPayResolveDeadlineMap,
     clearPays,
     emitBalanceMap,
     emitTotalBalance,
-    snapshotStates
+    snapshotStates,
+    emitSettleFinalizedTime,
+    confirmSettle
 } from "../src/funcs";
 import {
     waitBlockNumber,
@@ -121,9 +122,9 @@ async function main(): Promise<void> {
     console.log("\n", "============================== Resolve Payment By Conditions ==========================================")
     const channelId4 = await openChannel(api, 'alice', true);
     await waitBlockNumber(2);
-    await depositNativeToken(api, 'alice', channelId4, 2000);
+    await deposit(api, 'alice', channelId4, 'alice', 2000, 0);
     await waitBlockNumber(2);
-    await depositNativeToken(api, 'bob', channelId4, 1000);
+    await deposit(api, 'bob', channelId4, 'bob', 2000, 0);
     await waitBlockNumber(2);
 
     const globalResult = await getCoSignedIntendSettle(
@@ -146,38 +147,45 @@ async function main(): Promise<void> {
         }
     }
     await waitBlockNumber(5);
+    await emitPeersMigrationInfo(api, channelId4);
 
     console.log("\n", "=================================== Intend Settle ============================================")
     await intendSettle(api, 'alice', signedSimplexStateArray1);
     await waitBlockNumber(3);
+    await emitPeersMigrationInfo(api, channelId4);
     await emitPendingPayOutMap(api, channelId4);
     await emitTransferOutMap(api, channelId4);
     await emitLastPayResolveDeadlineMap(api, channelId4);
 
     console.log("\n", "==================================== Clear Pays ================================================")
-    for (let i = 0; i < 2; i++) {
-        if (i === 0) {
-            await clearPays(
-                api,
-                'bob',
-                channelId4,
-                'bob',
-                globalResult.payIdListArrays[i][1]
-            );
-        } else {
-            await clearPays(
-                api,
-                'alice',
-                channelId4,
-                'alice',
-                globalResult.payIdListArrays[i][1]
-            );
-        }
-        await waitBlockNumber(2);
-    }
+    await clearPays(
+        api,
+        'bob',
+        channelId4,
+        'bob',
+        globalResult.payIdListArrays[0][1]
+    );
+    await waitBlockNumber(2);
+
+    await clearPays(
+        api,
+        'alice',
+        channelId4,
+        'alice',
+        globalResult.payIdListArrays[1][1]
+    );
+    await waitBlockNumber(2);
+    
     await emitChannelInfo(api, channelId4);
     await emitPeersMigrationInfo(api, channelId4);
     await emitPendingPayOutMap(api, channelId4);
+    await waitBlockNumber(3);
+
+    console.log("========================== Confirm Settle ============================")
+    await emitSettleFinalizedTime(api, channelId4);
+    await confirmSettle(api, 'alice', channelId4);
+    await emitChannelInfo(api, channelId4);
+    await emitChannelInfo(api, channelId4);
     await waitBlockNumber(3);
 
     console.log("\n", "========== Intend Settle with 0 payments (null state) ============")
