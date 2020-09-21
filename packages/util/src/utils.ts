@@ -152,11 +152,15 @@ export async function getCooperativeWithdrawRequest(
     isZeroHash: boolean,
     recipientChannelId?: string,
 ): Promise<any>{
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+    const bob = keyring.addFromUri('//Bob');
+
     let receiverAccount;
     if (_receiverAccount === 'alice' || _receiverAccount === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        receiverAccount = api.registry.createType("AccountId", ALICE);   
-    } else {
-        receiverAccount = api.registry.createType("AccountId", BOB);
+        receiverAccount = api.registry.createType("AccountId", alice.address);   
+    } else if (_receiverAccount === 'bob' || _receiverAccount === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+        receiverAccount = api.registry.createType("AccountId", bob.address);
     }
 
     let _accountAmtPair = {
@@ -213,9 +217,9 @@ export async function getSignedSimplexStateArray(
     api: ApiRx,
     channelIds: string[],
     seqNums = [1, 1],
-    transferAmounts: number[],
-    lastPayResolveDeadlines: number[],
-    payIdLists: PayIdList[],
+    transferAmounts: number[] | undefined,
+    lastPayResolveDeadlines: number[] | undefined,
+    payIdLists: PayIdList[] | undefined,
     totalPendingAmounts = [0, 0],
     signers?: string | undefined,
 ): Promise<any> {
@@ -814,7 +818,7 @@ async function getSingleSignedSimplexState(
     let signer;
     if (_signer === 'alice' || _signer === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
         signer = alice;
-    } else {
+    } else if (_signer === 'bob' || _signer === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
         signer = bob;
     }
     let _simplexPaymentChannel = {
