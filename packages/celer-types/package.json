@@ -1,6 +1,6 @@
 {
   "name": "celer-substrate-types",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Celer substrate node type definitions",
   "main": "src/interfaces/index.js",
   "publishConfig": {
@@ -22,6 +22,9 @@
     "typescript": "^3.8.2",
     "rxjs": "^6.6.2"
   },
-  "author": "Celer",
+  "author": {
+    "name": "Celer",
+    "url": "https://github.com/celer-network/celer-substrate-client"
+  },
   "license": "MIT"
 }

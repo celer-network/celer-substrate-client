@@ -54,8 +54,8 @@ export async function getOpenChannelRequest(
     api: ApiRx,
     balanceLimitsEnabled: boolean,
     balanceLimits: number,
+    channelPeerBalance0: number,
     channelPeerBalance1: number,
-    channelPeerBalance2: number,
     openDeadline: number, 
     disputeTimeout: number,
     zeroTotalDeposit: boolean,
@@ -94,12 +94,12 @@ export async function getOpenChannelRequest(
     } else {
         let _accountAmtPair1 = {
             account: new Option(api.registry, "AccountId", channelPeers[0]),
-            amt: api.registry.createType("Balance", channelPeerBalance1),
+            amt: api.registry.createType("Balance", channelPeerBalance0),
         };
         accountAmtPair1 = api.registry.createType("AccountAmtPair", _accountAmtPair1);
         let _accountAmtPair2 = {
             account: new Option(api.registry, "AccountId", channelPeers[1]),
-            amt: api.registry.createType("Balance", channelPeerBalance2),
+            amt: api.registry.createType("Balance", channelPeerBalance1),
         };
         accountAmtPair2 = api.registry.createType("AccountAmtPair", _accountAmtPair2);
         tokenDistribution = {

@@ -47,6 +47,7 @@ async function main(): Promise<void> {
     await approve(api, 'alice', 'celerLedgerId', 20000);
     await waitBlockNumber(2);
 
+    /** 
     const channelId1 = await openChannel(api, 'bob', false, 1000);
     await waitBlockNumber(2);
     await deposit(api, 'alice', channelId1, 'bob', 2000, 0);
@@ -106,7 +107,7 @@ async function main(): Promise<void> {
 
     await confirmWithdraw(api, 'alice', channelId2);
     await waitBlockNumber(2);
-    await emitTotalBalance(api, channelId3);
+    await emitBalanceMap(api, channelId3);
     await emitBalanceMap(api, channelId2);
     await emitWalletInfo(api, channelId3);
     await emitWalletInfo(api, channelId2)
@@ -114,10 +115,11 @@ async function main(): Promise<void> {
     console.log("\n", "======================== cooperative withdraw to another channel ============================")
     await cooperativeWithdraw(api, 'bob', channelId2, 1, 1000, 'bob', 999999, false, channelId3);
     await waitBlockNumber(3);
-    await emitTotalBalance(api, channelId3);
     await emitBalanceMap(api, channelId3);
+    await emitBalanceMap(api, channelId2);
     await emitWalletInfo(api, channelId2);
     await emitWalletInfo(api, channelId3);
+    */
 
     console.log("\n", "============================== Resolve Payment By Conditions ==========================================")
     const channelId4 = await openChannel(api, 'alice', true);
@@ -147,14 +149,11 @@ async function main(): Promise<void> {
         }
     }
     await waitBlockNumber(5);
-    await emitPeersMigrationInfo(api, channelId4);
 
     console.log("\n", "=================================== Intend Settle ============================================")
     await intendSettle(api, 'alice', signedSimplexStateArray1);
     await waitBlockNumber(3);
     await emitPeersMigrationInfo(api, channelId4);
-    await emitPendingPayOutMap(api, channelId4);
-    await emitTransferOutMap(api, channelId4);
     await emitLastPayResolveDeadlineMap(api, channelId4);
 
     console.log("\n", "==================================== Clear Pays ================================================")
@@ -178,13 +177,12 @@ async function main(): Promise<void> {
     
     await emitChannelInfo(api, channelId4);
     await emitPeersMigrationInfo(api, channelId4);
-    await emitPendingPayOutMap(api, channelId4);
     await waitBlockNumber(3);
 
     console.log("========================== Confirm Settle ============================")
     await emitSettleFinalizedTime(api, channelId4);
     await confirmSettle(api, 'alice', channelId4);
-    await emitChannelInfo(api, channelId4);
+    await waitBlockNumber(3);
     await emitChannelInfo(api, channelId4);
     await waitBlockNumber(3);
 
