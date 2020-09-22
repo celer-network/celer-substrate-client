@@ -11,7 +11,6 @@ import {
     deposit,
     confirmWithdraw,
     cooperativeWithdraw,
-    depositNativeToken,
     withdrawFromPool,
     transferToCelerWallet,
     increaseAllowance,
@@ -303,18 +302,6 @@ program
         );
         await cooperativeSettle(api, options.caller, cooperativeSettleRequest);
         await  waitBlockNumber(3);
-        process.exit(0);
-    });
-
-program
-    .command('depositNativeToken')
-    .option('-c, --caller <caller>', 'caller')
-    .option('-i, --walletlId <walletId>', 'Id of the wallet')
-    .option('-v, --msgValue <msgValue>', 'amount of funds to deposit from caller') 
-    .action(async options => {
-        const api = await connect();
-        await depositNativeToken(api, options.caller, options.walletlId, options.msgValue);
-        await waitBlockNumber(3);
         process.exit(0);
     });
 

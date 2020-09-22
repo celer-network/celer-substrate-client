@@ -144,8 +144,8 @@ export async function openChannel(
     msgValue = 0,
     balanceLimitsEnabled = true,
     balanceLimits = 1000000,
-    channelPeerBalance1 = 1000,
-    channelPeerBalance2 = 2000,
+    channelPeerBalance0 = 1000,
+    channelPeerBalance1 = 2000,
     openDeadline = 999999, 
     disputeTimeout = 10,
     msgValueReceiver = 0,
@@ -165,8 +165,8 @@ export async function openChannel(
         api,
         balanceLimitsEnabled,
         balanceLimits,
+        channelPeerBalance0,
         channelPeerBalance1,
-        channelPeerBalance2,
         openDeadline,
         disputeTimeout,
         zeroTotalDeposit,
@@ -736,47 +736,6 @@ export async function cooperativeSettle(
                 console.log('\t', `balances.Transfer [from(AccountId), to(AccountId), value(Balance)]`);
                 console.log('\t', 'celerPayModule.WithdrawFromWallet [walletId(Hash), receiver(AccountId), amount(Balance)]')
                 console.log('\t', 'celerPayModule.CooperativeSettle [channelId(Hash), settleBalances(Vec<Balance>)]\n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    const [error] = data;
-                    if (error.isModule) {
-                        const { documentation, name, section } = api.registry.findMetaError(error.asModule);
-                        console.log(`${section}: error message is ${name}, ${documentation}` );
-                    } else {
-                        console.log('\t', `${section}.${method}`, data.toString());
-                    }
-                });
-            } 
-        });
-}
-
-export async function depositNativeToken(
-    api: ApiRx,
-    _caller: string,
-    walletId: string,
-    msgValue: number,
-) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
-    
-    api.tx.celerPayModule
-        .depositNativeToken(walletId, api.registry.createType("Balance", msgValue))
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
-            console.log('Deposit token to wallet:', status.type);
-            if (status.isInBlock) {
-                console.log('Included at block hash', status.asInBlock.toHex());
-                console.log('Events: ');
-                console.log('\t', `balances.Transfer [from(AccountId), to(AccountId), value(Balance)]`);
-                console.log('\t', 'celerPayModule.DepositToWallet(channelId(Hash), receiver(AccountId), amount(Balance)]');
 
                 events.forEach(({ event: { data, method, section}}) => {
                     const [error] = data;
@@ -1450,8 +1409,8 @@ export async function emitTransferOutMap(
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
 
-    console.log("Emit state seq_num map of a duplex channel");
-    console.log('\t', 'celerPayModule.StateSeqNumMap [channelPeers(Vec<AccountId>), seqNums(Vec<u128>)]');
+    console.log("Emit transfer_out map of a duplex channel");
+    console.log('\t', 'celerPayModule.TranferOutMap [channelPeers(Vec<AccountId>), transferOuts(Vec<BalanceOf<T>)]');
     api.tx.celerPayModule
         .emitTransferOutMap(channelId)
         .signAndSend(alice)

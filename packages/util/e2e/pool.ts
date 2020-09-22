@@ -8,9 +8,6 @@ import {
     decreaseAllowance,
     withdrawFromPool,
     transferFrom,
-    openChannel,
-    transferToCelerWallet,
-    emitWalletInfo,
 } from "../src/funcs";
 import {
     waitBlockNumber
@@ -49,16 +46,6 @@ async function main(): Promise<void> {
     await waitBlockNumber(1);
     await emitPoolBalance(api, 'alice');
     await emitAllowance(api, 'alice', 'bob');
-
-    console.log("\n", "====================== transfer to celer wallet =======================================");
-    const channelId = await openChannel(api, 'alice', true, 0);
-    await waitBlockNumber(1);
-
-    await transferToCelerWallet(api, 'bob', 'alice', channelId, 2000);
-    await waitBlockNumber(1);
-    await emitPoolBalance(api, 'alice');
-    await emitWalletInfo(api, channelId);
-    await waitBlockNumber(3);
 
     process.exit(0);
 }

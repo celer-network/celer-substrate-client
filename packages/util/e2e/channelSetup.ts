@@ -9,7 +9,6 @@ import {
     emitChannelInfo,
     emitBalanceMap,
     emitPeersMigrationInfo,
-    depositNativeToken,
     emitWalletInfo,
     depositInBatch,
     deposit,
@@ -64,11 +63,6 @@ async function main(): Promise<void> {
     await emitWalletInfo(api, channelId2);
     await emitPeersMigrationInfo(api, channelId2);
 
-    await depositNativeToken(api, 'alice', channelId1, 1000);
-    await waitBlockNumber(2);
-    await emitWalletInfo(api, channelId1);
-    await emitPeersMigrationInfo(api, channelId1);
-    await waitBlockNumber(3);
     process.exit(0);
 }
 
