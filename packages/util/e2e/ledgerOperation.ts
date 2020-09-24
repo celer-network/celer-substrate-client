@@ -47,7 +47,6 @@ async function main(): Promise<void> {
     await approve(api, 'alice', 'celerLedgerId', 20000);
     await waitBlockNumber(2);
 
-    /** 
     const channelId1 = await openChannel(api, 'bob', false, 1000);
     await waitBlockNumber(2);
     await deposit(api, 'alice', channelId1, 'bob', 2000, 0);
@@ -119,7 +118,6 @@ async function main(): Promise<void> {
     await emitBalanceMap(api, channelId2);
     await emitWalletInfo(api, channelId2);
     await emitWalletInfo(api, channelId3);
-    */
 
     console.log("\n", "============================== Resolve Payment By Conditions ==========================================")
     const channelId4 = await openChannel(api, 'alice', true);
