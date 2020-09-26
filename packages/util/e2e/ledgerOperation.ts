@@ -11,16 +11,13 @@ import {
     vetoWithdraw,
     cooperativeWithdraw,
     cooperativeSettle,
-    emitTransferOutMap,
     emitChannelInfo,
     emitWalletInfo,
     resolvePaymentByConditions,
-    emitPendingPayOutMap,
     intendSettle,
     emitLastPayResolveDeadlineMap,
     clearPays,
     emitBalanceMap,
-    emitTotalBalance,
     snapshotStates,
     emitSettleFinalizedTime,
     confirmSettle
@@ -207,7 +204,7 @@ async function main(): Promise<void> {
     await waitBlockNumber(2);
     const payIdListInfo = await getPayIdListInfo(
         api,
-        [[10, 20]]
+        [[11, 22]]
     );
     let signedSimplexStateArray2 = await getSignedSimplexStateArray(
         api,
