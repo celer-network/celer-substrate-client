@@ -127,10 +127,10 @@ program
 program
     .command('depositInBatch')
     .option('-c, --caller <caller>', 'caller')
-    .option('-i, --channelIds <channelIds>', 'Ids list of channel', (value) => { return (value || []).split(","); }, [])
-    .option('-r, --receivers <receivers>', 'addresses list of receiver', (value) => { return (value || []).split(","); }, [])
-    .option('-a, --msgValues <msgValues>', 'msgValues list of funds to deposit from caller', (value) => { return (value || []).split(","); }, [])
-    .option('-f, --transferFromAmounts <transferFromAmounts>', 'amounts list of funds to be transfeed from Pool', (value) => { return (value || []).split(","); }, [])
+    .option('-i, --channelIds <channelIds>', 'Ids list of channel', (value) => { return (value).split(","); }, [])
+    .option('-r, --receivers <receivers>', 'addresses list of receiver', (value) => { return (value).split(","); }, [])
+    .option('-a, --msgValues <msgValues>', 'msgValues list of funds to deposit from caller', (value) => { return (value).split(","); }, [])
+    .option('-f, --transferFromAmounts <transferFromAmounts>', 'amounts list of funds to be transfeed from Pool', (value) => { return (value).split(","); }, [])
     .action(async options => {
         const api = await connect();
         await depositInBatch(
@@ -148,7 +148,7 @@ program
 program
     .command('snapshotStates')
     .option('-c, --caller <caller>', 'caller')
-    .option('-a, --payAmounts <payAmounts>', 'pay amounts list of linked pay id list', (value) => { return (value || []).split(","); }, [])
+    .option('-a, --payAmounts <payAmounts>', 'pay amounts list of linked pay id list', (value) => { return (value).split(","); }, [])
     .option('-i, --channelId <channelId>', 'Id of channel')
     .option('-n, --seqNum <seqNum>', 'sequence number')
     .option('-f, --transferFromAmount <transferFromAmount>', 'amounts of funds to be transfered from Pool')
@@ -225,8 +225,8 @@ program
     .command('intendSettle')
     .option('-c, --caller <caller>', 'caller')
     .option('-i, --channelId <channelId>', 'Id of channel')
-    .option('-n, --seqNums <seqNums>', 'sequence number list', (value) => { return (value || []).split(","); }, [])
-    .option('-a, --transferFromAmounts <transferFromAmounts>',  'amounts list of funds to transfered from Pool', (value) => { return (value || []).split(","); }, [])
+    .option('-n, --seqNums <seqNums>', 'sequence number list', (value) => { return (value).split(","); }, [])
+    .option('-a, --transferAmounts <transferAmounts>',  'amount of token already transferred', (value) => { return (value).split(","); }, [])
     .action(async options => {
         const api = await connect();
         let globalResult = await getCoSignedIntendSettle(
@@ -248,8 +248,8 @@ program
     .command('clearPays')
     .option('-c, --caller <caller>', 'caller')
     .option('-i, --channelId <channelId>', 'Id of the channel')
-    .option('-n, --seqNums <seqNums>', 'sequence number list', (value) => { return (value || []).split(","); }, [])
-    .option('-a, --transferFromAmounts <transferFromAmounts>', 'amounts list of funds to transfered from Pool', (value) => { return (value || []).split(","); }, [])
+    .option('-n, --seqNums <seqNums>', 'sequence number list', (value) => { return (value).split(","); }, [])
+    .option('-a, --transferFromAmounts <transferFromAmounts>', 'amounts list of funds to transfered from Pool', (value) => { return (value).split(","); }, [])
     .option('-f, --peerFrom <peerFrom>', 'address of the peer who owns and updates the simplex state')
     .option('-p, --peerIndex <peerIndex>', 'peerIndex of linked pay id list')
     .option('-l, --listIndex <listIndex>', 'listIndex of linked pay id list')
@@ -291,7 +291,7 @@ program
     .option('-c, --caller <caller>', 'caller')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .option('-n, --seqNum <seqNum>', 'sequence number')
-    .option('-a, --settleAmounts <settleAmounts>', 'cooperative settle amounts list', (value) => { return (value || []).split(","); }, [])
+    .option('-a, --settleAmounts <settleAmounts>', 'cooperative settle amounts list', (value) => { return (value).split(","); }, [])
     .action(async options => {
         const api = await connect();
         let cooperativeSettleRequest = await getCooperativeSettleRequest(
@@ -400,8 +400,8 @@ program
     .command('resolvePaymentByConditions')
     .option('-c, --caller <caller>', 'caller')
     .option('-i, --channelId <channelId>', 'Id of the channel')
-    .option('-n, --seqNums <seqNums>', 'sequence number list', (value) => { return (value || []).split(","); }, [])
-    .option('-a, --transferFromAmounts <transferFromAmounts>',  'amounts of funds to be transfered from Pool', (value) => { return (value || []).split(","); }, [])
+    .option('-n, --seqNums <seqNums>', 'sequence number list', (value) => { return (value).split(","); }, [])
+    .option('-a, --transferFromAmounts <transferFromAmounts>',  'amounts of funds to be transfered from Pool', (value) => { return (value).split(","); }, [])
     .option('-p, --peerIndex <peerIndex>', 'peerIndex of linked pay id list')
     .option('-l, --listIndex <listIndex>', 'listIndex of linked pay id list')
     .option('-x, --payIndex <payIndex>', 'payIndex of linked pay id list')
