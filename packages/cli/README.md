@@ -1,18 +1,35 @@
-## Run
-1. Install dependency
+## Requirements
+- Install docker
+- Install Node 10
+- Install Yarn >= 1.10.1
+
+## Install and Build
+1. Install celer-substrate-demo repository
 ```
+git clone git@github.com:celer-network/celer-substrate-client.git
+```
+2. Go to cli file
+``` 
+cd ./packages/cli
+```
+3. Install dependency
+``` 
 npm install
 ```
-2. Build
+4. Build
 ```
 yarn build
 ```
-3. Run Celer substrate local testnet. Repository is [here](https://github.com/celer-network/cChannel-substrate)
+
+
+## Run
+1. Run Celer substrate local testnet. Repository is [here](https://github.com/celer-network/cChannel-substrate)
 ```
 docker run -p 9944:9944 -p 9615:9615 thashimoto19980924/celer-network:latest
 ```
-4. Send transaction
-### Open Channel
+
+2. Send transaction
+### [Open Channel](https://www.celer.network/docs/celercore/channel/pay_contracts.html#open-channel)
 Open a state channle through auth withdraw message
 #### Parameter
 |Name|Required|Description|
@@ -22,9 +39,9 @@ Open a state channle through auth withdraw message
 |msgValue|Yes|amount of funds to deposit from caller|
 
 ```
-ex1)
+ex1) open channel with [bob's deposit, alice's deposit] = [1000, 2000]
 yarn start openChannel --caller 'bob' --msgValue 1000
-ex2)
+ex2) open channel with total deposit amount is zero
 yarn start openChannel --caller 'alice' --zeroTotalDeposit --msgValue 0
 ```
 ### Set Balance Limits
@@ -61,7 +78,7 @@ Disable balance limits
 yarn start disabelBalanceLimits --caller 'bob' --channelId "0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30"
 ```
 
-### Deposit
+### [Deposit](https://www.celer.network/docs/celercore/channel/pay_contracts.html#deposit)
 Deposit funds into the channel
 #### Parameter
 |Name|Required|Description|
@@ -103,7 +120,7 @@ Store signed simplex states on-chain as checkpoints
 yarn start snapshotStates --caller 'alice' --payAmounts 10,20 --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30' --seqNum 5 --transferAmounts 100 
 ```
 
-### Intend Withdraw
+### [Intend Withdraw](https://www.celer.network/docs/celercore/channel/pay_contracts.html#unilateral-withdraw)
 Intend to withdraw funds from channel
 #### Parameter
 |Name|Required|Description|
@@ -116,7 +133,7 @@ Intend to withdraw funds from channel
 yarn start intendWithdraw --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'  --amount 1000
 ```
 
-### Confrim Withdraw
+### [Confrim Withdraw](https://www.celer.network/docs/celercore/channel/pay_contracts.html#unilateral-withdraw)
 Confirm channel withdrawal
 #### Parameter
 |Name|Required|Description|
@@ -127,7 +144,7 @@ Confirm channel withdrawal
 yarn start confirmWithdraw --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Veto Withdraw
+### [Veto Withdraw](https://www.celer.network/docs/celercore/channel/pay_contracts.html#unilateral-withdraw)
 Veto current withdrawal intent
 #### Parameter
 |Name|Required|Description|
@@ -137,7 +154,7 @@ Veto current withdrawal intent
 ```
 yarn start vetoWithdraw --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
-### Cooperative Withdraw
+### [Cooperative Withdraw](https://www.celer.network/docs/celercore/channel/pay_contracts.html#cooperative-withdraw)
 Cooperatively withdraw specfic amount of balance
 #### Parameter
 |Name|Required|Description|
@@ -151,7 +168,7 @@ Cooperatively withdraw specfic amount of balance
 yarn start cooperativeWithdraw --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'  --seqNum 1 --amount 1000 --receiverAccount 'alice'
 ```
 
-### Intend Settle
+### [Intend Settle](https://www.celer.network/docs/celercore/channel/pay_contracts.html#unilateral-settle)
 Intend to settle channel with an array of signed simplex states
 #### Parameter
 |Name|Required|Description|
@@ -180,7 +197,7 @@ Read payment results and add results to corresponding simplex payment channel
 yarn start clearPays --caller 'bob' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30' --seqNums 1,1 --transferAmounts 100,200 --peerFrom 'bob' --peerIndex 0 --listIndex 1
 ```
 
-### Confirm Settle
+### [Confirm Settle](https://www.celer.network/docs/celercore/channel/pay_contracts.html#unilateral-settle)
 Confirm channel settlement
 #### Parameter
 |Name|Required|Description|
@@ -191,7 +208,7 @@ Confirm channel settlement
 yarn start confirmSettle --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Cooperative Settle
+### [Cooperative Settle](https://www.celer.network/docs/celercore/channel/pay_contracts.html#cooperative-settle)
 Cooperatively settle the channel
 #### Parameter
 |Name|Required|Description|
@@ -276,7 +293,7 @@ Decrease the amount of native token that an owner allowed to a spender
 yarn start decreaseAllowance --caller 'alice' --spender 'celerLedgerId' --subtractedValue 1000
 ```
 
-### Resolve Payment By 
+### [Resolve Payment By Conditions](https://www.celer.network/docs/celercore/channel/pay_contracts.html#resolve-payment-by-conditions)
 Resolve a payment by onchain getting its conditons outcomes
 #### Parameter
 |Name|Required|Description|
@@ -293,7 +310,7 @@ Resolve a payment by onchain getting its conditons outcomes
 yarn start resolvePaymentByConditions --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30' --seqNums 1,1 --transferAmounts 100,200 --peerIndex 0 --listIndex 0 --payIndex 0
 ```
 
-### Resolve Payment By Vouched Result
+### [Resolve Payment By Vouched Result](https://www.celer.network/docs/celercore/channel/pay_contracts.html#resolve-payment-by-vouched-result)
 Resolve a payment by submitting an offchain vouched result
 #### Parameter
 |Name|Required|Description|
