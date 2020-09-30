@@ -37,12 +37,13 @@ Open a state channle through auth withdraw message
 |caller|Yes|caller of dispatchable function|
 |zeroTotalDeposit|No|amount of funds to deposit is zero|
 |msgValue|Yes|amount of funds to deposit from caller|
+|peersDeposit|Yes|[bob's deposit amount, alice's deposit amount]|
 
 ```
-ex1) open channel with [bob's deposit, alice's deposit] = [1000, 2000]
-yarn start openChannel --caller 'bob' --msgValue 1000
+ex1) open channel with [bob's deposit amount, alice's deposit amount] = [1000, 2000]
+yarn start openChannel --caller 'bob' --msgValue 1000 --peersDeposit 1000,2000
 ex2) open channel with total deposit amount is zero
-yarn start openChannel --caller 'alice' --zeroTotalDeposit --msgValue 0
+yarn start openChannel --caller 'alice' --zeroTotalDeposit --msgValue 0 --peersDeposit 0,0
 ```
 ### Set Balance Limits
 Set the balance limits of channel
