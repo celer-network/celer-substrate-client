@@ -4,7 +4,9 @@ import {
     getCooperativeWithdrawRequest, 
     getOpenChannelRequest, 
     waitBlockNumber,
-    caluculateChannelId
+    caluculateChannelId,
+    getCaller,
+    getReceiver
 } from './utils';
 import { cryptoWaitReady, blake2AsU8a } from '@polkadot/util-crypto';
 import { 
@@ -16,25 +18,13 @@ import {
 } from 'celer-substrate-types';
 import { u8aToHex } from "@polkadot/util";
 
-const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
-const BOB = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';
-
 export async function setBalanceLimits(
     api: ApiRx,
     _caller: string,
     channelId: string,
     limits: number,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
     
     api.tx.celerPayModule
         .setBalanceLimits(channelId, api.registry.createType("Balance", limits))
@@ -64,16 +54,7 @@ export async function disableBalanceLimits(
     _caller: string,
     channelId: string,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     api.tx.celerPayModule
         .disableBalanceLimits(channelId)
@@ -103,16 +84,7 @@ export async function enableBalanceLimits(
     _caller: string,
     channelId: string,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     api.tx.celerPayModule
         .enableBalanceLimits(channelId)
@@ -150,17 +122,8 @@ export async function openChannel(
     disputeTimeout = 10,
     msgValueReceiver = 0,
 ): Promise<string> {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
-
+    let caller = await getCaller(_caller);
+  
     let openChannelRequestOf = await getOpenChannelRequest(
         api,
         balanceLimitsEnabled,
@@ -217,23 +180,8 @@ export async function deposit(
     msgValue: number,
     transferFromAmount: number,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
-
-    let receiver;
-    if (_receiver === 'alice' || _receiver === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        receiver = api.registry.createType("AccountId", alice.address);   
-    } else if (_receiver === 'bob' || _receiver === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        receiver = api.registry.createType("AccountId", bob.address);
-    }
+    let caller = await getCaller(_caller);
+    let receiver = await getReceiver(_receiver);
 
     api.tx.celerPayModule
         .deposit(channelId, receiver, api.registry.createType("Balance", msgValue), api.registry.createType("Balance", transferFromAmount))
@@ -267,25 +215,11 @@ export async function depositInBatch(
     _msgValues: number[],
     _transferFromAmounts: number[],
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     let receivers = [];
     for (let i = 0; i < _receivers.length; i++) {
-        if (_receivers[i] === 'alice' || _receivers[i] === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-            receivers[i] = api.registry.createType("AccountId", alice.address);   
-        } else if (_receivers[i] === 'bob' || _receivers[i] === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-            receivers[i] = api.registry.createType("AccountId", bob.address);
-        }
-        
+        receivers[i] = await getReceiver(_receivers[i]);
     }
 
     let msgValues = [];
@@ -329,16 +263,7 @@ export async function snapshotStates(
    _caller: string,
    signedSimplexStateArray: SignedSimplexStateArray
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-    
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     api.tx.celerPayModule
         .snapshotStates(signedSimplexStateArray)
@@ -371,16 +296,7 @@ export async function intendWithdraw(
     isZeroHash = true,
     recipientChannelId?: string,
 ) { 
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
     
     if (isZeroHash === true) {
         let zeroU8a = blake2AsU8a(api.registry.createType("u8", 0).toU8a());
@@ -436,16 +352,7 @@ export async function confirmWithdraw(
     _caller: string,
     channelId: string
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     api.tx.celerPayModule
         .confirmWithdraw(channelId)
@@ -475,16 +382,7 @@ export async function vetoWithdraw(
     _caller: string,
     channelId: string
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     api.tx.celerPayModule
         .vetoWithdraw(channelId)
@@ -520,16 +418,7 @@ export async function cooperativeWithdraw(
     isZeroHash = true,
     recipientChannelId?: string,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     let cooperativeWithdrawRequest;
     if (isZeroHash === true) {
@@ -583,16 +472,7 @@ export async function intendSettle(
     _caller: string,
     signedSimplexStateArray: SignedSimplexStateArray,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
     
     api.tx.celerPayModule
         .intendSettle(signedSimplexStateArray)
@@ -629,18 +509,15 @@ export async function clearPays(
     const alice = keyring.addFromUri('//Alice');
     const bob = keyring.addFromUri('//Bob');
 
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
     
     let peerFrom;
     if (_peerFrom === 'alice' || _peerFrom === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
         peerFrom = api.registry.createType("AccountId", alice.address);   
     } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
         peerFrom = api.registry.createType("AccountId", bob.address);
+    } else {
+        throw new Error("peerFrom is only alice or bob");
     }
 
     api.tx.celerPayModule
@@ -672,16 +549,7 @@ export async function confirmSettle(
     _caller: string,
     channelId: string
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
     
     api.tx.celerPayModule
         .confirmSettle(channelId)
@@ -714,16 +582,7 @@ export async function cooperativeSettle(
     _caller: string,
     settleRequest: CooperativeSettleRequestOf
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
     
     api.tx.celerPayModule
         .cooperativeSettle(settleRequest)
@@ -756,23 +615,8 @@ export async function depositPool(
     _receiver: string,
     amount: number,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let receiver;
-    if (_receiver === 'alice' || _receiver === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        receiver = api.registry.createType("AccountId", alice.address);   
-    } else if (_receiver === 'bob' || _receiver === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        receiver = api.registry.createType("AccountId", bob.address);
-    }
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
+    let receiver = await getReceiver(_receiver);
     
     api.tx.celerPayModule
         .depositPool(receiver, amount)
@@ -804,16 +648,7 @@ export async function withdrawFromPool(
     _caller: string,
     value: number,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-    
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
     
     api.tx.celerPayModule
         .withdrawFromPool(api.registry.createType("Balance", value))
@@ -845,15 +680,9 @@ export async function approve(
     value: number,
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
     const bob = keyring.addFromUri('//Bob');
 
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     if (_spender === 'bob') {
         let spender = api.registry.createType("AccountId", bob.address);
@@ -917,12 +746,7 @@ export async function transferFrom(
     const bob = keyring.addFromUri('//Bob');
     const charlie = keyring.addFromUri('//Charlie');
 
-    let caller;
-    if (_caller === 'alice') {
-        caller = alice;
-    } else {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     let from;
     if (_from === 'alice' || _from === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
@@ -983,12 +807,7 @@ export async function transferToCelerWallet(
         from = api.registry.createType("AccountId", bob.address);
     }
 
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     api.tx.celerPayModule
         .transferToCelerWallet(from, walletId, amount)
@@ -1023,15 +842,9 @@ export async function increaseAllowance(
     addedValue: number,
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
     const bob = keyring.addFromUri('//Bob');
 
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     if (_spender === 'bob') {
         let spender = api.registry.createType("AccountId", bob.address);
@@ -1089,15 +902,9 @@ export async function decreaseAllowance(
     subtractedValue: number,
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
     const bob = keyring.addFromUri('//Bob');
 
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     if (_spender === 'bob') {
         let spender = api.registry.createType("AccountId", bob.address);
@@ -1153,16 +960,7 @@ export async function resolvePaymentByConditions(
     _caller: string,
     resolvePayRequest: ResolvePaymentConditionsRequestOf,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     api.tx.celerPayModule
         .resolvePaymentByConditions(resolvePayRequest)
@@ -1193,16 +991,7 @@ export async function resolvePaymentByVouchedResult(
     _caller: string,
     voucehdPayResult: VouchedCondPayResultOf,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller;
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        caller = alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        caller = bob;
-    }
+    let caller = await getCaller(_caller);
 
     api.tx.celerPayModule
         .resolvePaymentByVouchedResult(voucehdPayResult)

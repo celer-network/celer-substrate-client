@@ -99,12 +99,13 @@ program
     .option('-c, --caller <caller>', 'caller')
     .option('-z, --zeroTotalDeposit', 'amount of funds to deposit is zero')
     .option('-v, --msgValue <msgValue>', 'amount of funds to deposit from caller')
+    .option('-d, --peersDeposit <peersDeposit>', '[bob deposit amount, alice deposit amount]', (value) => { return (value).split(","); }, [])
     .action(async options => {
         const api = await connect();
         if (options.zeroTotalDeposit === undefined) {
-            await openChannel(api, options.caller, false, options.msgValue);
+            await openChannel(api, options.caller, false, options.msgValue, true, 1000000, options.peersDeposit[0], options.peersDeposit[1]);
         } else {
-            await openChannel(api, options.caller, true, options.msgValue);
+            await openChannel(api, options.caller, true, options.msgValue, true, 1000000, options.peersDeposit[0], options.peersDeposit[1]);
         }
         await waitBlockNumber(3);
         process.exit(0);
