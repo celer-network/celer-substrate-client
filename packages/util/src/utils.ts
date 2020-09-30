@@ -18,6 +18,36 @@ import { blake2AsU8a } from '@polkadot/util-crypto';
 const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
 const BOB = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';
 
+export async function getCaller(
+    _caller: string
+): Promise<KeyringPair> {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+    const bob = keyring.addFromUri('//Bob');
+    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
+        return alice;
+    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+        return bob;
+    } else {
+        throw new Error('caller is only alice or bob');
+    }
+}
+
+export async function getReceiver(
+    _caller: string
+): Promise<KeyringPair> {
+    const keyring = new Keyring({ type: 'sr25519'});
+    const alice = keyring.addFromUri('//Alice');
+    const bob = keyring.addFromUri('//Bob');
+    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
+        return alice;
+    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+        return bob;
+    } else {
+        throw new Error('caller is only alice or bob');
+    }
+}
+
 export async function caluculateChannelId(
     api: ApiRx,
     openRequest: OpenChannelRequestOf
