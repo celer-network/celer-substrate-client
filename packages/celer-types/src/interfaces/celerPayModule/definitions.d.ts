@@ -1,4 +1,186 @@
 declare const _default: {
+    rpc: {
+        getCelerLedgerId: {
+            description: string;
+            params: never[];
+            type: string;
+        };
+        getSettleFinalizedTime: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getChannelStatus: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getCooperativeWithdrawSeqNum: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getTotalBalance: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getBalanceMap: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getDisputeTimeOut: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getStateSeqNumMap: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getTransferOutMap: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getNextPayIdListHashMap: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getLastPayResolveDeadlineMap: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getPendingPayOutMap: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getWithdrawIntent: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getChannelStatusNum: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getBalanceLimits: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getBalanceLimitsEnabled: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getPeersMigrationInfo: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getCelerWalletId: {
+            description: string;
+            params: never[];
+            type: string;
+        };
+        getWalletOwners: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            };
+            type: string;
+        };
+        getWalletBalance: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getPoolId: {
+            description: string;
+            params: never[];
+            type: string;
+        };
+        getAllowance: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+        getPayResolverId: {
+            description: string;
+            params: never[];
+            type: string;
+        };
+        calculatePayId: {
+            description: string;
+            params: {
+                name: string;
+                type: string;
+            }[];
+            type: string;
+        };
+    };
     types: {
         PayInfo: {
             amount: string;

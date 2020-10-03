@@ -1,7 +1,7 @@
 // Auto-generated via `yarn polkadot-types-from-chain`, do not edit
 /* eslint-disable */
 
-import { AnyNumber, ITuple } from '@polkadot/types/types';
+import { AnyNumber, ITuple, Observable } from '@polkadot/types/types';
 import { Option, Vec } from '@polkadot/types/codec';
 import { Bytes, bool, u128, u32, u8 } from '@polkadot/types/primitive';
 import { AccountData, BalanceLock } from '@polkadot/types/interfaces/balances';
@@ -12,7 +12,6 @@ import { AccountInfo, DigestOf, EventIndex, EventRecord, LastRuntimeUpgradeInfo,
 import { Multiplier } from '@polkadot/types/interfaces/txpayment';
 import { ChannelOf, PayInfoOf, WalletOf } from 'celer-types/interfaces/celerPayModule';
 import { ApiTypes } from '@polkadot/api/types';
-import { Observable } from "rxjs";
 
 declare module '@polkadot/api/types/storage' {
   export interface AugmentedQueries<ApiType> {
@@ -172,6 +171,10 @@ declare module '@polkadot/api/types/storage' {
        * Hash of the previous block.
        **/
       parentHash: AugmentedQuery<ApiType, () => Observable<Hash>>;
+      /**
+       * True if we have upgraded so that `type RefCount` is `u32`. False (default) if not.
+       **/
+      upgradedToU32RefCount: AugmentedQuery<ApiType, () => Observable<bool>>;
     };
     timestamp: {
       /**

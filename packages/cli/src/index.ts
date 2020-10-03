@@ -142,7 +142,7 @@ program
             options.msgValues,
             options.transferFromAmounts,
         );
-        await waitBlockNumber(3);
+        await waitBlockNumber(6);
         process.exit(0);
     })
 
@@ -170,7 +170,7 @@ program
         );
 
         await snapshotStates(api, options.caller, signedSimplexStateArray);
-        await waitBlockNumber(3);
+        await waitBlockNumber(6);
         process.exit(0);
     });
 
@@ -241,7 +241,7 @@ program
         const signedSimplexStateArray = globalResult.signedSimplexStateArray;
 
         await intendSettle(api, options.caller, signedSimplexStateArray);
-        await waitBlockNumber(3);
+        await waitBlockNumber(10);
         process.exit(0);
     });
 
@@ -272,7 +272,7 @@ program
             options.peerFrom,
             globalResult.payIdListArrays[options.peerIndex][options.listIndex]
         );
-        await waitBlockNumber(3);
+        await waitBlockNumber(6);
         process.exit(0);
     });
 
@@ -302,7 +302,7 @@ program
             options.settleAmounts
         );
         await cooperativeSettle(api, options.caller, cooperativeSettleRequest);
-        await  waitBlockNumber(3);
+        await  waitBlockNumber(6);
         process.exit(0);
     });
 
@@ -423,7 +423,7 @@ program
             options.caller, 
             payRequest
         );
-        await waitBlockNumber(3);
+        await waitBlockNumber(6);
         process.exit(0);
     });
 
@@ -454,7 +454,7 @@ program
         );
 
         await resolvePaymentByVouchedResult(api, options.caller, vouchedCondPayResult);
-        await waitBlockNumber(3);
+        await waitBlockNumber(6);
         process.exit(0);
     });
 
