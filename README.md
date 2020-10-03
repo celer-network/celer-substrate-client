@@ -1,4 +1,4 @@
-# Celer Substrate Client
+# Celer Substrate Demo Client
 This is a TypeScript implementation of a Celer substrate demo client.
 
 ## Pacakges
