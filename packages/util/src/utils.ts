@@ -18,33 +18,34 @@ import { blake2AsU8a } from '@polkadot/util-crypto';
 const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
 const BOB = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';
 
-export async function getCaller(
-    _caller: string
+export async function selectChannelPeerKeyring(
+    _channelPeer: string
 ): Promise<KeyringPair> {
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
     const bob = keyring.addFromUri('//Bob');
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
+    if (_channelPeer === 'alice' || _channelPeer === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
         return alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+    } else if (_channelPeer === 'bob' || _channelPeer === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
         return bob;
     } else {
-        throw new Error('caller is only alice or bob');
+        throw new Error('Channel Peers is alice and bob');
     }
 }
 
-export async function getReceiver(
-    _caller: string
-): Promise<KeyringPair> {
+export async function selectChannelPeer(
+    api: ApiRx,
+    _channelPeer: string
+): Promise<AccountId> {
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
     const bob = keyring.addFromUri('//Bob');
-    if (_caller === 'alice' || _caller === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        return alice;
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        return bob;
+    if (_channelPeer === 'alice' || _channelPeer === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
+        return api.registry.createType("AccountId", alice.address);
+    } else if (_channelPeer === 'bob' || _channelPeer === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+        return api.registry.createType("AccountId", bob.address);
     } else {
-        throw new Error('caller is only alice or bob');
+        throw new Error('Channel Peers is alice and bob');
     }
 }
 

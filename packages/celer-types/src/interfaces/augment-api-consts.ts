@@ -5,40 +5,41 @@ import { Vec } from '@polkadot/types/codec';
 import { u32 } from '@polkadot/types/primitive';
 import { Balance, BalanceOf, BlockNumber, Moment, RuntimeDbWeight, Weight } from '@polkadot/types/interfaces/runtime';
 import { WeightToFeeCoefficient } from '@polkadot/types/interfaces/support';
+import { ApiTypes } from '@polkadot/api/types';
 
-declare module '@polkadot/metadata/Decorated/consts/types' {
-  export interface Constants {
+declare module '@polkadot/api/types/consts' {
+  export interface AugmentedConsts<ApiType> {
     balances: {
       /**
        * The minimum amount required to keep an account open.
        **/
-      existentialDeposit: AugmentedConst<Balance>;
+      existentialDeposit: Balance & AugmentedConst<ApiType>;
     };
     system: {
       /**
        * The base weight of executing a block, independent of the transactions in the block.
        **/
-      blockExecutionWeight: AugmentedConst<Weight>;
+      blockExecutionWeight: Weight & AugmentedConst<ApiType>;
       /**
        * The maximum number of blocks to allow in mortal eras.
        **/
-      blockHashCount: AugmentedConst<BlockNumber>;
+      blockHashCount: BlockNumber & AugmentedConst<ApiType>;
       /**
        * The weight of runtime database operations the runtime can invoke.
        **/
-      dbWeight: AugmentedConst<RuntimeDbWeight>;
+      dbWeight: RuntimeDbWeight & AugmentedConst<ApiType>;
       /**
        * The base weight of an Extrinsic in the block, independent of the of extrinsic being executed.
        **/
-      extrinsicBaseWeight: AugmentedConst<Weight>;
+      extrinsicBaseWeight: Weight & AugmentedConst<ApiType>;
       /**
        * The maximum length of a block (in bytes).
        **/
-      maximumBlockLength: AugmentedConst<u32>;
+      maximumBlockLength: u32 & AugmentedConst<ApiType>;
       /**
        * The maximum weight of a block.
        **/
-      maximumBlockWeight: AugmentedConst<Weight>;
+      maximumBlockWeight: Weight & AugmentedConst<ApiType>;
     };
     timestamp: {
       /**
@@ -47,17 +48,20 @@ declare module '@polkadot/metadata/Decorated/consts/types' {
        * work with this to determine a sensible block time. e.g. For Aura, it will be double this
        * period on default settings.
        **/
-      minimumPeriod: AugmentedConst<Moment>;
+      minimumPeriod: Moment & AugmentedConst<ApiType>;
     };
     transactionPayment: {
       /**
        * The fee to be paid for making a transaction; the per-byte portion.
        **/
-      transactionByteFee: AugmentedConst<BalanceOf>;
+      transactionByteFee: BalanceOf & AugmentedConst<ApiType>;
       /**
        * The polynomial that is applied in order to derive fee from weight.
        **/
-      weightToFee: AugmentedConst<Vec<WeightToFeeCoefficient>>;
+      weightToFee: Vec<WeightToFeeCoefficient> & AugmentedConst<ApiType>;
     };
+  }
+
+  export interface QueryableConsts<ApiType extends ApiTypes> extends AugmentedConsts<ApiType> {
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "celer-substrate-utils",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Celer substrate front end utils",
   "main": "outDir/src/index.js",
   "publishConfig": {
@@ -11,11 +11,11 @@
     "lint": "tsc --noEmit --pretty"
   },
   "dependencies": {
-    "@polkadot/api": "^1.23.1",
-    "celer-substrate-types": "^1.0.3"
+    "@polkadot/api": "^1.4.0",
+    "celer-substrate-types": "^1.0.4"
   },
   "devDependencies": {
-    "@polkadot/typegen": "^1.23.1",
+    "@polkadot/typegen": "^1.4.0",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.8.2"
   },

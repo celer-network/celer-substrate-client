@@ -5,8 +5,8 @@ import {
     getOpenChannelRequest, 
     waitBlockNumber,
     caluculateChannelId,
-    getCaller,
-    getReceiver
+    selectChannelPeerKeyring,
+    selectChannelPeer
 } from './utils';
 import { cryptoWaitReady, blake2AsU8a } from '@polkadot/util-crypto';
 import { 
@@ -24,7 +24,7 @@ export async function setBalanceLimits(
     channelId: string,
     limits: number,
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
     
     api.tx.celerPayModule
         .setBalanceLimits(channelId, api.registry.createType("Balance", limits))
@@ -54,7 +54,7 @@ export async function disableBalanceLimits(
     _caller: string,
     channelId: string,
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
 
     api.tx.celerPayModule
         .disableBalanceLimits(channelId)
@@ -84,7 +84,7 @@ export async function enableBalanceLimits(
     _caller: string,
     channelId: string,
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
 
     api.tx.celerPayModule
         .enableBalanceLimits(channelId)
@@ -122,7 +122,7 @@ export async function openChannel(
     disputeTimeout = 10,
     msgValueReceiver = 0,
 ): Promise<string> {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
   
     let openChannelRequestOf = await getOpenChannelRequest(
         api,
@@ -180,8 +180,8 @@ export async function deposit(
     msgValue: number,
     transferFromAmount: number,
 ) {
-    let caller = await getCaller(_caller);
-    let receiver = await getReceiver(_receiver);
+    let caller = await selectChannelPeerKeyring(_caller);
+    let receiver = await selectChannelPeer(api, _receiver);
 
     api.tx.celerPayModule
         .deposit(channelId, receiver, api.registry.createType("Balance", msgValue), api.registry.createType("Balance", transferFromAmount))
@@ -215,11 +215,11 @@ export async function depositInBatch(
     _msgValues: number[],
     _transferFromAmounts: number[],
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
 
     let receivers = [];
     for (let i = 0; i < _receivers.length; i++) {
-        receivers[i] = await getReceiver(_receivers[i]);
+        receivers[i] = await selectChannelPeer(api, _receivers[i]);
     }
 
     let msgValues = [];
@@ -263,7 +263,7 @@ export async function snapshotStates(
    _caller: string,
    signedSimplexStateArray: SignedSimplexStateArray
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
 
     api.tx.celerPayModule
         .snapshotStates(signedSimplexStateArray)
@@ -296,7 +296,7 @@ export async function intendWithdraw(
     isZeroHash = true,
     recipientChannelId?: string,
 ) { 
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
     
     if (isZeroHash === true) {
         let zeroU8a = blake2AsU8a(api.registry.createType("u8", 0).toU8a());
@@ -352,7 +352,7 @@ export async function confirmWithdraw(
     _caller: string,
     channelId: string
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
 
     api.tx.celerPayModule
         .confirmWithdraw(channelId)
@@ -382,7 +382,7 @@ export async function vetoWithdraw(
     _caller: string,
     channelId: string
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
 
     api.tx.celerPayModule
         .vetoWithdraw(channelId)
@@ -418,7 +418,7 @@ export async function cooperativeWithdraw(
     isZeroHash = true,
     recipientChannelId?: string,
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
 
     let cooperativeWithdrawRequest;
     if (isZeroHash === true) {
@@ -472,7 +472,7 @@ export async function intendSettle(
     _caller: string,
     signedSimplexStateArray: SignedSimplexStateArray,
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
     
     api.tx.celerPayModule
         .intendSettle(signedSimplexStateArray)
@@ -505,20 +505,8 @@ export async function clearPays(
     _peerFrom: string,
     payIdList: PayIdList
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let caller = await getCaller(_caller);
-    
-    let peerFrom;
-    if (_peerFrom === 'alice' || _peerFrom === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        peerFrom = api.registry.createType("AccountId", alice.address);   
-    } else if (_caller === 'bob' || _caller === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        peerFrom = api.registry.createType("AccountId", bob.address);
-    } else {
-        throw new Error("peerFrom is only alice or bob");
-    }
+    let caller = await selectChannelPeerKeyring(_caller);    
+    let peerFrom = await selectChannelPeer(api, _peerFrom);
 
     api.tx.celerPayModule
         .clearPays(channelId, peerFrom, payIdList)
@@ -549,7 +537,7 @@ export async function confirmSettle(
     _caller: string,
     channelId: string
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
     
     api.tx.celerPayModule
         .confirmSettle(channelId)
@@ -582,7 +570,7 @@ export async function cooperativeSettle(
     _caller: string,
     settleRequest: CooperativeSettleRequestOf
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
     
     api.tx.celerPayModule
         .cooperativeSettle(settleRequest)
@@ -615,8 +603,8 @@ export async function depositPool(
     _receiver: string,
     amount: number,
 ) {
-    let caller = await getCaller(_caller);
-    let receiver = await getReceiver(_receiver);
+    let caller = await selectChannelPeerKeyring(_caller);
+    let receiver = await selectChannelPeer(api, _receiver);
     
     api.tx.celerPayModule
         .depositPool(receiver, amount)
@@ -648,7 +636,7 @@ export async function withdrawFromPool(
     _caller: string,
     value: number,
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
     
     api.tx.celerPayModule
         .withdrawFromPool(api.registry.createType("Balance", value))
@@ -682,7 +670,7 @@ export async function approve(
     const keyring = new Keyring({ type: 'sr25519'});
     const bob = keyring.addFromUri('//Bob');
 
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
 
     if (_spender === 'bob') {
         let spender = api.registry.createType("AccountId", bob.address);
@@ -742,18 +730,11 @@ export async function transferFrom(
 ) {
     await cryptoWaitReady();
     const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
+    const alice = keyring.addFromUri('//Alice'); 
     const charlie = keyring.addFromUri('//Charlie');
 
-    let caller = await getCaller(_caller);
-
-    let from;
-    if (_from === 'alice' || _from === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        from = api.registry.createType("AccountId", alice.address);   
-    } else if (_from === 'bob' || _from === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        from = api.registry.createType("AccountId", bob.address);
-    }
+    let caller = await selectChannelPeerKeyring(_caller);
+    let from = await selectChannelPeer(api, _from);
 
     let to;
     if (_to === 'alice' || _to === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
@@ -796,18 +777,8 @@ export async function transferToCelerWallet(
     walletId: string,
     amount: number,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const alice = keyring.addFromUri('//Alice');
-    const bob = keyring.addFromUri('//Bob');
-
-    let from;
-    if (_from === 'alice' || _from === '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY') {
-        from = api.registry.createType("AccountId", alice.address);   
-    } else if (_from === 'bob' || _from === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
-        from = api.registry.createType("AccountId", bob.address);
-    }
-
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
+    let from = await selectChannelPeer(api, _from);
 
     api.tx.celerPayModule
         .transferToCelerWallet(from, walletId, amount)
@@ -844,7 +815,7 @@ export async function increaseAllowance(
     const keyring = new Keyring({ type: 'sr25519'});
     const bob = keyring.addFromUri('//Bob');
 
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
 
     if (_spender === 'bob') {
         let spender = api.registry.createType("AccountId", bob.address);
@@ -904,7 +875,7 @@ export async function decreaseAllowance(
     const keyring = new Keyring({ type: 'sr25519'});
     const bob = keyring.addFromUri('//Bob');
 
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
 
     if (_spender === 'bob') {
         let spender = api.registry.createType("AccountId", bob.address);
@@ -960,7 +931,7 @@ export async function resolvePaymentByConditions(
     _caller: string,
     resolvePayRequest: ResolvePaymentConditionsRequestOf,
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
 
     api.tx.celerPayModule
         .resolvePaymentByConditions(resolvePayRequest)
@@ -991,7 +962,7 @@ export async function resolvePaymentByVouchedResult(
     _caller: string,
     voucehdPayResult: VouchedCondPayResultOf,
 ) {
-    let caller = await getCaller(_caller);
+    let caller = await selectChannelPeerKeyring(_caller);
 
     api.tx.celerPayModule
         .resolvePaymentByVouchedResult(voucehdPayResult)

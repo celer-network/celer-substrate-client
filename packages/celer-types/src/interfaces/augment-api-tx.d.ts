@@ -114,7 +114,7 @@ declare module '@polkadot/api/types/submittable' {
              * - Complexity: `O(N)`
              * - `N` pay_ids-len
              * - DB:
-             * - 2 storage reads `ChannelMap`
+             * - 1 storage reads `ChannelMap`
              * - 1 storage mutation `ChannelMap`
              * # </weight>
              **/
@@ -135,11 +135,11 @@ declare module '@polkadot/api/types/submittable' {
              * - Complexity: `O(1)`
              * - DB:
              * - 1 storage reads `ChannelMap`
-             * - 2 storage mutation `ChannelMap`
-             * - 1 storage reads `ChannelStatusNums`
-             * - 1 storage mutation `ChannelStatusNums`
-             * - 1 storage reads `Wallets`
-             * - 1 storage mutation `Wallets`
+             * - 1 storage mutation `ChannelMap`
+             * - 2 storage reads `ChannelStatusNums`
+             * - 2 storage mutation `ChannelStatusNums`
+             * - 2 storage reads `Wallets`
+             * - 2 storage mutation `Wallets`
              * # </weight>
              **/
             confirmSettle: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
@@ -156,7 +156,7 @@ declare module '@polkadot/api/types/submittable' {
              * - Complexity: `O(1)`
              * - DB:
              * - 2 storage reads `ChannelMap`
-             * - 2 storage mutation `ChannelMap`
+             * - 1 storage mutation `ChannelMap`
              * - 2 storage reads `Wallets`
              * - 2 storage mutation `Wallets`
              * # </weight>
@@ -174,10 +174,10 @@ declare module '@polkadot/api/types/submittable' {
              * - DB:
              * - 2 storage reads `ChannelMap`
              * - 1 storage mutation `ChannelMap`
-             * - 1 storage reads `ChannelStatusNums`
-             * - 1 storage mutation `ChannelStatusNums`
-             * - 1 storage reads `Wallets`
-             * - 1 storage mutation `Wallets`
+             * - 2 storage reads `ChannelStatusNums`
+             * - 2 storage mutation `ChannelStatusNums`
+             * - 2 storage reads `Wallets`
+             * - 2 storage mutation `Wallets`
              * # </weight>
              **/
             cooperativeSettle: AugmentedSubmittable<(settleRequest: CooperativeSettleRequestOf | {
@@ -195,7 +195,7 @@ declare module '@polkadot/api/types/submittable' {
              * - Complexity: `O(1)`
              * - DB:
              * - 2 storage reads `ChannelMap`
-             * - 2 storage mutation `ChannelMap`
+             * - 1 storage mutation `ChannelMap`
              * - 2 storage reads `Wallets`
              * - 2 storage mutation `Wallets`
              * # </weight>
@@ -269,23 +269,6 @@ declare module '@polkadot/api/types/submittable' {
              **/
             depositInBatch: AugmentedSubmittable<(channelIds: Vec<Hash> | (Hash | string | Uint8Array)[], receivers: Vec<AccountId> | (AccountId | string | Uint8Array)[], msgValues: Vec<BalanceOf> | (BalanceOf | AnyNumber | Uint8Array)[], transferFromAmounts: Vec<BalanceOf> | (BalanceOf | AnyNumber | Uint8Array)[]) => SubmittableExtrinsic<ApiType>>;
             /**
-             * ============================= Celer Wallet =======================================
-             * Deposit native token to a wallet.
-             *
-             * Parameter:
-             * `wallet_id`: Id of the wallet to deposit into
-             * `msg_value`: amount of funds to deposit to wallet
-             *
-             * # <weight>
-             * ## Weight
-             * - Complexity: `O(1)`
-             * - DB:
-             * - 1 storage reads `Walletss`
-             * - 1 storage mutation `Wallets`
-             * # </weight>
-             **/
-            depositNativeToken: AugmentedSubmittable<(walletId: Hash | string | Uint8Array, msgValue: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
              * ========================= Pool ===================================================
              * Deposit native token into Pool
              *
@@ -297,8 +280,8 @@ declare module '@polkadot/api/types/submittable' {
              * ## Weight
              * - Complexity: `O(1)`
              * - DB:
-             * - 2 storage reads `Balances`
-             * - 1 storage mutation `Balances`
+             * - 2 storage reads `PoolBalances`
+             * - 1 storage mutation `PoolBalances`
              * #</weight>
              **/
             depositPool: AugmentedSubmittable<(receiver: AccountId | string | Uint8Array, msgValue: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
@@ -382,7 +365,7 @@ declare module '@polkadot/api/types/submittable' {
              **/
             emitPoolId: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>>;
             /**
-             * Emit channel settle open time
+             * Emit channel confirm settle open time
              **/
             emitSettleFinalizedTime: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
             /**
@@ -442,19 +425,20 @@ declare module '@polkadot/api/types/submittable' {
              * Dev: simplex states in this array are not necessarily in the same channel,
              * which means intendSettle natively supports multi-channel batch processing.
              * A simplex state with non-zero seqNum (non-null state) must be co-signed by both peers,
-             * while a simplex state with seqNum=0 (null state) only needs to be signed by one peer.
+             * while a simplex state with seqNum = 0 (null state) only needs to be signed by one peer.
              *
              * Parameter:
              * `signed_simplex_state_array`: SignedSimplexStateArray message
              *
              * # <weight>
              * ## Weight
+             * Dev: Weight calculation based on pay hashes-len is not support yet
              * - Complexity: `O(N * M)`
              * - `N` signed_simplex_states-len
              * - `M` pay_hashes-len
              * - DB:
              * - N storage reads `ChannelMap`
-             * - 2 * N storage mutation `ChannelMap`
+             * - N storage mutation `ChannelMap`
              * - 2 * M storage reads `PayInfoMap`
              * # </weight>
              **/
@@ -469,7 +453,7 @@ declare module '@polkadot/api/types/submittable' {
              * Parameters:
              * `channel_id`: Id of channel
              * `amount`: amount of funds to withdraw
-             * `receipient_channel_id`: withdraw to receiver address if zero_hash,
+             * `recipient_channel_id`: withdraw to receiver address if get_zero_hash(),
              * otherwise deposit to receiver address in the recipient channel
              *
              * # <weight>
@@ -480,7 +464,7 @@ declare module '@polkadot/api/types/submittable' {
              * - 1 storage mutation `ChannelMap`
              * # </weight>
              **/
-            intendWithdraw: AugmentedSubmittable<(channelId: Hash | string | Uint8Array, amount: BalanceOf | AnyNumber | Uint8Array, receipientChannelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+            intendWithdraw: AugmentedSubmittable<(channelId: Hash | string | Uint8Array, amount: BalanceOf | AnyNumber | Uint8Array, recipientChannelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
             /**
              * Open a state channel through auth withdraw message
              *
@@ -602,33 +586,13 @@ declare module '@polkadot/api/types/submittable' {
              * ## Weight
              * - Complexity: `O(1)`
              * - DB:
-             * - 2 storage reads `Allowed`
+             * - 1 storage reads `Allowed`
              * - 1 storage mutation `Allowed`
-             * - 3 storage reads `Balances`
-             * - 1 storage mutation `Balances`
+             * - 2 storage reads `PoolBalances`
+             * - 1 storage mutation `PoolBalances`
              * # </weight>
              **/
             transferFrom: AugmentedSubmittable<(from: AccountId | string | Uint8Array, to: AccountId | string | Uint8Array, value: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Transfer to native token from one address to a wallet in CelerWallet Module.
-             *
-             * Parameters:
-             * `from`: the address which you want to transfer native token from
-             * `wallet_id`: Id of the wallet you want to deposit funds into
-             * `amount`: amount of funds to be transfered
-             *
-             * # <weight>
-             * ## Weight
-             * - Complexity: `O(1)`
-             * - DB:
-             * - 1 storage reads `Wallets`
-             * - 1 storage mutation `Wallets`
-             * - 1 storage reads `Balances`
-             * - 1 storage mutation `Balances`
-             * - 2 storage reads `Allowed`
-             * # </weight>
-             **/
-            transferToCelerWallet: AugmentedSubmittable<(from: AccountId | string | Uint8Array, walletId: Hash | string | Uint8Array, amount: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
             /**
              * Veto current withdrawal intent
              *
@@ -657,8 +621,8 @@ declare module '@polkadot/api/types/submittable' {
              * ## Weight
              * - Complexity: `O(1)`
              * - DB:
-             * - 2 storage reads `Balances`
-             * - 1 storage mutation `Balances`
+             * - 1 storage reads `PoolBalances`
+             * - 1 storage mutation `PoolBalances`
              * # </weight>
              **/
             withdrawFromPool: AugmentedSubmittable<(value: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
