@@ -25,7 +25,7 @@ yarn build
 ## Run
 1. Run Celer substrate local testnet. Repository is [here](https://github.com/celer-network/cChannel-substrate)
 ```
-docker run -p 9944:9944 -p 9615:9615 thashimoto19980924/celer-network:latest
+docker run -p 9944:9944 -p 9615:9615 thashimoto19980924/celer-network:0.8.8
 ```
 
 2. Send transaction
