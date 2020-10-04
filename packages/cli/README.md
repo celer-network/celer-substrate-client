@@ -145,7 +145,7 @@ Intend to withdraw funds from channel
 ```
 // After open channel with [bob's deposit amount, alice's deposit amount] = [1000, 2000]
 // alice intend to withdraw funds from channel
-yarn start intendWithdraw --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'  --amount 1000
+yarn start intendWithdraw --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30' --amount 1000
 ```
 
 ### [Confrim Withdraw](https://www.celer.network/docs/celercore/channel/pay_contracts.html#unilateral-withdraw)
@@ -186,7 +186,7 @@ Cooperatively withdraw specfic amount of balance
 ```
 // After open channel with [bob's deposit amount, alice's deposit amount] = [1000, 2000]
 // alice cooperatively withdraw
-yarn start cooperativeWithdraw --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'  --seqNum 1 --amount 1000 --receiverAccount 'alice'
+yarn start cooperativeWithdraw --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30' --seqNum 1 --amount 1000 --receiverAccount 'alice'
 ```
 
 ### [Intend Settle](https://www.celer.network/docs/celercore/channel/pay_contracts.html#unilateral-settle)
@@ -197,9 +197,12 @@ Intend to settle channel with an array of signed simplex states
 |caller|Yes|caller of dispatchable function|
 |channelId|Yes|Id of channel| 
 |seqNums|Yes|sequence number list|
-|transferAmounts|Yes|amount of token already transferred|
 ```
-yarn start intendSettle --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30' --seqNums 1,1 --transferAmounts 100,200
+// After open channel with [bob's deposit amount, alice's deposit amount] = [2000, 2000]
+// alice resolve [payment by conditions](https://www.celer.network/docs/celercore/channel/pay_contracts.html#resolve-payment-by-conditions) of a payment are finalized on-chain
+yarn start resolvePaymentByConditions --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30' --seqNums 1,1 
+// alice unilateral settle by co-signed offchain simplex states
+yarn start intendSettle --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30' --seqNums 1,1 
 ```
 
 ### Clear Pays
@@ -210,12 +213,11 @@ Read payment results and add results to corresponding simplex payment channel
 |caller|Yes|caller of dispatchable function|
 |channelId|Yes|Id of channel| 
 |seqNums|Yes|sequence number list|
-|transferAmounts|Yes|amount of token already transferred|
-|peerFrom|Yes|adress of the peer who send out funds|
-|peerIndex|Yes|peerIndex of linked pay id list|
-|listIndex|Yes|listIndex of linked pay id list|
 ```
-yarn start clearPays --caller 'bob' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30' --seqNums 1,1 --transferAmounts 100,200 --peerFrom 'bob' --peerIndex 0 --listIndex 1
+// After alice intend settle
+// clear pays all remaining pay
+yarn start clearPays --caller 'alice' --channelId '0xc5c0757acf7c29f3a43b9ec7178a6491ed65b73989c75870138e5b8e3abdaaad' --seqNums 1,1 
+
 ```
 
 ### [Confirm Settle](https://www.celer.network/docs/celercore/channel/pay_contracts.html#unilateral-settle)
@@ -226,7 +228,9 @@ Confirm channel settlement
 |caller|Yes|caller of dispatchable function|
 |channelId|Yes|Id of channel| 
 ```
-yarn start confirmSettle --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+// After cleared all pay
+// alice confrim settle and close channel
+yarn start confirmSettle --caller 'alice' --channelId '0xc5c0757acf7c29f3a43b9ec7178a6491ed65b73989c75870138e5b8e3abdaaad'
 ```
 
 ### [Cooperative Settle](https://www.celer.network/docs/celercore/channel/pay_contracts.html#cooperative-settle)
@@ -322,13 +326,10 @@ Resolve a payment by onchain getting its conditons outcomes
 |caller|Yes|caller of dispatchable function|
 |channelId|Yes|Id of channel| 
 |seqNums|Yes|sequence number list|
-|transferAmounts|Yes|amount of token already transferred|
-|peerFrom|Yes|adress of the peer who send out funds|
-|peerIndex|Yes|peerIndex of linked pay id list|
-|listIndex|Yes|listIndex of linked pay id list|
-|payIdex|Yes|payIndex of linked pay id list|
 ```
-yarn start resolvePaymentByConditions --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30' --seqNums 1,1 --transferAmounts 100,200 --peerIndex 0 --listIndex 0 --payIndex 0
+// After open channel with [bob's deposit amount, alice's deposit amount] = [2000, 2000]
+// alice resolve [payment by conditions](https://www.celer.network/docs/celercore/channel/pay_contracts.html#resolve-payment-by-conditions) of a payment are finalized on-chain
+yarn start resolvePaymentByConditions --caller 'alice' --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30' --seqNums 1,1 
 ```
 
 ### [Resolve Payment By Vouched Result](https://www.celer.network/docs/celercore/channel/pay_contracts.html#resolve-payment-by-vouched-result)
