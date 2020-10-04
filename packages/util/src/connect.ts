@@ -1,13 +1,12 @@
-import { ApiRx } from '@polkadot/api';
-
+import { ApiPromise, WsProvider } from '@polkadot/api';
 import * as celerDefinitions from 'celer-substrate-types/src/interfaces/definitions';
 
-export async function connect (): Promise<ApiRx> {
+export async function connect (): Promise<ApiPromise> {
     // extract all types from definitions - fast and dirty approach, flatted on 'types'
     const types = Object.values(celerDefinitions).reduce((res, { types }): object => ({ ...res, ...types }), {});
-
-    const api = await ApiRx.create({
-        rpc: celerRpc,
+    const wsProvider = new WsProvider('ws://localhost:9944');
+    const api = await ApiPromise.create({
+        provider: wsProvider,
         types: {
             ...types,
             "Address": "AccountId",
@@ -16,8 +15,10 @@ export async function connect (): Promise<ApiRx> {
             // chain-specific overrides
             Keys: 'SessionKeys4'
         },
-    }).toPromise();
-   
+        rpc: celerRpc,
+    });
+
+
     return api;
 }
 

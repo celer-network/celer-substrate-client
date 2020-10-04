@@ -175,10 +175,12 @@ exports.default = {
         },
         getWalletOwners: {
             description: "Return wallet owner conrresponding tp wallet_id",
-            params: {
-                name: "walletId",
-                type: "Hash",
-            },
+            params: [
+                {
+                    name: "walletId",
+                    type: "Hash",
+                }
+            ],
             type: "Option<Vec<AccountId>>",
         },
         getWalletBalance: {

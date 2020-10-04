@@ -143,7 +143,7 @@ declare const _default: {
             params: {
                 name: string;
                 type: string;
-            };
+            }[];
             type: string;
         };
         getWalletBalance: {

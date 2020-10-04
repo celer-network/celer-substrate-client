@@ -1,6 +1,6 @@
 {
   "name": "celer-substrate-utils",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Celer substrate front end utils",
   "main": "outDir/src/index.js",
   "publishConfig": {
