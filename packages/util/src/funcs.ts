@@ -1,5 +1,5 @@
 import { Keyring } from '@polkadot/keyring';
-import { ApiRx } from '@polkadot/api';
+import { ApiPromise } from '@polkadot/api';
 import { 
     getCooperativeWithdrawRequest, 
     getOpenChannelRequest, 
@@ -19,7 +19,7 @@ import {
 import { u8aToHex } from "@polkadot/util";
 
 export async function setBalanceLimits(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     channelId: string,
     limits: number,
@@ -28,8 +28,7 @@ export async function setBalanceLimits(
     
     api.tx.celerPayModule
         .setBalanceLimits(channelId, api.registry.createType("Balance", limits))
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Set Balance Limits:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -50,7 +49,7 @@ export async function setBalanceLimits(
 }
 
 export async function disableBalanceLimits(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     channelId: string,
 ) {
@@ -58,8 +57,7 @@ export async function disableBalanceLimits(
 
     api.tx.celerPayModule
         .disableBalanceLimits(channelId)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Disable Balance Limits:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -80,7 +78,7 @@ export async function disableBalanceLimits(
 }
 
 export async function enableBalanceLimits(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     channelId: string,
 ) {
@@ -88,8 +86,7 @@ export async function enableBalanceLimits(
 
     api.tx.celerPayModule
         .enableBalanceLimits(channelId)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Enable Balance Limits:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -110,7 +107,7 @@ export async function enableBalanceLimits(
 }
 
 export async function openChannel(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     zeroTotalDeposit = true,
     msgValue = 0,
@@ -143,8 +140,7 @@ export async function openChannel(
 
     api.tx.celerPayModule
         .openChannel(openChannelRequestOf, api.registry.createType("Balance", msgValue))
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Open channel:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -173,7 +169,7 @@ export async function openChannel(
 }
 
 export async function deposit(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     channelId: string,
     _receiver: string,
@@ -185,8 +181,7 @@ export async function deposit(
 
     api.tx.celerPayModule
         .deposit(channelId, receiver, api.registry.createType("Balance", msgValue), api.registry.createType("Balance", transferFromAmount))
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Deposit:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -208,7 +203,7 @@ export async function deposit(
 }
 
 export async function depositInBatch(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     _channelIds: string[],
     _receivers: string[],
@@ -236,8 +231,7 @@ export async function depositInBatch(
     
     api.tx.celerPayModule
         .depositInBatch(channelIds, receivers, msgValues, transferFromAmounts)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Deposit In Batch:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -259,7 +253,7 @@ export async function depositInBatch(
 }
 
 export async function snapshotStates(
-   api: ApiRx,
+   api: ApiPromise,
    _caller: string,
    signedSimplexStateArray: SignedSimplexStateArray
 ) {
@@ -267,8 +261,7 @@ export async function snapshotStates(
 
     api.tx.celerPayModule
         .snapshotStates(signedSimplexStateArray)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Snapshot states:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -289,7 +282,7 @@ export async function snapshotStates(
 }
 
 export async function intendWithdraw(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     channelId: string,
     amount: number,
@@ -303,8 +296,7 @@ export async function intendWithdraw(
         let zeroHash = u8aToHex(zeroU8a);
         api.tx.celerPayModule
             .intendWithdraw(channelId, amount, zeroHash)
-            .signAndSend(caller)
-            .subscribe(({ events = [], status }) => {
+            .signAndSend(caller, ({ events = [], status }) => {
                 console.log('Intend Withdraw:', status.type);
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
@@ -325,8 +317,7 @@ export async function intendWithdraw(
     } else {
         api.tx.celerPayModule
             .intendWithdraw(channelId, amount, recipientChannelId)
-            .signAndSend(caller)
-            .subscribe(({ events = [], status }) => {
+            .signAndSend(caller, ({ events = [], status }) => {
                 console.log('Intend Withdraw:', status.type);
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
@@ -348,7 +339,7 @@ export async function intendWithdraw(
 }
 
 export async function confirmWithdraw(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     channelId: string
 ) {
@@ -356,8 +347,7 @@ export async function confirmWithdraw(
 
     api.tx.celerPayModule
         .confirmWithdraw(channelId)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Confirm Withdraw:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -378,7 +368,7 @@ export async function confirmWithdraw(
 }
 
 export async function vetoWithdraw(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     channelId: string
 ) {
@@ -386,8 +376,7 @@ export async function vetoWithdraw(
 
     api.tx.celerPayModule
         .vetoWithdraw(channelId)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Veto Withdraw:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -408,7 +397,7 @@ export async function vetoWithdraw(
 }
 
 export async function cooperativeWithdraw(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     channelId: string,
     seqNum: number,
@@ -446,8 +435,7 @@ export async function cooperativeWithdraw(
 
     api.tx.celerPayModule
         .cooperativeWithdraw(cooperativeWithdrawRequest)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Cooperative Withdraw:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -468,7 +456,7 @@ export async function cooperativeWithdraw(
 }
 
 export async function intendSettle(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     signedSimplexStateArray: SignedSimplexStateArray,
 ) {
@@ -476,8 +464,7 @@ export async function intendSettle(
     
     api.tx.celerPayModule
         .intendSettle(signedSimplexStateArray)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Intend Settle:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -499,7 +486,7 @@ export async function intendSettle(
 }
 
 export async function clearPays(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     channelId: string,
     _peerFrom: string,
@@ -510,8 +497,7 @@ export async function clearPays(
 
     api.tx.celerPayModule
         .clearPays(channelId, peerFrom, payIdList)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Clear Pays:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -533,7 +519,7 @@ export async function clearPays(
 
 
 export async function confirmSettle(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     channelId: string
 ) {
@@ -541,8 +527,7 @@ export async function confirmSettle(
     
     api.tx.celerPayModule
         .confirmSettle(channelId)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Confirm Settle:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -566,7 +551,7 @@ export async function confirmSettle(
 }
 
 export async function cooperativeSettle(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     settleRequest: CooperativeSettleRequestOf
 ) {
@@ -574,8 +559,7 @@ export async function cooperativeSettle(
     
     api.tx.celerPayModule
         .cooperativeSettle(settleRequest)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Cooperative Settle:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -598,7 +582,7 @@ export async function cooperativeSettle(
 }
 
 export async function depositPool(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     _receiver: string,
     amount: number,
@@ -608,8 +592,7 @@ export async function depositPool(
     
     api.tx.celerPayModule
         .depositPool(receiver, amount)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Deposit to Pool:', status.type);
             if (status.isInBlock) {
                 console.log('Events: ');
@@ -632,7 +615,7 @@ export async function depositPool(
 }
 
 export async function withdrawFromPool(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     value: number,
 ) {
@@ -640,8 +623,7 @@ export async function withdrawFromPool(
     
     api.tx.celerPayModule
         .withdrawFromPool(api.registry.createType("Balance", value))
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Withdraw from Pool:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -662,7 +644,7 @@ export async function withdrawFromPool(
 }
 
 export async function approve(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     _spender: string,
     value: number,
@@ -676,8 +658,7 @@ export async function approve(
         let spender = api.registry.createType("AccountId", bob.address);
         api.tx.celerPayModule
             .approve(spender, value)
-            .signAndSend(caller)
-            .subscribe(({ events = [], status }) => {
+            .signAndSend(caller, ({ events = [], status }) => {
                 console.log('Approve :', status.type);
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
@@ -699,8 +680,7 @@ export async function approve(
         let spender = '0x6d6f646c5f6c65646765725f0000000000000000000000000000000000000000';
         api.tx.celerPayModule
             .approve(spender, value)
-            .signAndSend(caller)
-            .subscribe(({ events = [], status }) => {
+            .signAndSend(caller, ({ events = [], status }) => {
                 console.log('Approve:', status.type);
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
@@ -722,7 +702,7 @@ export async function approve(
 }
 
 export async function transferFrom(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     _from: string,
     _to: string,
@@ -745,8 +725,7 @@ export async function transferFrom(
 
     api.tx.celerPayModule
         .transferFrom(from, to, value)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Transfer from :', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -770,44 +749,8 @@ export async function transferFrom(
         });
 }
 
-export async function transferToCelerWallet(
-    api: ApiRx,
-    _caller: string,
-    _from: string,
-    walletId: string,
-    amount: number,
-) {
-    let caller = await selectChannelPeerKeyring(_caller);
-    let from = await selectChannelPeer(api, _from);
-
-    api.tx.celerPayModule
-        .transferToCelerWallet(from, walletId, amount)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
-            console.log('Transfer to celer wallet:', status.type);
-            if (status.isInBlock) {
-                console.log('Included at block hash', status.asInBlock.toHex());
-                console.log('Events: ');
-                console.log('\t', `system.NewAccount [newAccount(AccountId)]`);
-                console.log('\t', `balances.Endowed [createdAccount(AccountId), freeBalance(Balance)]`)
-                console.log('\t', `balances.Transfer [from(AccountId), to(AccountId), value(Balance)]`)
-                console.log('\t', 'celerPayModule.Transfer [from(accountId), to(AccountId), amount(Balance)]\n');
-
-                events.forEach(({ event: { data, method, section}}) => {
-                    const [error] = data;
-                    if (error.isModule) {
-                        const { documentation, name, section } = api.registry.findMetaError(error.asModule);
-                        console.log(`${section}: error message is ${name}, ${documentation}` );
-                    } else {
-                        console.log('\t', `${section}.${method}`, data.toString());
-                    }
-                });
-            } 
-        });
-}
-
 export async function increaseAllowance(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     _spender: string,
     addedValue: number,
@@ -821,8 +764,7 @@ export async function increaseAllowance(
         let spender = api.registry.createType("AccountId", bob.address);
         api.tx.celerPayModule
             .increaseAllowance(spender, addedValue)
-            .signAndSend(caller)
-            .subscribe(({ events = [], status }) => {
+            .signAndSend(caller, ({ events = [], status }) => {
                 console.log('Increase allowance :', status.type);
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
@@ -844,8 +786,7 @@ export async function increaseAllowance(
         let spender = '0x6d6f646c5f6c65646765725f0000000000000000000000000000000000000000';
         api.tx.celerPayModule
             .increaseAllowance(spender, addedValue)
-            .signAndSend(caller)
-            .subscribe(({ events = [], status }) => {
+            .signAndSend(caller, ({ events = [], status }) => {
                 console.log('Increase allowance:', status.type);
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
@@ -867,7 +808,7 @@ export async function increaseAllowance(
 }
 
 export async function decreaseAllowance(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     _spender: string,
     subtractedValue: number,
@@ -881,8 +822,7 @@ export async function decreaseAllowance(
         let spender = api.registry.createType("AccountId", bob.address);
         api.tx.celerPayModule
             .decreaseAllowance(spender, subtractedValue)
-            .signAndSend(caller)
-            .subscribe(({ events = [], status }) => {
+            .signAndSend(caller, ({ events = [], status }) => {
                 console.log('Decrease allowance :', status.type);
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
@@ -904,8 +844,7 @@ export async function decreaseAllowance(
         let spender = '0x6d6f646c5f6c65646765725f0000000000000000000000000000000000000000';
         api.tx.celerPayModule
             .decreaseAllowance(spender, subtractedValue)
-            .signAndSend(caller)
-            .subscribe(({ events = [], status }) => {
+            .signAndSend(caller, ({ events = [], status }) => {
                 console.log('Decrease allowance:', status.type);
                 if (status.isInBlock) {
                     console.log('Included at block hash', status.asInBlock.toHex());
@@ -927,7 +866,7 @@ export async function decreaseAllowance(
 }
 
 export async function resolvePaymentByConditions(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     resolvePayRequest: ResolvePaymentConditionsRequestOf,
 ) {
@@ -935,8 +874,7 @@ export async function resolvePaymentByConditions(
 
     api.tx.celerPayModule
         .resolvePaymentByConditions(resolvePayRequest)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Resolve payment by conditions:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -958,7 +896,7 @@ export async function resolvePaymentByConditions(
 }
 
 export async function resolvePaymentByVouchedResult(
-    api: ApiRx,
+    api: ApiPromise,
     _caller: string,
     voucehdPayResult: VouchedCondPayResultOf,
 ) {
@@ -966,8 +904,7 @@ export async function resolvePaymentByVouchedResult(
 
     api.tx.celerPayModule
         .resolvePaymentByVouchedResult(voucehdPayResult)
-        .signAndSend(caller)
-        .subscribe(({ events = [], status }) => {
+        .signAndSend(caller, ({ events = [], status }) => {
             console.log('Resolve payment by vouched result:', status.type);
             if (status.isInBlock) {
                 console.log('Included at block hash', status.asInBlock.toHex());
@@ -988,7 +925,7 @@ export async function resolvePaymentByVouchedResult(
 }
 
 export async function emitCelerLedgerId(
-    api: ApiRx
+    api: ApiPromise
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
@@ -997,8 +934,7 @@ export async function emitCelerLedgerId(
     console.log('\t', 'celerPayModule.CelerLedgerId [celerLedgerId(AccountId)]');
     api.tx.celerPayModule
         .emitCelerLedgerId()
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1009,7 +945,7 @@ export async function emitCelerLedgerId(
 }
 
 export async function emitChannelInfo(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1019,8 +955,7 @@ export async function emitChannelInfo(
     console.log('\t', 'celerPayModule.ChannelInfo [balanceLimitsEnabled(bool), BalanceLimits(Balance), ChannelStatus(u8)]');
     api.tx.celerPayModule
         .emitChannelInfo(channelId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1031,7 +966,7 @@ export async function emitChannelInfo(
 }
 
 export async function emitSettleFinalizedTime(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1041,8 +976,7 @@ export async function emitSettleFinalizedTime(
     console.log('\t', 'celerPayModule.SettleFinalizedTime [settleFinalizedTime(BlockNumber)]');
     api.tx.celerPayModule
         .emitSettleFinalizedTime(channelId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1053,7 +987,7 @@ export async function emitSettleFinalizedTime(
 }
 
 export async function emitCooperativeWithdrawSeqNum(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1063,8 +997,7 @@ export async function emitCooperativeWithdrawSeqNum(
     console.log('\t', 'celerPayModule.CooperativeWithdrawSeqNum [cooperativeWithdrawSeqNum(u128)]');
     api.tx.celerPayModule
         .emitCooperativeWithdrawSeqNum(channelId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1075,7 +1008,7 @@ export async function emitCooperativeWithdrawSeqNum(
 }
 
 export async function emitTotalBalance(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1085,8 +1018,7 @@ export async function emitTotalBalance(
     console.log('\t', 'celerPayModule.TotalBalance [totalBalance(Balance)]');
     api.tx.celerPayModule
         .emitTotalBalance(channelId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1097,7 +1029,7 @@ export async function emitTotalBalance(
 }
 
 export async function emitBalanceMap(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1107,8 +1039,7 @@ export async function emitBalanceMap(
     console.log('\t', 'celerPayModule.BalanceMap [channelPeers(Vec<AccountId>), deposits(Vec<Balance>), withdrawals(Vec<Balance>)');
     api.tx.celerPayModule
         .emitBalanceMap(channelId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1119,7 +1050,7 @@ export async function emitBalanceMap(
 }
 
 export async function emitDisputeTimeOut(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1129,8 +1060,7 @@ export async function emitDisputeTimeOut(
     console.log('\t', 'celerPayModule.DisputeTimeout [disputeTimeout (Blocknumber)]');
     api.tx.celerPayModule
         .emitDisputeTimeOut(channelId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1141,7 +1071,7 @@ export async function emitDisputeTimeOut(
 }
 
 export async function emitStateSeqNumMap(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1151,8 +1081,7 @@ export async function emitStateSeqNumMap(
     console.log('\t', 'celerPayModule.StateSeqNumMap [channelPeers(Vec<AccountId>), seqNums(Vec<u128>)]');
     api.tx.celerPayModule
         .emitStateSeqNumMap(channelId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1163,7 +1092,7 @@ export async function emitStateSeqNumMap(
 }
 
 export async function emitTransferOutMap(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1173,8 +1102,7 @@ export async function emitTransferOutMap(
     console.log('\t', 'celerPayModule.TranferOutMap [channelPeers(Vec<AccountId>), transferOuts(Vec<BalanceOf<T>)]');
     api.tx.celerPayModule
         .emitTransferOutMap(channelId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1185,7 +1113,7 @@ export async function emitTransferOutMap(
 }
 
 export async function emitNextPayIdListHashMap(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1195,8 +1123,7 @@ export async function emitNextPayIdListHashMap(
     console.log('\t', 'celerPayModule.NextPayIdListHashMap [channelPeers(Vec<AccountId>), nextPayIdListHashMap(Vec<Hash>)]');
     api.tx.celerPayModule
         .emitNextPayIdListHashMap(channelId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1207,7 +1134,7 @@ export async function emitNextPayIdListHashMap(
 }
 
 export async function emitLastPayResolveDeadlineMap(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1217,8 +1144,7 @@ export async function emitLastPayResolveDeadlineMap(
     console.log('\t', 'celerPayModule.LastPayResolveDeadlineMap [channelPeers(Vec<AccountId>), stateLastPayResolveDeadline(Vec<Hash>)]');
     api.tx.celerPayModule
         .emitLastPayResolveDeadlineMap(channelId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1229,7 +1155,7 @@ export async function emitLastPayResolveDeadlineMap(
 }
 
 export async function emitPendingPayOutMap(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1239,8 +1165,7 @@ export async function emitPendingPayOutMap(
     console.log('\t', 'celerPayModule.PendingPayOutMap [channelPeers(Vec<AccountId>), pendingPayOutMap(Vec<Balance>)]');
     api.tx.celerPayModule
         .emitPendingPayOutMap(channelId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1251,7 +1176,7 @@ export async function emitPendingPayOutMap(
 }
 
 export async function emitWithdrawIntent(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1261,8 +1186,7 @@ export async function emitWithdrawIntent(
     console.log('\t', 'celerPayModule.WithdrawIntent [intentReceiver(AccountId), intentAmount(Balance), intentRequestTime(BlockNumber), recipientChannelId(Hash)]');
     api.tx.celerPayModule
         .emitWithdrawIntent(channelId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1273,7 +1197,7 @@ export async function emitWithdrawIntent(
 }
 
 export async function emitChannelStatusNum(
-    api: ApiRx,
+    api: ApiPromise,
     channelStatus: number
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1283,8 +1207,7 @@ export async function emitChannelStatusNum(
     console.log('\t', 'celerPayModule.ChannelStatusNums [channelStatNums(u8)]');
     api.tx.celerPayModule
         .emitChannelStatusNum(channelStatus)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1295,7 +1218,7 @@ export async function emitChannelStatusNum(
 }
 
 export async function emitPeersMigrationInfo(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string,
 ){
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1305,8 +1228,7 @@ export async function emitPeersMigrationInfo(
     console.log('\t', 'celerPayModule.PeersMigrationInfo [channelPeers(Vec<AccountId>), deposits(Vec<Balance>), wihtdrawals(Vec<Balance>), seqNums(Vec<u128>), transferOuts(Vec<Balance>), pendingPayOut(Vec<Balance>)]');
     api.tx.celerPayModule
         .emitPeersMigrationInfo(channelId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1317,7 +1239,7 @@ export async function emitPeersMigrationInfo(
 }
 
 export async function emitCelerWalletId(
-    api: ApiRx
+    api: ApiPromise
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
@@ -1326,8 +1248,7 @@ export async function emitCelerWalletId(
     console.log('\t', 'celerPayModule.CelerWalletId [celerWalletId(AccountId)]');
     api.tx.celerPayModule
         .emitCelerWalletId()
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1338,7 +1259,7 @@ export async function emitCelerWalletId(
 }
 
 export async function emitWalletInfo(
-    api: ApiRx,
+    api: ApiPromise,
     walletId: string,
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1348,8 +1269,7 @@ export async function emitWalletInfo(
     console.log('\t', 'celerPayModule.WalletInfo [owners(Vec<AccountId>), walletBalances(Vec<Balance>)]');
     api.tx.celerPayModule
         .emitWalletInfo(walletId)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());                             
@@ -1360,7 +1280,7 @@ export async function emitWalletInfo(
 }
 
 export async function emitPoolId(
-    api: ApiRx
+    api: ApiPromise
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
@@ -1369,8 +1289,7 @@ export async function emitPoolId(
     console.log('\t', 'celerPayModule.PoolId [poolId(AccountId)]');
     api.tx.celerPayModule
         .emitPoolId()
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());
@@ -1381,7 +1300,7 @@ export async function emitPoolId(
 }
 
 export async function emitPoolBalance(
-    api: ApiRx,
+    api: ApiPromise,
     _owner: string,
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -1399,8 +1318,7 @@ export async function emitPoolBalance(
     console.log('\t', 'celerPayModule.PoolBalance [balance(Balance)]');
     api.tx.celerPayModule
         .emitPoolBalance(owner)
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());
@@ -1411,7 +1329,7 @@ export async function emitPoolBalance(
 }
 
 export async function emitAllowance(
-    api: ApiRx,
+    api: ApiPromise,
     _owner: string,
     _spender: string
 ) {
@@ -1432,8 +1350,7 @@ export async function emitAllowance(
         console.log('\t', 'celerPayModule.Allowance [amount(Balance)]');
         api.tx.celerPayModule
             .emitAllowance(owner, spender)
-            .signAndSend(alice)
-            .subscribe(({ events = []}) => {
+            .signAndSend(alice, ({ events = [] }) => {
                 for (const record of events) {
                     const { event, } = record;
                     console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());
@@ -1444,8 +1361,7 @@ export async function emitAllowance(
         console.log('\t', 'celerPayModule.Allowance [amount(Balance)]');
         api.tx.celerPayModule
             .emitAllowance(owner, spender)
-            .signAndSend(alice)
-            .subscribe(({ events = []}) => { 
+            .signAndSend(alice, ({ events = [] }) => {
                 for (const record of events) {
                     const { event, } = record;
                     console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());
@@ -1457,7 +1373,7 @@ export async function emitAllowance(
 }
 
 export async function emitPayResolverId(
-    api: ApiRx
+    api: ApiPromise
 ) {
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
@@ -1467,8 +1383,7 @@ export async function emitPayResolverId(
 
     api.tx.celerPayModule
         .emitPayResolverId()
-        .signAndSend(alice)
-        .subscribe(({ events = []}) => {
+        .signAndSend(alice, ({ events = [] }) => {
             for (const record of events) {
                 const { event, } = record;
                 console.log(`\t`, `${event.data.section}.${event.data.method}`, event.data.toString());
@@ -1477,4 +1392,3 @@ export async function emitPayResolverId(
 
     await waitBlockNumber(2);
 }
-

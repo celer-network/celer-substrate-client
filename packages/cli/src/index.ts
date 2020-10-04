@@ -12,7 +12,6 @@ import {
     confirmWithdraw,
     cooperativeWithdraw,
     withdrawFromPool,
-    transferToCelerWallet,
     increaseAllowance,
     decreaseAllowance,
     waitBlockNumber,
@@ -152,7 +151,7 @@ program
     .option('-a, --payAmounts <payAmounts>', 'pay amounts list of linked pay id list', (value) => { return (value).split(","); }, [])
     .option('-i, --channelId <channelId>', 'Id of channel')
     .option('-n, --seqNum <seqNum>', 'sequence number')
-    .option('-f, --transferFromAmount <transferFromAmount>', 'amounts of funds to be transfered from Pool')
+    .option('-f, --transferAmounts <transferAmounts>', 'amount of token already transfered')
     .action(async options => {
         const api = await connect();
         let payIdListInfo = await getPayIdListInfo(
@@ -170,7 +169,7 @@ program
         );
 
         await snapshotStates(api, options.caller, signedSimplexStateArray);
-        await waitBlockNumber(6);
+        await waitBlockNumber(3);
         process.exit(0);
     });
 
@@ -192,6 +191,8 @@ program
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
+        console.log("waiting for dispute timeout(default 10 block number) to pass");
+        await waitBlockNumber(7);
         await confirmWithdraw(api, options.caller, options.channelId);
         await waitBlockNumber(3);
         process.exit(0);
@@ -227,7 +228,6 @@ program
     .option('-c, --caller <caller>', 'caller')
     .option('-i, --channelId <channelId>', 'Id of channel')
     .option('-n, --seqNums <seqNums>', 'sequence number list', (value) => { return (value).split(","); }, [])
-    .option('-a, --transferAmounts <transferAmounts>',  'amount of token already transferred', (value) => { return (value).split(","); }, [])
     .action(async options => {
         const api = await connect();
         let globalResult = await getCoSignedIntendSettle(
@@ -236,12 +236,12 @@ program
             [[[10, 20], [30, 40]], [[50, 60], [70, 80]]],
             options.seqNums,
             [999999, 999999],
-            options.transferFromAmounts
+            [100, 200]
         );
         const signedSimplexStateArray = globalResult.signedSimplexStateArray;
 
         await intendSettle(api, options.caller, signedSimplexStateArray);
-        await waitBlockNumber(10);
+        await waitBlockNumber(3);
         process.exit(0);
     });
 
@@ -250,10 +250,6 @@ program
     .option('-c, --caller <caller>', 'caller')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .option('-n, --seqNums <seqNums>', 'sequence number list', (value) => { return (value).split(","); }, [])
-    .option('-a, --transferFromAmounts <transferFromAmounts>', 'amounts list of funds to transfered from Pool', (value) => { return (value).split(","); }, [])
-    .option('-f, --peerFrom <peerFrom>', 'address of the peer who owns and updates the simplex state')
-    .option('-p, --peerIndex <peerIndex>', 'peerIndex of linked pay id list')
-    .option('-l, --listIndex <listIndex>', 'listIndex of linked pay id list')
     .action(async options => {
         const api = await connect();
         let globalResult = await getCoSignedIntendSettle(
@@ -262,17 +258,25 @@ program
             [[[10, 20], [30, 40]], [[50, 60], [70, 80]]],
             options.seqNums,
             [999999, 999999],
-            options.transferFromAmounts
+            [100, 200]
         );
 
         await clearPays(
             api,
             options.caller,
             options.channelId,
-            options.peerFrom,
-            globalResult.payIdListArrays[options.peerIndex][options.listIndex]
+            'bob',
+            globalResult.payIdListArrays[0][1]
         );
-        await waitBlockNumber(6);
+        await waitBlockNumber(2);
+        await clearPays(
+            api,
+            options.caller,
+            options.channelId,
+            'alice',
+            globalResult.payIdListArrays[1][1]
+        );
+        await waitBlockNumber(3);
         process.exit(0);
     });
 
@@ -361,19 +365,6 @@ program
     });
 
 program
-    .command('transferToCelerWallet')
-    .option('-c, --caller <caller>', 'caller')
-    .option('-f, --from <from>', 'the address which you want to transfer funds from')
-    .option('-i, --walletId <walletId>', 'Id of the wallet')
-    .option('-a, --amount <amount>', 'amount of funds to be transfered')
-    .action(async options => {
-        const api = await connect();
-        await transferToCelerWallet(api, options.caller, options.from, options.walletId, options.amount);
-        await waitBlockNumber(3);
-        process.exit(0);
-    });
-
-program
     .command('increaseAllowance')
     .option('-c, --caller <caller>', 'caller')
     .option('-s, --spender <spender>', 'the address which will spend the funds')
@@ -402,10 +393,6 @@ program
     .option('-c, --caller <caller>', 'caller')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .option('-n, --seqNums <seqNums>', 'sequence number list', (value) => { return (value).split(","); }, [])
-    .option('-a, --transferFromAmounts <transferFromAmounts>',  'amounts of funds to be transfered from Pool', (value) => { return (value).split(","); }, [])
-    .option('-p, --peerIndex <peerIndex>', 'peerIndex of linked pay id list')
-    .option('-l, --listIndex <listIndex>', 'listIndex of linked pay id list')
-    .option('-x, --payIndex <payIndex>', 'payIndex of linked pay id list')
     .action(async options => {
         const api = await connect();
         let globalResult = await getCoSignedIntendSettle(
@@ -414,16 +401,19 @@ program
             [[[10, 20], [30, 40]], [[50, 60], [70, 80]]],
             options.seqNums,
             [999999, 999999],
-            options.transferFromAmounts
+            [100, 200]
         );
 
-        let payRequest = await getResolvePayByCondtionsRequest(api, globalResult.condPays[options.peerIndex][options.listIndex][options.payIndex]);
-        await resolvePaymentByConditions(
-            api, 
-            options.caller, 
-            payRequest
-        );
-        await waitBlockNumber(6);
+        for (let peerIndex = 0; peerIndex < 2; peerIndex++) {
+            for (let listIndex = 0; listIndex < globalResult.condPays[peerIndex].length; listIndex++) {
+                for (let payIndex = 0; payIndex < globalResult.condPays[peerIndex][listIndex].length; payIndex++) {
+                    let payRequest = await getResolvePayByCondtionsRequest(api, globalResult.condPays[peerIndex][listIndex][payIndex]);
+                    await resolvePaymentByConditions(api, options.caller, payRequest);
+                    await waitBlockNumber(2);
+                }
+            }
+        }
+        await waitBlockNumber(2);
         process.exit(0);
     });
 

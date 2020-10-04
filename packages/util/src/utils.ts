@@ -1,7 +1,7 @@
 import { Keyring } from '@polkadot/keyring';
 import { u8aConcat, u8aToHex } from '@polkadot/util';
 import { Option, Vec} from '@polkadot/types'
-import { ApiRx } from '@polkadot/api';
+import { ApiPromise } from '@polkadot/api';
 import { AccountId } from '@polkadot/types/interfaces/runtime';
 import { 
     PayIdList, 
@@ -34,7 +34,7 @@ export async function selectChannelPeerKeyring(
 }
 
 export async function selectChannelPeer(
-    api: ApiRx,
+    api: ApiPromise,
     _channelPeer: string
 ): Promise<AccountId> {
     const keyring = new Keyring({ type: 'sr25519'});
@@ -50,7 +50,7 @@ export async function selectChannelPeer(
 }
 
 export async function caluculateChannelId(
-    api: ApiRx,
+    api: ApiPromise,
     openRequest: OpenChannelRequestOf
 ): Promise<string> {
     let paymentChannelInitializer = openRequest.channelInitializer;
@@ -82,7 +82,7 @@ export async function caluculateChannelId(
 }
 
 export async function getOpenChannelRequest(
-    api: ApiRx,
+    api: ApiPromise,
     balanceLimitsEnabled: boolean,
     balanceLimits: number,
     channelPeerBalance0: number,
@@ -174,7 +174,7 @@ export async function getOpenChannelRequest(
 }
 
 export async function getCooperativeWithdrawRequest(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string,
     seqNum: number,
     amount: number,
@@ -245,7 +245,7 @@ export async function getCooperativeWithdrawRequest(
 }
 
 export async function getSignedSimplexStateArray(
-    api: ApiRx,
+    api: ApiPromise,
     channelIds: string[],
     seqNums = [1, 1],
     transferAmounts: number[] | undefined,
@@ -285,7 +285,7 @@ export async function getSignedSimplexStateArray(
 }
 
 export async function getCooperativeSettleRequest(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string,
     seqNum: number,
     settleAmounts: number[],
@@ -332,7 +332,7 @@ export async function getCooperativeSettleRequest(
 }
 
 export async function getResolvePayByCondtionsRequest(
-    api: ApiRx,
+    api: ApiPromise,
     condPay: ConditionalPay,
     hashPreimages: string[] = []
 ): Promise<any> {
@@ -347,7 +347,7 @@ export async function getResolvePayByCondtionsRequest(
 }
 
 export async function getVouchedCondPayResult(
-    api: ApiRx,
+    api: ApiPromise,
     condPay: ConditionalPay,
     amount: number,
 ): Promise<any> {
@@ -371,7 +371,7 @@ export async function getVouchedCondPayResult(
 }
 
 export async function getPayIdListInfo(
-    api: ApiRx,
+    api: ApiPromise,
     payAmounts: number[][],
     payConditions = null,
 ): Promise<any> {
@@ -455,7 +455,7 @@ export async function getPayIdListInfo(
 }
 
 export async function getCoSignedIntendSettle(
-    api: ApiRx,
+    api: ApiPromise,
     channelIds: string[],
     payAmountsArray: number[][][],
     seqNums: number[],
@@ -498,7 +498,7 @@ export async function getCoSignedIntendSettle(
 }
 
 export async function getConditions(
-    api: ApiRx,
+    api: ApiPromise,
     type: number
 ): Promise<any> {
     switch (type) {
@@ -546,7 +546,7 @@ export async function getConditions(
 }
 
 async function calculatePayId(
-    api: ApiRx,
+    api: ApiPromise,
     payHash: string,
 ): Promise<string> {
     // encode(payHash, payResolver AccountId)
@@ -561,7 +561,7 @@ async function calculatePayId(
 }
 
 export async function getCondition(
-    api: ApiRx,
+    api: ApiPromise,
     type: number
 ): Promise<Condition> {
     enum _conditionType {
@@ -676,7 +676,7 @@ export async function getCondition(
 }
 
 export async function getConditionalPay(
-    api: ApiRx,
+    api: ApiPromise,
     conditions: Condition[],
     maxAmount: number,
     payTimestamp = 1,
@@ -707,7 +707,7 @@ export async function getConditionalPay(
 }
 
 async function getTransferFunc(
-    api: ApiRx,
+    api: ApiPromise,
     tokenTransfer: TokenTransfer,
     logicType: number
 ): Promise<TransferFunction> {
@@ -779,7 +779,7 @@ async function getTransferFunc(
 
 // get co-signed non-null SignedSimplexState
 async function getCoSignedSimplexState(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string,
     peerFrom: AccountId,
     seqNum: number,
@@ -838,7 +838,7 @@ async function getCoSignedSimplexState(
 
 // get single-signed null SignedSimplexState
 async function getSingleSignedSimplexState(
-    api: ApiRx,
+    api: ApiPromise,
     channelId: string,
     _signer: string | undefined
 ): Promise<any> {
@@ -882,7 +882,7 @@ async function getSingleSignedSimplexState(
 }
 
 async function getTokenTransfer(
-    api: ApiRx,
+    api: ApiPromise,
     amount: number,
     _account = null
 ): Promise<any> {
@@ -923,7 +923,7 @@ async function getTokenTransfer(
     return tokenTransfer; 
 }
 
-async function getChannelPairs(api: ApiRx): Promise<KeyringPair[]> {
+async function getChannelPairs(api: ApiPromise): Promise<KeyringPair[]> {
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
     const bob = keyring.addFromUri('//Bob');
@@ -936,7 +936,7 @@ async function getChannelPairs(api: ApiRx): Promise<KeyringPair[]> {
     }
 }
 
-export async function getChannelPeers(api: ApiRx): Promise<AccountId[]> {
+export async function getChannelPeers(api: ApiPromise): Promise<AccountId[]> {
     const keyring = new Keyring({ type: 'sr25519'});
     const alice = keyring.addFromUri('//Alice');
     const bob = keyring.addFromUri('//Bob');

@@ -1,4 +1,4 @@
-import { AnyNumber, ITuple } from '@polkadot/types/types';
+import { AnyNumber, ITuple, Observable } from '@polkadot/types/types';
 import { Option, Vec } from '@polkadot/types/codec';
 import { Bytes, bool, u128, u32, u8 } from '@polkadot/types/primitive';
 import { AccountData, BalanceLock } from '@polkadot/types/interfaces/balances';
@@ -9,8 +9,6 @@ import { AccountInfo, DigestOf, EventIndex, EventRecord, LastRuntimeUpgradeInfo,
 import { Multiplier } from '@polkadot/types/interfaces/txpayment';
 import { ChannelOf, PayInfoOf, WalletOf } from 'celer-types/interfaces/celerPayModule';
 import { ApiTypes } from '@polkadot/api/types';
-import { Observable } from "rxjs";
-
 declare module '@polkadot/api/types/storage' {
     interface AugmentedQueries<ApiType> {
         balances: {
