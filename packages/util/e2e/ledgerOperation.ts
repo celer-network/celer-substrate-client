@@ -121,7 +121,7 @@ async function main(): Promise<void> {
     await waitBlockNumber(2);
     await deposit(api, 'alice', channelId4, 'alice', 2000, 0);
     await waitBlockNumber(2);
-    await deposit(api, 'bob', channelId4, 'bob', 2000, 0);
+    await deposit(api, 'bob', channelId4, 'bob', 1000, 0);
     await waitBlockNumber(2);
 
     const globalResult = await getCoSignedIntendSettle(

@@ -1,6 +1,6 @@
 {
   "name": "celer-substrate-utils",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Celer substrate front end utils",
   "main": "outDir/src/index.js",
   "publishConfig": {
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@polkadot/api": "^1.4.0",
-    "celer-substrate-types": "^1.0.4"
+    "celer-substrate-types": "^1.0.5"
   },
   "devDependencies": {
     "@polkadot/typegen": "^1.4.0",

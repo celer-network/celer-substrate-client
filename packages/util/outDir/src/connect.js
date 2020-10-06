@@ -1,27 +1,28 @@
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import * as celerDefinitions from 'celer-substrate-types/src/interfaces/definitions';
-
-export async function connect (): Promise<ApiPromise> {
+"use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const api_1 = require("@polkadot/api");
+const celerDefinitions = __importStar(require("celer-substrate-types/src/interfaces/definitions"));
+async function connect() {
     // extract all types from definitions - fast and dirty approach, flatted on 'types'
-    const types = Object.values(celerDefinitions).reduce((res, { types }): object => ({ ...res, ...types }), {});
-    const wsProvider = new WsProvider('ws://localhost:9944');
-    const api = await ApiPromise.create({
+    const types = Object.values(celerDefinitions).reduce((res, { types }) => (Object.assign(Object.assign({}, res), types)), {});
+    const wsProvider = new api_1.WsProvider('ws://localhost:9944');
+    const api = await api_1.ApiPromise.create({
         provider: wsProvider,
-        types: {
-            ...types,
-            "Address": "AccountId",
-            "LookupSource": "AccountId",
-            "Signature": "MultiSignature",
+        types: Object.assign(Object.assign({}, types), { "Address": "AccountId", "LookupSource": "AccountId", "Signature": "MultiSignature", 
             // chain-specific overrides
-            Keys: 'SessionKeys4'
-        },
+            Keys: 'SessionKeys4' }),
         rpc: celerRpc,
     });
-
-
     return api;
 }
-
+exports.connect = connect;
 const celerRpc = {
     celerPayModule: {
         getCelerLedgerId: {
@@ -259,5 +260,4 @@ const celerRpc = {
             type: "Hash",
         }
     }
-}
-
+};

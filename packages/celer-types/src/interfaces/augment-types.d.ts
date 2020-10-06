@@ -44,7 +44,7 @@ import { OpenTip, OpenTipFinderTo225, OpenTipTip, OpenTipTo225, TreasuryProposal
 import { Multiplier } from '@polkadot/types/interfaces/txpayment';
 import { Multisig, Timepoint } from '@polkadot/types/interfaces/utility';
 import { VestingInfo } from '@polkadot/types/interfaces/vesting';
-import { AccountAmtPair, ChannelOf, ChannelStatus, CondPayResult, Condition, ConditionType, ConditionalPay, ConditionalPayOf, CooperativeSettleInfo, CooperativeSettleInfoOf, CooperativeSettleRequest, CooperativeSettleRequestOf, CooperativeWithdrawInfo, CooperativeWithdrawInfoOf, CooperativeWithdrawRequest, CooperativeWithdrawRequestOf, OpenChannelRequest, OpenChannelRequestOf, PayIdList, PayInfo, PayInfoOf, PaymentChannelInitializer, PaymentChannelInitializerOf, PeerProfile, PeerProfileOf, PeerState, PeerStateOf, ResolvePaymentConditionsRequest, ResolvePaymentConditionsRequestOf, SignedSimplexState, SignedSimplexStateArray, SignedSimplexStateArrayOf, SimplexPaymentChannel, TokenDistribution, TokenInfo, TokenTransfer, TokenType, TransferFunction, TransferFunctionType, VouchedCondPayResult, VouchedCondPayResultOf, Wallet, WalletOf, WithdrawIntent, WithdrawIntentOf } from 'celer-types/interfaces/celerPayModule';
+import { AccountAmtPair, BalanceWrapper, ChannelOf, ChannelStatus, CondPayResult, Condition, ConditionType, ConditionalPay, ConditionalPayOf, CooperativeSettleInfo, CooperativeSettleInfoOf, CooperativeSettleRequest, CooperativeSettleRequestOf, CooperativeWithdrawInfo, CooperativeWithdrawInfoOf, CooperativeWithdrawRequest, CooperativeWithdrawRequestOf, OpenChannelRequest, OpenChannelRequestOf, PayIdList, PayInfo, PayInfoOf, PaymentChannelInitializer, PaymentChannelInitializerOf, PeerProfile, PeerProfileOf, PeerState, PeerStateOf, ResolvePaymentConditionsRequest, ResolvePaymentConditionsRequestOf, SeqNumWrapper, SignedSimplexState, SignedSimplexStateArray, SignedSimplexStateArrayOf, SimplexPaymentChannel, TokenDistribution, TokenInfo, TokenTransfer, TokenType, TransferFunction, TransferFunctionType, VouchedCondPayResult, VouchedCondPayResultOf, Wallet, WalletOf, WithdrawIntent, WithdrawIntentOf } from 'celer-types/interfaces/celerPayModule';
 declare module '@polkadot/types/types/registry' {
     interface InterfaceTypes {
         BitVec: BitVec;
@@ -1972,6 +1972,12 @@ declare module '@polkadot/types/types/registry' {
         StorageChangeSet: StorageChangeSet;
         'Option<StorageChangeSet>': Option<StorageChangeSet>;
         'Vec<StorageChangeSet>': Vec<StorageChangeSet>;
+        BalanceWrapper: BalanceWrapper;
+        'Option<BalanceWrapper>': Option<BalanceWrapper>;
+        'Vec<BalanceWrapper>': Vec<BalanceWrapper>;
+        SeqNumWrapper: SeqNumWrapper;
+        'Option<SeqNumWrapper>': Option<SeqNumWrapper>;
+        'Vec<SeqNumWrapper>': Vec<SeqNumWrapper>;
         PayInfo: PayInfo;
         'Option<PayInfo>': Option<PayInfo>;
         'Vec<PayInfo>': Vec<PayInfo>;
