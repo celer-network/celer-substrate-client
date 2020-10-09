@@ -32,27 +32,30 @@ import {
     depositInBatch,
     getResolvePayByCondtionsRequest,
     transferFrom,
-    emitCelerLedgerId,
-    emitChannelInfo,
-    emitChannelStatusNum,
-    emitPeersMigrationInfo,
-    emitCelerWalletId,
-    emitWalletInfo,
-    emitPoolBalance,
-    emitAllowance,
-    emitPayResolverId,
-    emitSettleFinalizedTime,
-    emitCooperativeWithdrawSeqNum,
-    emitTotalBalance,
-    emitBalanceMap,
-    emitDisputeTimeOut,
-    emitStateSeqNumMap,
-    emitTransferOutMap,
-    emitLastPayResolveDeadlineMap,
-    emitNextPayIdListHashMap,
-    emitPendingPayOutMap,
-    emitWithdrawIntent,
-    emitPoolId,
+    getCelerLedgerId,
+    getSettleFinalizedTime,
+    getChannelStatus,
+    getCooperativeWithdrawSeqNum,
+    getTotalBalance,
+    getBalanceMap,
+    getDisputeTimeOut,
+    getStateSeqNumMap,
+    getTransferOutMap,
+    getNextPayIdListHashMap,
+    getLastPayResolveDeadlineMap,
+    getPendingPayOutMap,
+    getWithdrawIntent,
+    getChannelStatusNum,
+    getBalanceLimits,
+    getBalanceLimitsEnabled,
+    getPeersMigrationInfo,
+    getCelerWalletId,
+    getWalletOwners,
+    getWalletBalance,
+    getPoolId,
+    getAllowance,
+    getPoolBalance,
+    getPayResolverId,
 } from "celer-substrate-utils";
 
 import program from 'commander';
@@ -448,193 +451,263 @@ program
         process.exit(0);
     });
 
+
 program
-    .command('emitCelerLedgerId')
+    .command('getCelerLedgerId')
     .action(async options => {
         const api = await connect();
-        await emitCelerLedgerId(api);
+        const celerLedgerId = await getCelerLedgerId(api);
+        console.log("Celer Ledger Operation Module is ", celerLedgerId);
         process.exit(0);
     });
 
 program
-    .command('emitChannelInfo')
+    .command('getSettleFinalizedTime')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitChannelInfo(api, options.channelId);
+        let finalizedTime = await getSettleFinalizedTime(api, options.channelId);
+        console.log("confirm settle open time is ", finalizedTime);
         process.exit(0);
     });
 
 program
-    .command('emitSettleFinalizedTime')
+    .command('getCooperativeWithdrawSeqNum')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitSettleFinalizedTime(api, options.channelId);
+        let seqNum = await getCooperativeWithdrawSeqNum(api, options.channelId);
+        console.log("cooperative withdraw seq num is ", seqNum);
         process.exit(0);
     });
 
 program
-    .command('emitCooperativeWithdrawSeqNum')
+    .command('getChannelStatus')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitCooperativeWithdrawSeqNum(api, options.channelId);
+        let channelStatus = await getChannelStatus(api, options.channelId);
+        console.log("channel status is ", channelStatus);
         process.exit(0);
     });
 
 program
-    .command('emitTotalBalance')
+    .command('getTotalBalance')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitTotalBalance(api, options.channelId);
+        let totalBalance = await getTotalBalance(api, options.channelId);
+        console.log("channel's total balance is ", totalBalance);
         process.exit(0);
     });
 
 program
-    .command('emitBalanceMap')
+    .command('getBalanceMap')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitBalanceMap(api, options.channelId);
+        let [channelPeers, deposits, withdrawals] = await getBalanceMap(api, options.channelId);
+        console.log("channelPeers is", channelPeers, "channel's deposits is ", deposits, "channel's withdrawals is ", withdrawals);
         process.exit(0);
     });
 
 program
-    .command('emitDisputeTimeOut')
+    .command('getDisputeTimeOut')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitDisputeTimeOut(api, options.channelId);
+        let disputeTimeout = await getDisputeTimeOut(api, options.channelId);
+        console.log("dispute time out is ", disputeTimeout);
         process.exit(0);
     });
 
 program
-    .command('emitStateSeqNumMap')
+    .command('getStateSeqNumMap')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitStateSeqNumMap(api, options.channelId);
+        let [channelPeers, seqNums] = await getStateSeqNumMap(api, options.channelId);
+        console.log("channelPeers is ", channelPeers, "seq nums is ", seqNums);
         process.exit(0);
     });
 
 program
-    .command('emitTransferOutMap')
+    .command('getTransferOutMap')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitTransferOutMap(api, options.channelId);
+        let [channelPeers, transferOuts] = await getTransferOutMap(api, options.channelId);
+        console.log("channelPeers is ", channelPeers, "transfer outs is ", transferOuts);
         process.exit(0);
     });
 
 program
-    .command('emitNextPayIdListHashMap')
+    .command('getNextPayIdListHashMap')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitNextPayIdListHashMap(api, options.channelId);
+        let [channelPeers, nextPayIdListHashes] = await getNextPayIdListHashMap(api, options.channelId);
+        console.log("channelPeers is ", channelPeers, "next pay id list hashes is ", nextPayIdListHashes);
         process.exit(0);
     });
 
 program
-    .command('emitLastPayResolveDeadlineMap')
+    .command('getLastPayResolveDeadlineMap')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitLastPayResolveDeadlineMap(api, options.channelId);
+        let [channelPeers, lastPayResolveDeadlines] = await getLastPayResolveDeadlineMap(api, options.channelId);
+        console.log("channelPeers is ", channelPeers, "last pay resolve deadlines is ", lastPayResolveDeadlines);
         process.exit(0);
     });
 
 program
-    .command('emitPendingPayOutMap')
+    .command('getPendingPayOutMap')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitPendingPayOutMap(api, options.channelId);
+        let [channelPeers, pendingPayOuts] = await getPendingPayOutMap(api, options.channelId);
+        console.log("channelPeers is ", channelPeers, "pending pay outs is ", pendingPayOuts);
         process.exit(0);
     });
 
 program
-    .command('emitWithdrawIntent')
+    .command('getWithdrawIntent')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitWithdrawIntent(api, options.channelId);
+        let [receiver, withdrawIntentAmount, withdrawIntentRequestTime, recipientChannelId] 
+            = await getWithdrawIntent(api, options.channelId);
+        console.log("withdraw intent receiver is ", receiver);
+        console.log("withdraw intent amount is ", withdrawIntentAmount);
+        console.log("withdraw intent request time is ", withdrawIntentRequestTime);
+        console.log("recipient channelId is ", recipientChannelId);
         process.exit(0);
     });
 
 program
-    .command('emitChannelStatusNum')
+    .command('getChannelStatusNum')
     .option('-s, --channelStatus <channelStatus>', 'status of channel')
     .action(async options => {
         const api = await connect();
-        await emitChannelStatusNum(api, options.channelStatus);
+        let statusnums = await getChannelStatusNum(api, options.channelStatus);
+        console.log("number of channel status is ", statusnums);
         process.exit(0);
     });
 
 program
-    .command('emitPeersMigrationInfo')
+    .command('getBalanceLimits')
     .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitPeersMigrationInfo(api, options.channelId);
+        let balanceLimits = await getBalanceLimits(api, options.channelId);
+        console.log("channel's balance limits is ", balanceLimits);
         process.exit(0);
     });
 
 program
-    .command('emitCelerWalletId')
+    .command('getBalanceLimitsEnabled')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
     .action(async options => {
         const api = await connect();
-        await emitCelerWalletId(api);
+        let balanceLimitsEnabled = await getBalanceLimitsEnabled(api, options.channelId);
+        console.log("whether channel has balance limits is ", balanceLimitsEnabled);
         process.exit(0);
     });
 
 program
-    .command('emitWalletInfo')
+    .command('getPeersMigrationInfo')
+    .option('-i, --channelId <channelId>', 'Id of the channel')
+    .action(async options => {
+        const api = await connect();
+        let [channelPeers, deposits, withdrawals, seqNums, transferOuts, pendingPayOuts]
+            = await getPeersMigrationInfo(api, options.channelId);
+        console.log("channelPeers is ", channelPeers);
+        console.log("channel's deposits is ", deposits);
+        console.log("channel's withdrawals is ", withdrawals);
+        console.log("channel's seq nums is ", seqNums);
+        console.log("transfer outs is ", transferOuts);
+        console.log("pending pay outs is ", pendingPayOuts);
+        process.exit(0);
+    });
+
+program
+    .command('getCelerWalletId')
+    .action(async options => {
+        const api = await connect();
+        let celerWalletId = await getCelerWalletId(api);
+        console.log("Celer Wallet Module Id is ", celerWalletId);
+        process.exit(0);
+    });
+
+program
+    .command('getWalletOwners')
     .option('-i, --walletId <walletId>', 'Id of the wallet')
     .action(async options => {
         const api = await connect();
-        await emitWalletInfo(api, options.walletId)
+        let owners = await getWalletOwners(api, options.walletId)
+        console.log("wallet owner's is ", owners);
         process.exit(0);
     });
 
 program
-    .command('emitPoolId')
+    .command('getWalletOwners')
+    .option('-i, --walletId <walletId>', 'Id of the wallet')
     .action(async options => {
         const api = await connect();
-        await emitPoolId(api);
+        let owners = await getWalletOwners(api, options.walletId)
+        console.log("wallet owner's is ", owners);
         process.exit(0);
     });
 
 program
-    .command('emitPoolBalance')
+    .command('getWalletBalance')
+    .option('-i, --walletId <walletId>', 'Id of the wallet')
+    .action(async options => {
+        const api = await connect();
+        let owners = await getWalletBalance(api, options.walletId)
+        console.log("wallet owner's is ", owners);
+        process.exit(0);
+    });
+
+program
+    .command('getPoolId')
+    .action(async options => {
+        const api = await connect();
+        let poolId = await getPoolId(api);
+        console.log("Pool Module Id is ", poolId);
+        process.exit(0);
+    });
+
+program
+    .command('getPoolBalance')
     .option('-o, --owner <owner>', 'the address of query balance of')
     .action(async options => {
         const api = await connect();
-        await emitPoolBalance(api, options.owner);
+        let poolBalance = await getPoolBalance(api, options.owner);
+        console.log("owners pool balance is ", poolBalance);
         process.exit(0);
     });
 
 program
-    .command('emitAllowance')
+    .command('getAllowance')
     .option('-o, --owner <owner>', 'the address of query balance of')
     .option('-s, --spender <spender>', 'the address which will spend the funds')
     .action(async options => {
         const api = await connect();
-        await emitAllowance(api, options.owner, options.spender);
+        let allowance = await getAllowance(api, options.owner, options.spender);
+        console.log("amount of allowed by owner is ", allowance);
         process.exit(0);
     });
 
 program
-    .command('emitPayResolverId')
+    .command('getPayResolverId')
     .action(async options => {
         const api = await connect();
-        await emitPayResolverId(api);
+        let payResovlerId = await getPayResolverId(api);
+        console.log("Pay Resolver Module is ", payResovlerId);
         process.exit(0);
     });
-
-
 
 program.parse();
 
