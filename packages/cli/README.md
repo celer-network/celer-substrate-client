@@ -346,203 +346,233 @@ Resolve a payment by submitting an offchain vouched result
 yarn start resolvePaymentByVouchedResult --caller 'alice' --conditions 5 --maxAmounts 100 --logicType 3 --amount 20
 ```
 
-### Emit Celer Ledger Id
-Emit AccountId of Ledger Operation module
+### Query Celer Ledger Id
+Get AccountId of Ledger Operation module
 ```
-yarn start emitCelerLedgerId
+yarn start getCelerLedgerId
 ```
 
-### Emit ChannelInfo
-Emit channel basic info
+### Query Settle finalized time
+Get confrim settle open time
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelId|Yes|Id of channel|
 ```
-yarn start emitChannelInfo --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getSettleFinalizedTime --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit Settle finalized time
-Emit confrim settle open time
+### Query Cooperative Withdraw Seq Num
+Get cooperative withdraw seq num
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelId|Yes|Id of channel|
 ```
-yarn start emitSettleFinalizedTime --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getCooperativeWithdrawSeqNum --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit Cooperative Withdraw Seq Num
-Emit cooperative withdraw seq num
+### Query Channel's Total Balance
+Get one channel's total balance amount
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelId|Yes|Id of channel|
 ```
-yarn start emitCooperativeWithdrawSeqNum --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getTotalBalance --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit Total Balance
-Emit one channel's total balance amount
+### Query Channel's Status
+Get one channel's status
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelId|Yes|Id of channel|
 ```
-yarn start emitTotalBalance --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getChannelStatus --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit Balance Map
-Emit one channel's balance info
+### Query Balance Map
+Get one channel's balance info
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelId|Yes|Id of channel|
 ```
-yarn start emitBalanceMap --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getBalanceMap --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit Dispute Time Out
-Emit dispute timeout
+### Query Dispute Time Out
+Get dispute timeout
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelId|Yes|Id of channel|
 ```
-yarn start emitDisputeTimeout --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getDisputeTimeout --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit State Seq Num Map
-Emit state seq_num map of a duplex channel
+### Query Channel's State Seq Num Map
+Get channel's state seq_num map of a duplex channel
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelId|Yes|Id of channel|
 ```
-yarn start emitStateSeqNumMap --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getStateSeqNumMap --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit Transfer Out Map
-Emit transfer_out map of a duplex channel
+### Query Transfer Out Map
+Get transfer_out map of a duplex channel
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelId|Yes|Id of channel|
 ```
-yarn start emitTransferOutMap --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getTransferOutMap --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit Next Pay Id List Hash Map
-Emit next_pay_id_list_hash_map of a duplex channel
+### Query Next Pay Id List Hash Map
+Get next_pay_id_list_hash_map of a duplex channel
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelId|Yes|Id of channel|
 ```
-yarn start emitNextPayIdListHashMap --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getNextPayIdListHashMap --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit Last Pay Resolve Deadline Map 
-Emit last_pay_resolve_deadline map of a duplex channel
+### Query Last Pay Resolve Deadline Map 
+Get last_pay_resolve_deadline map of a duplex channel
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelId|Yes|Id of channel|
 ```
-yarn start emitLastPayResolveDeadlineMap --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getLastPayResolveDeadlineMap --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit Pending Pay Out Map
-Emit pending_pay_out_map of a duplex channel
+### Query Pending Pay Out Map
+Get pending_pay_out_map of a duplex channel
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelId|Yes|Id of channel|
 ```
-yarn start emitPendingPayOutMap --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getPendingPayOutMap --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit Withdraw Intent
-Emit withdraw intent of the channel
+### Query Withdraw Intent
+Get withdraw intent of the channel
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelId|Yes|Id of channel|
 ```
-yarn start emitWithdrawIntent --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getWithdrawIntent --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit channel number if given status
-Emit channel number if given status
+### Query channel number if given status
+Get channel number if given status
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelStatus|Yes|status of channel|
 ```
-yarn start emitChannelStatusNum --channelStatus 1
+yarn start getChannelStatusNum --channelStatus 1
 ```
 
-### Emit Peers Migration Info
-Emit migration info of the peers in the channel
+### Query Channel's Balance Limits
+Get channel's balance limits
+#### Parameter
+|Name|Required|Description|
+|---|---|---|
+|channelId|Yes|Id of channel|
+```
+yarn start getBalanceLimits --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+```
+
+### Query whether channel has balance limits 
+Get whether channel has balance limits 
+#### Parameter
+|Name|Required|Description|
+|---|---|---|
+|channelId|Yes|Id of channel|
+```
+yarn start getBalanceLimitsEnabled --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+```
+
+### Query Peers Migration Info
+Get migration info of the peers in the channel
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |channelStatus|Yes|status of channel|
 ```
-yarn start emitPeersMigrationInfo --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getPeersMigrationInfo --channelId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit Celer Wallet Id
-Emit AccountId of Celer Wallet module
+### Query Celer Wallet Id
+Get AccountId of Celer Wallet module
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |walletId|Yes|Id of wallet|
 ```
-yarn start emitCelerWalletId --walletId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getCelerWalletId --walletId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit Wallet Info
-Emit wallet info corresponding to wallet_id
+### Query Wallet's owners
+Get wallet owners corresponding to wallet_id
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |walletId|Yes|Id of wallet|
 ```
-yarn start emitWalletInfo --walletId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+yarn start getWalletOwners --walletId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
 ```
 
-### Emit Pool Id
-Emit AccountId of Pool
+### Query Wallet's balance
+Get wallet balance corresponding to wallet_id
+#### Parameter
+|Name|Required|Description|
+|---|---|---|
+|walletId|Yes|Id of wallet|
+```
+yarn start getWalletBalance --walletId '0x73f3379879d5945f4abf4f1f726f89ca45cc8865e00f3d4c52fe0289889c1c30'
+```
+
+### Query Pool Id
+Get AccountId of Pool
 ```
 yarn start emitPoolId
 ```
 
-### Emit Pool Balance
-Emit Amount of funds which is pooled of specified address
+### Query Pool Balance
+Get Amount of funds which is pooled of specified address
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |owner|Yes|the address of query balance of|
 ```
-yarn start emitPoolBalance --owner 'alice'
+yarn start getPoolBalance --owner 'alice'
 ```
 
-### Emit Allowance
-Emit Amount of funds which owner allowed to a spender
+### Query Allowance
+Get Amount of funds which owner allowed to a spender
 #### Parameter
 |Name|Required|Description|
 |---|---|---|
 |owner|Yes|the address of query balance of|
 |spender|Yes|the address which will spend the funds|
 ```
-yarn start emitAllowance --owner 'alice' --spender 'celerLedgerId'
+yarn start getAllowance --owner 'alice' --spender 'celerLedgerId'
 ```
 
-### Emit Pay Reoslver Id
-Emit AccountId of PayResolver module
+### Query Pay Reoslver Id
+Get AccountId of PayResolver module
 ```
-yarn start emitPayResolverId
+yarn start getPayResolverId
 ```
 
 
