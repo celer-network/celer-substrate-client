@@ -182,6 +182,12 @@ declare const _default: {
         };
     };
     types: {
+        BalanceWrapper: {
+            amount: string;
+        };
+        SeqNumWrapper: {
+            number: string;
+        };
         PayInfo: {
             amount: string;
             resolveDeadline: string;

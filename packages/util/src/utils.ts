@@ -49,6 +49,14 @@ export async function selectChannelPeer(
     }
 }
 
+export async function getZeroHash(
+    api: ApiPromise
+): Promise<string> {
+    let zeroU8a = blake2AsU8a(api.registry.createType("u8", 0).toU8a());
+    let zeroHash = u8aToHex(zeroU8a);
+    return zeroHash;
+}
+
 export async function caluculateChannelId(
     api: ApiPromise,
     openRequest: OpenChannelRequestOf

@@ -7,6 +7,10 @@ export interface AccountAmtPair extends Struct {
     readonly account: Option<AccountId>;
     readonly amt: Balance;
 }
+/** @name BalanceWrapper */
+export interface BalanceWrapper extends Struct {
+    readonly amount: Balance;
+}
 /** @name ChannelOf */
 export interface ChannelOf extends Struct {
     readonly balanceLimitsEnabled: bool;
@@ -200,6 +204,10 @@ export interface ResolvePaymentConditionsRequest extends Struct {
 export interface ResolvePaymentConditionsRequestOf extends Struct {
     readonly condPay: ConditionalPay;
     readonly hashPreimages: Vec<Hash>;
+}
+/** @name SeqNumWrapper */
+export interface SeqNumWrapper extends Struct {
+    readonly number: u128;
 }
 /** @name SignedSimplexState */
 export interface SignedSimplexState extends Struct {
