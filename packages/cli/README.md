@@ -545,7 +545,7 @@ yarn start getWalletBalance --walletId '0x73f3379879d5945f4abf4f1f726f89ca45cc88
 ### Query Pool Id
 Get AccountId of Pool
 ```
-yarn start emitPoolId
+yarn start getPoolId
 ```
 
 ### Query Pool Balance
