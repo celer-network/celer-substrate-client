@@ -6,9 +6,10 @@ import {
     waitBlockNumber,
     caluculateChannelId,
     selectChannelPeerKeyring,
-    selectChannelPeer
+    selectChannelPeer,
+    getZeroHash
 } from './utils';
-import { cryptoWaitReady, blake2AsU8a } from '@polkadot/util-crypto';
+import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { 
     SignedSimplexStateArray, 
     PayIdList, 
@@ -16,7 +17,7 @@ import {
     ResolvePaymentConditionsRequestOf,
     CooperativeSettleRequestOf 
 } from 'celer-substrate-types';
-import { u8aToHex } from "@polkadot/util";
+
 
 export async function setBalanceLimits(
     api: ApiPromise,
@@ -291,9 +292,8 @@ export async function intendWithdraw(
 ) : Promise<any> { 
     let caller = await selectChannelPeerKeyring(_caller);
     
-    if (isZeroHash === true) {
-        let zeroU8a = blake2AsU8a(api.registry.createType("u8", 0).toU8a());
-        let zeroHash = u8aToHex(zeroU8a);
+    if (isZeroHash === true) { 
+        let zeroHash = await getZeroHash(api);
         api.tx.celerPayModule
             .intendWithdraw(channelId, amount, zeroHash)
             .signAndSend(caller, ({ events = [], status }) => {

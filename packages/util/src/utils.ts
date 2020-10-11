@@ -52,8 +52,7 @@ export async function selectChannelPeer(
 export async function getZeroHash(
     api: ApiPromise
 ): Promise<string> {
-    let zeroU8a = blake2AsU8a(api.registry.createType("u8", 0).toU8a());
-    let zeroHash = u8aToHex(zeroU8a);
+    let zeroHash = u8aToHex(blake2AsU8a(api.registry.createType("i32", 0).toU8a()));
     return zeroHash;
 }
 
@@ -210,8 +209,7 @@ export async function getCooperativeWithdrawRequest(
 
     let cooperativeWithdrawInfo;
     if (isZeroHash === true) {
-        let zeroU8a = blake2AsU8a(api.registry.createType("u8", 0).toU8a());
-        let zeroHash = u8aToHex(zeroU8a);
+        let zeroHash = await getZeroHash(api);
         let _cooperativeWithdrawInfo = {
             channelId: channelId,
             seqNum: seqNum,
@@ -595,10 +593,9 @@ export async function getCondition(
 
         return conditionHashLock;
     } else if (type === 1) {
-        let hash = blake2AsU8a(api.registry.createType("u64", 1).toU8a());
-        let hash_1 = u8aToHex(hash);
-        let callIsFinalizedTrue = api.tx.mockBooleanCondition.isFinalized(hash_1, 1);
-        let callGetOutcomeTrue = api.tx.mockBooleanCondition.getOutcome(hash_1, 1);
+        let trueHash = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
+        let callIsFinalizedTrue = api.tx.mockBooleanCondition.isFinalized(trueHash, 1);
+        let callGetOutcomeTrue = api.tx.mockBooleanCondition.getOutcome(trueHash, 1);
         let _booleanConditionTrue = {
             conditionType: api.registry.createType("ConditionType", _conditionType.BooleanRuntimeModule),
             hashLock: new Option(api.registry, "Hash", null),
@@ -613,10 +610,9 @@ export async function getCondition(
 
         return booleanConditionTrue;
     } else if (type === 2) {
-        let hash = blake2AsU8a(api.registry.createType("u64", 1).toU8a());
-        let hash_1 = u8aToHex(hash);
-        let callIsFinalizedTrue = api.tx.mockBooleanCondition.isFinalized(hash_1, 1);
-        let callGetOutcomeFalse = api.tx.mockBooleanCondition.getOutcome(hash_1, 0);
+        let trueHash = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
+        let callIsFinalizedTrue = api.tx.mockBooleanCondition.isFinalized(trueHash, 1);
+        let callGetOutcomeFalse = api.tx.mockBooleanCondition.getOutcome(trueHash, 0);
         let _booleanConditionFalse = {
             conditionType: api.registry.createType("ConditionType", _conditionType.BooleanRuntimeModule),
             hashLock: new Option(api.registry, "Hash", null),
@@ -631,8 +627,7 @@ export async function getCondition(
 
         return booleanConditionFalse;
     } else if (type === 3) {
-        let hash = blake2AsU8a(api.registry.createType("u64", 1).toU8a());
-        let hash_1 = u8aToHex(hash);
+        let hash_1 = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
 
         let u8_1 = api.registry.createType("u8", 1);
         let hex1 = u8aToHex(u8_1.toU8a());
@@ -656,8 +651,7 @@ export async function getCondition(
 
         return numericCondition10;
     } else {
-        let hash = blake2AsU8a(api.registry.createType("u64", 1).toU8a());
-        let hash_1 = u8aToHex(hash);
+        let hash_1 = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
 
         let u8_1 = api.registry.createType("u8", 1);
         let hex1= u8aToHex(u8_1.toU8a());
