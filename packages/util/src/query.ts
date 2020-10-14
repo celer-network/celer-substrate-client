@@ -1,6 +1,11 @@
 import { ApiPromise } from '@polkadot/api';
 import { bool } from '@polkadot/types';
-import { selectChannelPeer } from './utils';
+import { selectChannelPeer, encodeCondPay } from './utils';
+import { ConditionalPay } from 'celer-substrate-types';
+import { u8aConcat, u8aToHex } from '@polkadot/util';
+import { blake2AsU8a } from '@polkadot/util-crypto';
+
+const payResolverId = '5EYCAe5ciAwUTDxffduE3oZJogSiokoD5WLwSvzgFtAq4sik';
 
 export async function getCelerLedgerId(api: ApiPromise): Promise<string> {
     const celerLedgerId = await api.rpc.celerPayModule.getCelerLedgerId();
@@ -232,11 +237,24 @@ export async function getPayResolverId(
     return payResolverId.toHuman();
 }
 
-export async function calculatePayId(
+export async function getPayInfo(
     api: ApiPromise,
-    payHash: string
-): Promise<string> {
-    const payId = await api.rpc.celerPayModule.calculatePayId(payHash);
-    return payId.toHex();
+    payId: string
+): Promise<[number, string]> {
+    const [payAmount, resolveDeadline] = await api.rpc.celerPayModule.getPayInfo(payId);
+    return [payAmount.amount.toNumber(), resolveDeadline.toHex()];
 }
 
+export async function calculatePayId(
+    api: ApiPromise,
+    condPay: ConditionalPay
+): Promise<string> {
+    let encodedCondPay = await encodeCondPay(condPay);
+    let payHash = api.registry.createType("Hash", u8aToHex(blake2AsU8a(encodedCondPay)));
+    let encoded = u8aConcat(
+        payHash.toU8a(),
+        api.registry.createType("AccountId", payResolverId).toU8a()
+    );
+    let payId = u8aToHex(blake2AsU8a(encoded));
+    return payId;
+}

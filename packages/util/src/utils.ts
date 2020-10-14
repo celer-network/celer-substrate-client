@@ -17,6 +17,7 @@ import { blake2AsU8a } from '@polkadot/util-crypto';
 
 const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
 const BOB = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';
+const payResolverId = '5EYCAe5ciAwUTDxffduE3oZJogSiokoD5WLwSvzgFtAq4sik';
 
 export async function selectChannelPeerKeyring(
     _channelPeer: string
@@ -551,21 +552,6 @@ export async function getConditions(
     }
 }
 
-async function calculatePayId(
-    api: ApiPromise,
-    payHash: string,
-): Promise<string> {
-    // encode(payHash, payResolver AccountId)
-    let encoded = u8aConcat(
-        api.registry.createType('Hash', payHash).toU8a(),
-        api.registry.createType('AccountId', '0x6d6f646c5265736f6c7665720000000000000000000000000000000000000000').toU8a(),
-    );
-    let hash = blake2AsU8a(encoded);
-    let payId = u8aToHex(hash);
-
-    return payId;
-}
-
 export async function getCondition(
     api: ApiPromise,
     type: number
@@ -675,6 +661,21 @@ export async function getCondition(
 
         return numericCondition25;
     }
+}
+
+async function calculatePayId(
+    api: ApiPromise,
+    payHash: string,
+): Promise<string> {
+    // encode(payHash, payResolver AccountId)
+    let encoded = u8aConcat(
+        api.registry.createType('Hash', payHash).toU8a(),
+        api.registry.createType('AccountId', payResolverId).toU8a(),
+    );
+    let hash = blake2AsU8a(encoded);
+    let payId = u8aToHex(hash);
+
+    return payId;
 }
 
 export async function getConditionalPay(

@@ -18,7 +18,6 @@ export async function connect (): Promise<ApiPromise> {
         rpc: celerRpc,
     });
 
-
     return api;
 }
 
@@ -248,15 +247,15 @@ const celerRpc = {
             params: [],
             type: "AccountId",
         },
-        calculatePayId: {
-            description: "Calculate pay id",
+        getPayInfo: {
+            description: "Return PayInfo corresponding to pay id",
             params: [
                 {
-                    name: "payHash",
+                    name: "payId",
                     type: "Hash",
                 }
             ],
-            type: "Hash",
+            type: "(BalanceWrapper, BlockNumber)"
         }
     }
 }

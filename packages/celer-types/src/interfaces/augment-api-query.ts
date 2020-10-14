@@ -39,22 +39,37 @@ declare module '@polkadot/api/types/storage' {
       totalIssuance: AugmentedQuery<ApiType, () => Observable<Balance>>;
     };
     celerPayModule: {
+      /**
+       * Mapping (owner, spender) to amount of funds to be allowed by owner
+       **/
       allowed: AugmentedQueryDoubleMap<ApiType, (key1: AccountId | string | Uint8Array, key2: AccountId | string | Uint8Array) => Observable<Option<BalanceOf>>>;
+      /**
+       * Mapping the channel id to Channel
+       **/
       channelMap: AugmentedQuery<ApiType, (arg: Hash | string | Uint8Array) => Observable<Option<ChannelOf>>>;
       /**
        * Celer Ledger
+       * Mapping channel status to number of channel which is corresponding to status
        **/
       channelStatusNums: AugmentedQuery<ApiType, (arg: u8 | AnyNumber | Uint8Array) => Observable<Option<u8>>>;
+      /**
+       * Mapping pay id to PayInfo
+       **/
       payInfoMap: AugmentedQuery<ApiType, (arg: Hash | string | Uint8Array) => Observable<Option<PayInfoOf>>>;
       /**
        * Pool
+       * Mapping owner to amount of funds in Pool
        **/
       poolBalances: AugmentedQuery<ApiType, (arg: AccountId | string | Uint8Array) => Observable<Option<BalanceOf>>>;
       storageVersion: AugmentedQuery<ApiType, () => Observable<Releases>>;
       /**
        * Celer Wallet
+       * Number of wallet
        **/
       walletNum: AugmentedQuery<ApiType, () => Observable<u128>>;
+      /**
+       * Mapping the wallet id(channel id) to Wallet
+       **/
       wallets: AugmentedQuery<ApiType, (arg: Hash | string | Uint8Array) => Observable<Option<WalletOf>>>;
     };
     grandpa: {

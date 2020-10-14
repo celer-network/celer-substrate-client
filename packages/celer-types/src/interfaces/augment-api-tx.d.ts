@@ -237,8 +237,8 @@ declare module '@polkadot/api/types/submittable' {
              * - 1 storage mutation `ChannelMap`
              * - 2 storage reads `Wallets`
              * - 2 storage mutation `Wallets`
-             * - 1 storage reads `Balances`
-             * - 1 storage mutation `Balances`
+             * - 1 storage reads `PoolBalances`
+             * - 1 storage mutation `PoolBalances`
              * - 2 storage reads `Allowed`
              * - 1 storage mutation `Allowed`
              * # </weight>
@@ -261,8 +261,8 @@ declare module '@polkadot/api/types/submittable' {
              * - N storage reads  `ChannelMap`
              * - 2*N storage reads `Wallets`
              * - 2*N storage mutation `Wallets`
-             * - N storage reads `Balances`
-             * - N storage mutation `Balances`
+             * - N storage reads `PoolBalances`
+             * - N storage mutation `PoolBalances`
              * - 2*N storage reads `Allowed`
              * - N storage mutation `Allowed`
              * # </weight
@@ -300,94 +300,6 @@ declare module '@polkadot/api/types/submittable' {
              * #</weight>
              **/
             disableBalanceLimits: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit Amount of funds which owner allowed to a spender
-             **/
-            emitAllowance: AugmentedSubmittable<(owner: AccountId | string | Uint8Array, spender: AccountId | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit one channel's balance info
-             **/
-            emitBalanceMap: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * TODO: RPC implementation
-             * In the current version, rpc implementation included in the runtime will cause
-             * a substrate error at compile time, so I will implement it in the next version.
-             *
-             * Emit AccountId of Ledger Operation module
-             **/
-            emitCelerLedgerId: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit AccountId of Celer Wallet module
-             **/
-            emitCelerWalletId: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit channel basic info
-             **/
-            emitChannelInfo: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit channel number if given status
-             **/
-            emitChannelStatusNum: AugmentedSubmittable<(channelStatus: u8 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit cooperative withdraw seq num
-             **/
-            emitCooperativeWithdrawSeqNum: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit dipute time out
-             **/
-            emitDisputeTimeOut: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit last_pay_resolve_deadline map of a duplex channel
-             **/
-            emitLastPayResolveDeadlineMap: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit next_pay_id_list_hash_map of a duplex channel
-             **/
-            emitNextPayIdListHashMap: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit AccountId of PayResolver module
-             **/
-            emitPayResolverId: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit migration info of the peers in the channel
-             **/
-            emitPeersMigrationInfo: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit pending_pay_out_map of a duplex channel
-             **/
-            emitPendingPayOutMap: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit Amount of funds which is pooled of specifed address
-             **/
-            emitPoolBalance: AugmentedSubmittable<(owner: AccountId | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit AccountId of Pool
-             **/
-            emitPoolId: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit channel confirm settle open time
-             **/
-            emitSettleFinalizedTime: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit state seq_num map of a duplex channel
-             **/
-            emitStateSeqNumMap: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit one channel's total balance amount
-             **/
-            emitTotalBalance: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit transfer_out map of a duplex channel
-             **/
-            emitTransferOutMap: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit wallet info corresponding to wallet_id
-             **/
-            emitWalletInfo: AugmentedSubmittable<(walletId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-            /**
-             * Emit withdraw intent of the channel
-             **/
-            emitWithdrawIntent: AugmentedSubmittable<(channelId: Hash | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
             /**
              * Enable balance limits
              *
