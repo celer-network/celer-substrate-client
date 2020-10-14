@@ -56,6 +56,7 @@ import {
     getAllowance,
     getPoolBalance,
     getPayResolverId,
+    getPayInfo,
 } from "celer-substrate-utils";
 
 import program from 'commander';
@@ -708,6 +709,16 @@ program
         console.log("Pay Resolver Module is ", payResovlerId);
         process.exit(0);
     });
+
+program
+    .command('getPayInfo')
+    .option('-i, --payId <payId>', 'Id of pay info')
+    .action(async options => {
+        const api = await connect();
+        let [payAmount, resolveDeadline] = await getPayInfo(api, options.payId);;
+        console.log("pay amount is ", payAmount);
+        console.log("resolve deadline of pay is ", resolveDeadline);
+    })
 
 program.parse();
 

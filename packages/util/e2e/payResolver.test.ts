@@ -10,6 +10,10 @@ import {
     getVouchedCondPayResult,
     getResolvePayByCondtionsRequest,
 } from "../src/utils";
+import {
+    getPayInfo, 
+    calculatePayId
+} from "../src/query";
 import { 
     blake2AsU8a 
 } from '@polkadot/util-crypto';
@@ -39,7 +43,12 @@ describe('pay resolver test', () => {
         );
 
         await resolvePaymentByConditions(api, 'alice', payRequest);
-        await waitBlockNumber(2);
+        await waitBlockNumber(3);
+
+        let payId = await calculatePayId(api, condPay);
+        let [payAmount, _] = await getPayInfo(api, payId);
+        expect(payAmount).toBe(10);
+
 
         console.log("\n", "=== Resolve Payment By Conditions when the logic is BOOLEAN_AND and some conditions are false ====")
         conditions = await getConditions(api, 1);
@@ -59,7 +68,11 @@ describe('pay resolver test', () => {
         );
 
         await resolvePaymentByConditions(api, 'alice', payRequest);
-        await waitBlockNumber(2);
+        await waitBlockNumber(3);
+
+        payId = await calculatePayId(api, condPay);
+        [payAmount, _] = await getPayInfo(api, payId);
+        expect(payAmount).toBe(0);
 
         console.log("\n", "=== Resolve Payment By Conditions when the logic is BOOLEAN_OR and some conditions are true ===")
         conditions = await getConditions(api, 2);
@@ -79,7 +92,11 @@ describe('pay resolver test', () => {
         );
 
         await resolvePaymentByConditions(api, 'alice', payRequest);
-        await waitBlockNumber(2);
+        await waitBlockNumber(3);
+
+        payId = await calculatePayId(api, condPay);
+        [payAmount, _] = await getPayInfo(api, payId);
+        expect(payAmount).toBe(30);
 
         console.log("\n", "=== Resolve Payment By Conditions when the logic is BOOLEAN_OR and all conditions are false ===")
         conditions = await getConditions(api, 0);
@@ -99,7 +116,11 @@ describe('pay resolver test', () => {
         );
 
         await resolvePaymentByConditions(api, 'alice', payRequest);
-        await waitBlockNumber(2);
+        await waitBlockNumber(3);
+
+        payId = await calculatePayId(api, condPay);
+        [payAmount, _] = await getPayInfo(api, payId);
+        expect(payAmount).toBe(0);
 
         console.log("\n", "=============== Resolve Payment By Vouched Result ========================")
         conditions = await getConditions(api, 5);
@@ -118,7 +139,11 @@ describe('pay resolver test', () => {
             20
         );
         await resolvePaymentByVouchedResult(api, 'alice', vouchedPayResult);
-        await waitBlockNumber(2);
+        await waitBlockNumber(3);
+
+        payId = await calculatePayId(api, sharedPay);
+        [payAmount, _] = await getPayInfo(api, payId);
+        expect(payAmount).toBe(20);
 
         console.log("\n", "====== Resolve Payment By Vouched Result when the new result is larger ===================")
         vouchedPayResult = await getVouchedCondPayResult(
@@ -127,7 +152,11 @@ describe('pay resolver test', () => {
             25
         );
         await resolvePaymentByVouchedResult(api, 'alice', vouchedPayResult);
-        await waitBlockNumber(2);
+        await waitBlockNumber(3);
+
+        payId = await calculatePayId(api, sharedPay);
+        [payAmount, _] = await getPayInfo(api, payId);
+        expect(payAmount).toBe(25);
 
         console.log("\n", "=== Resolve Payment By Conditions when the logic is NUMERIC_ADD  =======")
         conditions = await getConditions(api, 5);
@@ -147,7 +176,11 @@ describe('pay resolver test', () => {
         );
 
         await resolvePaymentByConditions(api, 'alice', payRequest);
-        await waitBlockNumber(2);
+        await waitBlockNumber(3);
+
+        payId = await calculatePayId(api, condPay);
+        [payAmount, _] = await getPayInfo(api, payId);
+        expect(payAmount).toBe(35);
 
         console.log("\n", "=== Resolve Payment By Conditions when the logic is NUMERIC_MAX  =======")
         conditions = await getConditions(api, 5);
@@ -167,7 +200,11 @@ describe('pay resolver test', () => {
         );
 
         await resolvePaymentByConditions(api, 'alice', payRequest);
-        await waitBlockNumber(2);
+        await waitBlockNumber(3);
+
+        payId = await calculatePayId(api, condPay);
+        [payAmount, _] = await getPayInfo(api, payId);
+        expect(payAmount).toBe(25);
 
         console.log("\n", "=== Resolve Payment By Conditions when the logic is NUMERIC_MIN  =======")
         conditions = await getConditions(api, 5);
@@ -187,7 +224,11 @@ describe('pay resolver test', () => {
         );
 
         await resolvePaymentByConditions(api, 'alice', payRequest);
-        await waitBlockNumber(2);
+        await waitBlockNumber(3);
+
+        payId = await calculatePayId(api, condPay);
+        [payAmount, _] = await getPayInfo(api, payId);
+        expect(payAmount).toBe(10);
 
         console.log("\n", "=== ResolvePayment By Condition without conditions ===")
         conditions = await getConditions(api, 6);
@@ -206,6 +247,10 @@ describe('pay resolver test', () => {
             [truePreimgage]
         );
         await resolvePaymentByConditions(api, 'alice', payRequest);
-        await waitBlockNumber(2);
+        await waitBlockNumber(3);
+
+        payId = await calculatePayId(api, condPay);
+        [payAmount, _] = await getPayInfo(api, payId);
+        expect(payAmount).toBe(50);
     });
 });

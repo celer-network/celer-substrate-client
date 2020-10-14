@@ -18,6 +18,8 @@ import {
     CooperativeSettleRequestOf 
 } from 'celer-substrate-types';
 
+const BOB = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty';
+const celerLedgerId = '5EYCAe5fKZwTqKwvoibLLjYSMCkyGNJzwmxAg6SoeiLqQk1W';
 
 export async function setBalanceLimits(
     api: ApiPromise,
@@ -288,58 +290,37 @@ export async function intendWithdraw(
     channelId: string,
     amount: number,
     isZeroHash = true,
-    recipientChannelId?: string,
-) : Promise<any> { 
+    _recipientChannelId?: string,
+) { 
     let caller = await selectChannelPeerKeyring(_caller);
     
+    let recipientChannelId: any;
     if (isZeroHash === true) { 
-        let zeroHash = await getZeroHash(api);
-        api.tx.celerPayModule
-            .intendWithdraw(channelId, amount, zeroHash)
-            .signAndSend(caller, ({ events = [], status }) => {
-                console.log('Intend Withdraw:', status.type);
-                if (status.isInBlock) {
-                    console.log('Included at block hash', status.asInBlock.toHex());
-                    console.log('Events: ');
-                    console.log('\t', 'celerPayModule.IntendWithdraw [channelId(Hash), receiver(AccountId), amount(Balance)]\n');
-
-                    events.forEach(({ event: { data, method, section}}) => {
-                        const [error] = data;
-                        if (error.isModule) {
-                            const { documentation, name, section } = api.registry.findMetaError(error.asModule);
-                            console.log(`${section}: error message is ${name}, ${documentation}` );
-                        } else {
-                            console.log('\t', `${section}.${method}`, data.toString());
-                        }
-                    });
-                } 
-            });
-            let currentBlockNumber = await api.derive.chain.bestNumber();
-        return currentBlockNumber;
+        recipientChannelId = await getZeroHash(api);
     } else {
-        api.tx.celerPayModule
-            .intendWithdraw(channelId, amount, recipientChannelId)
-            .signAndSend(caller, ({ events = [], status }) => {
-                console.log('Intend Withdraw:', status.type);
-                if (status.isInBlock) {
-                    console.log('Included at block hash', status.asInBlock.toHex());
-                    console.log('Events: ');
-                    console.log('\t', 'celerPayModule.IntendWithdraw [channelId(Hash), receiver(AccountId), amount(Balance)]\n');
-
-                    events.forEach(({ event: { data, method, section}}) => {
-                        const [error] = data;
-                        if (error.isModule) {
-                            const { documentation, name, section } = api.registry.findMetaError(error.asModule);
-                            console.log(`${section}: error message is ${name}, ${documentation}` );
-                        } else {
-                            console.log('\t', `${section}.${method}`, data.toString());
-                        }
-                    });
-                } 
-            });
-            let currentBlockNumber = await api.derive.chain.bestNumber();
-        return currentBlockNumber;
+        recipientChannelId = _recipientChannelId;
     }
+
+    api.tx.celerPayModule
+        .intendWithdraw(channelId, amount, recipientChannelId)
+        .signAndSend(caller, ({ events = [], status }) => {
+            console.log('Intend Withdraw:', status.type);
+            if (status.isInBlock) {
+                console.log('Included at block hash', status.asInBlock.toHex());
+                console.log('Events: ');
+                console.log('\t', 'celerPayModule.IntendWithdraw [channelId(Hash), receiver(AccountId), amount(Balance)]\n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    const [error] = data;
+                    if (error.isModule) {
+                        const { documentation, name, section } = api.registry.findMetaError(error.asModule);
+                        console.log(`${section}: error message is ${name}, ${documentation}` );
+                    } else {
+                        console.log('\t', `${section}.${method}`, data.toString());
+                    }
+                });
+                } 
+        });
 }
 
 export async function confirmWithdraw(
@@ -413,29 +394,16 @@ export async function cooperativeWithdraw(
 ) {
     let caller = await selectChannelPeerKeyring(_caller);
 
-    let cooperativeWithdrawRequest;
-    if (isZeroHash === true) {
-        cooperativeWithdrawRequest = await getCooperativeWithdrawRequest(
-            api,
-            channelId,
-            seqNum,
-            amount,
-            _receiverAccount,
-            withdrawDeadline,
-            isZeroHash
-        );
-    } else {
-        cooperativeWithdrawRequest = await getCooperativeWithdrawRequest(
-            api,
-            channelId,
-            seqNum,
-            amount,
-            _receiverAccount,
-            withdrawDeadline,
-            isZeroHash,
-            recipientChannelId
-        );
-    }
+    let cooperativeWithdrawRequest = await getCooperativeWithdrawRequest(
+        api,
+        channelId,
+        seqNum,
+        amount,
+        _receiverAccount,
+        withdrawDeadline,
+        isZeroHash,
+        recipientChannelId
+    );
 
     api.tx.celerPayModule
         .cooperativeWithdraw(cooperativeWithdrawRequest)
@@ -653,56 +621,37 @@ export async function approve(
     _spender: string,
     value: number,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const bob = keyring.addFromUri('//Bob');
-
     let caller = await selectChannelPeerKeyring(_caller);
-
-    if (_spender === 'bob') {
-        let spender = api.registry.createType("AccountId", bob.address);
-        api.tx.celerPayModule
-            .approve(spender, value)
-            .signAndSend(caller, ({ events = [], status }) => {
-                console.log('Approve :', status.type);
-                if (status.isInBlock) {
-                    console.log('Included at block hash', status.asInBlock.toHex());
-                    console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), amount(Balance)]\n');
-
-                    events.forEach(({ event: { data, method, section}}) => {
-                        const [error] = data;
-                        if (error.isModule) {
-                            const { documentation, name, section } = api.registry.findMetaError(error.asModule);
-                            console.log(`${section}: error message is ${name}, ${documentation}` );
-                        } else {
-                            console.log('\t', `${section}.${method}`, data.toString());
-                        }
-                    });
-                } 
-            });
+    
+    let spender: any;
+    if (_spender === 'bob' || _spender === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+        spender = api.registry.createType("AccountId", BOB);
     } else if (_spender === 'celerLedgerId') {
-        let spender = '0x6d6f646c5f6c65646765725f0000000000000000000000000000000000000000';
-        api.tx.celerPayModule
-            .approve(spender, value)
-            .signAndSend(caller, ({ events = [], status }) => {
-                console.log('Approve:', status.type);
-                if (status.isInBlock) {
-                    console.log('Included at block hash', status.asInBlock.toHex());
-                    console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), amount(Balance)]\n');
-
-                    events.forEach(({ event: { data, method, section}}) => {
-                        const [error] = data;
-                        if (error.isModule) {
-                            const { documentation, name, section } = api.registry.findMetaError(error.asModule);
-                            console.log(`${section}: error message is ${name}, ${documentation}` );
-                        } else {
-                            console.log('\t', `${section}.${method}`, data.toString());
-                        }
-                    });
-                } 
-        });
+        spender = api.registry.createType("AccountId", celerLedgerId);
+    } else {
+        throw new Error('spender is bob or celer ledger operation module');
     }
+
+    api.tx.celerPayModule
+        .approve(spender, value)
+        .signAndSend(caller, ({ events = [], status }) => {
+            console.log('Approve :', status.type);
+            if (status.isInBlock) {
+                console.log('Included at block hash', status.asInBlock.toHex());
+                console.log('Events: ');
+                console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), amount(Balance)]\n');
+
+                events.forEach(({ event: { data, method, section}}) => {
+                    const [error] = data;
+                    if (error.isModule) {
+                        const { documentation, name, section } = api.registry.findMetaError(error.asModule);
+                        console.log(`${section}: error message is ${name}, ${documentation}` );
+                    } else {
+                        console.log('\t', `${section}.${method}`, data.toString());
+                    }
+                });
+            } 
+        });
 }
 
 export async function transferFrom(
@@ -759,56 +708,37 @@ export async function increaseAllowance(
     _spender: string,
     addedValue: number,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const bob = keyring.addFromUri('//Bob');
-
     let caller = await selectChannelPeerKeyring(_caller);
 
-    if (_spender === 'bob') {
-        let spender = api.registry.createType("AccountId", bob.address);
-        api.tx.celerPayModule
-            .increaseAllowance(spender, addedValue)
-            .signAndSend(caller, ({ events = [], status }) => {
-                console.log('Increase allowance :', status.type);
-                if (status.isInBlock) {
-                    console.log('Included at block hash', status.asInBlock.toHex());
-                    console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), increasedAmount(Balance)]\n');
-
-                    events.forEach(({ event: { data, method, section}}) => {
-                        const [error] = data;
-                        if (error.isModule) {
-                            const { documentation, name, section } = api.registry.findMetaError(error.asModule);
-                            console.log(`${section}: error message is ${name}, ${documentation}` );
-                        } else {
-                            console.log('\t', `${section}.${method}`, data.toString());
-                        }
-                    });
-                } 
-            });
+    let spender: any;
+    if (_spender === 'bob' || _spender === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+        spender = api.registry.createType("AccountId", BOB);
     } else if (_spender === 'celerLedgerId') {
-        let spender = '0x6d6f646c5f6c65646765725f0000000000000000000000000000000000000000';
-        api.tx.celerPayModule
-            .increaseAllowance(spender, addedValue)
-            .signAndSend(caller, ({ events = [], status }) => {
-                console.log('Increase allowance:', status.type);
-                if (status.isInBlock) {
-                    console.log('Included at block hash', status.asInBlock.toHex());
-                    console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), increasedAmount(Balance)]\n');
-
-                    events.forEach(({ event: { data, method, section}}) => {
-                        const [error] = data;
-                        if (error.isModule) {
-                            const { documentation, name, section } = api.registry.findMetaError(error.asModule);
-                            console.log(`${section}: error message is ${name}, ${documentation}` );
-                        } else {
-                            console.log('\t', `${section}.${method}`, data.toString());
-                        }
-                    });
-                } 
-        });
+        spender = api.registry.createType("AccountId", celerLedgerId);
+    } else {
+        throw new Error('spender is bob or celer ledger operation module');
     }
+
+    api.tx.celerPayModule
+        .increaseAllowance(spender, addedValue)
+        .signAndSend(caller, ({ events = [], status }) => {
+            console.log('Increase allowance :', status.type);
+            if (status.isInBlock) {
+                console.log('Included at block hash', status.asInBlock.toHex());
+                console.log('Events: ');
+                console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), increasedAmount(Balance)]\n');
+                    
+                events.forEach(({ event: { data, method, section}}) => {
+                    const [error] = data;
+                    if (error.isModule) {
+                        const { documentation, name, section } = api.registry.findMetaError(error.asModule);
+                        console.log(`${section}: error message is ${name}, ${documentation}` );
+                    } else {
+                        console.log('\t', `${section}.${method}`, data.toString());
+                    }
+                });
+            } 
+        });
 }
 
 export async function decreaseAllowance(
@@ -817,56 +747,36 @@ export async function decreaseAllowance(
     _spender: string,
     subtractedValue: number,
 ) {
-    const keyring = new Keyring({ type: 'sr25519'});
-    const bob = keyring.addFromUri('//Bob');
-
     let caller = await selectChannelPeerKeyring(_caller);
 
-    if (_spender === 'bob') {
-        let spender = api.registry.createType("AccountId", bob.address);
-        api.tx.celerPayModule
-            .decreaseAllowance(spender, subtractedValue)
-            .signAndSend(caller, ({ events = [], status }) => {
-                console.log('Decrease allowance :', status.type);
-                if (status.isInBlock) {
-                    console.log('Included at block hash', status.asInBlock.toHex());
-                    console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), decreasedAmount(Balance)]\n');
-
-                    events.forEach(({ event: { data, method, section}}) => {
-                        const [error] = data;
-                        if (error.isModule) {
-                            const { documentation, name, section } = api.registry.findMetaError(error.asModule);
-                            console.log(`${section}: error message is ${name}, ${documentation}` );
-                        } else {
-                            console.log('\t', `${section}.${method}`, data.toString());
-                        }
-                    });
-                } 
-            });
+    let spender: any;
+    if (_spender === 'bob' || _spender === '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty') {
+        spender = api.registry.createType("AccountId", BOB);
     } else if (_spender === 'celerLedgerId') {
-        let spender = '0x6d6f646c5f6c65646765725f0000000000000000000000000000000000000000';
-        api.tx.celerPayModule
-            .decreaseAllowance(spender, subtractedValue)
-            .signAndSend(caller, ({ events = [], status }) => {
-                console.log('Decrease allowance:', status.type);
-                if (status.isInBlock) {
-                    console.log('Included at block hash', status.asInBlock.toHex());
-                    console.log('Events: ');
-                    console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), decreasedAmount(Balance)]\n');
-
-                    events.forEach(({ event: { data, method, section}}) => {
-                        const [error] = data;
-                        if (error.isModule) {
-                            const { documentation, name, section } = api.registry.findMetaError(error.asModule);
-                            console.log(`${section}: error message is ${name}, ${documentation}` );
-                        } else {
-                            console.log('\t', `${section}.${method}`, data.toString());
-                        }
-                    });
-                } 
-        });
+        spender = api.registry.createType("AccountId", celerLedgerId);
+    } else {
+        throw new Error('spender is bob or celer ledger operation module');
     }
+   
+    api.tx.celerPayModule
+        .decreaseAllowance(spender, subtractedValue)
+        .signAndSend(caller, ({ events = [], status }) => {
+            console.log('Decrease allowance :', status.type);
+            if (status.isInBlock) {
+                console.log('Included at block hash', status.asInBlock.toHex());
+                console.log('Events: ');
+                console.log('\t', 'celerPayModule.Approval [owner(AccountId), spender(AccountId), decreasedAmount(Balance)]\n');
+                events.forEach(({ event: { data, method, section}}) => {
+                    const [error] = data;
+                    if (error.isModule) {
+                        const { documentation, name, section } = api.registry.findMetaError(error.asModule);
+                        console.log(`${section}: error message is ${name}, ${documentation}` );
+                    } else {
+                        console.log('\t', `${section}.${method}`, data.toString());
+                    }
+                });
+            } 
+        });
 }
 
 export async function resolvePaymentByConditions(

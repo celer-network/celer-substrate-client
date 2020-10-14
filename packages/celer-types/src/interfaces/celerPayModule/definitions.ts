@@ -216,16 +216,16 @@ export default {
             params: [],
             type: "AccountId",
         },
-        calculatePayId: {
-            description: "Calculate pay id",
+        getPayInfo: {
+            description: "Return PayInfo corresponding to pay id",
             params: [
                 {
-                    name: "payHash",
+                    name: "payId",
                     type: "Hash",
-                }
+                },
             ],
-            type: "Hash",
-        }
+            type: "(BalanceWapper, BlockNumber)",
+        },
     },
     types: {
         BalanceWrapper: {

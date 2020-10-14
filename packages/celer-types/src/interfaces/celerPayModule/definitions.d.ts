@@ -172,7 +172,7 @@ declare const _default: {
             params: never[];
             type: string;
         };
-        calculatePayId: {
+        getPayInfo: {
             description: string;
             params: {
                 name: string;
