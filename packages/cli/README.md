@@ -575,7 +575,15 @@ Get AccountId of PayResolver module
 yarn start getPayResolverId
 ```
 
-
+### Query PayInfo
+Get PayInfo corresponding to pay_id
+#### Parameter
+|Name|Required|Description|
+|---|---|---|
+|payId|Yes|Id of pay info|
+```
+yarn start getPayId --payId '0xdc94f203b926caea3df55a56a186a875406f7c8f25684726c03dc743a4cddc77'
+```
 
 
 
