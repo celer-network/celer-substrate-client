@@ -366,7 +366,7 @@ export async function getVouchedCondPayResult(
         amount: api.registry.createType("Balance", amount)
     };
     
-    let encoded = await encodeCondPay(condPay);
+    let encoded = await encodeCondPay(api, condPay);
     let _vouchedCondPayResult = {
         condPayResult: api.registry.createType("CondPayResult", condPayResult),
         sigOfSrc: api.registry.createType("MultiSignature", src.sign(encoded, {withType: true})),
@@ -418,7 +418,7 @@ export async function getPayIdListInfo(
                 conditions, 
                 payAmounts[i][j],
             );
-            let encodedCondPay = await encodeCondPay(condPayArray[i][j]);
+            let encodedCondPay = await encodeCondPay(api, condPayArray[i][j]);
             let hash = blake2AsU8a(encodedCondPay);
             let payHash = u8aToHex(hash);
             payIds[j] = await calculatePayId(api, payHash);
@@ -560,105 +560,86 @@ export async function getCondition(
         HashLock,
         BooleanRuntimeModule,
         NumericRuntimeModule,
+        SmartContract,
     }
      
     if (type === 0) {
-        let hash = blake2AsU8a(api.registry.createType("u64", 1).toU8a());
-        let hash_1 = u8aToHex(hash);
+        let trueHash = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
         let _conditionHashLock = {
             conditionType: api.registry.createType("ConditionType", _conditionType.HashLock),
-            hashLock: new Option(api.registry, "Hash", hash_1),
-            callIsFinalized: new Option(api.registry, "Call", null),
-            callGetOutcome: new Option(api.registry, "Call", null),
-            numericAppNum: new Option(api.registry, "u32", null),
-            numericSessionId: new Option(api.registry, "Hash", null),
-            argsQueryFinalization: new Option(api.registry, "Bytes", null),
-            argsQueryOutcome: new Option(api.registry, "Bytes", null)
+            hashLock: new Option(api.registry, "Hash", trueHash),
+            booleanModuleCallData: new Option(api.registry, "BooleanModuleCallData", null),
+            numericModuleCallData: new Option(api.registry, "NumericModuleCallData", null),
+            smartcontractCallData: new Option(api.registry, "SmartContractCallData", null),
         };
         let conditionHashLock = api.registry.createType("Condition", _conditionHashLock);
-
         return conditionHashLock;
     } else if (type === 1) {
-        let trueHash = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
-        let callIsFinalizedTrue = api.tx.mockBooleanCondition.isFinalized(trueHash, 1);
-        let callGetOutcomeTrue = api.tx.mockBooleanCondition.getOutcome(trueHash, 1);
+        let appId = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
+        let callIsFinalizedTrue = api.tx.mockBooleanCondition.isFinalized(appId, 1);
+        let callGetOutcomeTrue = api.tx.mockBooleanCondition.getOutcome(appId, 1);
+        let _booleanModuleCallData = {
+            callIsFinalized: api.registry.createType("Call", callIsFinalizedTrue),
+            callGetOutcome: api.registry.createType("Call", callGetOutcomeTrue)
+        };
+        //console.log(_booleanModuleCallData.callIsFinalized);
         let _booleanConditionTrue = {
             conditionType: api.registry.createType("ConditionType", _conditionType.BooleanRuntimeModule),
             hashLock: new Option(api.registry, "Hash", null),
-            callIsFinalized: new Option(api.registry, "Call", callIsFinalizedTrue),
-            callGetOutcome: new Option(api.registry, "Call", callGetOutcomeTrue),
-            numericAppNum: new Option(api.registry, "u32", null),
-            numericSessionId: new Option(api.registry, "Hash", null),
-            argsQueryFinalization: new Option(api.registry, "Bytes", null),
-            argsQueryOutcome: new Option(api.registry, "Bytes", null)
+            booleanModuleCallData: new Option(api.registry, "BooleanModuleCallData", api.registry.createType("BooleanModuleCallData", _booleanModuleCallData)),
+            numericModuleCallData: new Option(api.registry, "NumericModuleCallData", null),
+            smartContractCallData: new Option(api.registry, "SmartContractCallData", null),
         };
         let booleanConditionTrue = api.registry.createType("Condition", _booleanConditionTrue);
-
         return booleanConditionTrue;
     } else if (type === 2) {
-        let trueHash = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
-        let callIsFinalizedTrue = api.tx.mockBooleanCondition.isFinalized(trueHash, 1);
-        let callGetOutcomeFalse = api.tx.mockBooleanCondition.getOutcome(trueHash, 0);
+        let appId = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
+        let callIsFinalizedTrue = api.tx.mockBooleanCondition.isFinalized(appId, 1);
+        let callGetOutcomeFalse = api.tx.mockBooleanCondition.getOutcome(appId, 0);
+        let _booleanModuleCallData = {
+            callIsFinalized: api.registry.createType("Call", callIsFinalizedTrue),
+            callGetOutcome: api.registry.createType("Call", callGetOutcomeFalse)
+        };
         let _booleanConditionFalse = {
             conditionType: api.registry.createType("ConditionType", _conditionType.BooleanRuntimeModule),
             hashLock: new Option(api.registry, "Hash", null),
-            callIsFinalized: new Option(api.registry, "Call", callIsFinalizedTrue),
-            callGetOutcome: new Option(api.registry, "Call", callGetOutcomeFalse),
-            numericAppNum: new Option(api.registry, "u32", null),
-            numericSessionId: new Option(api.registry, "Hash", null),
-            argsQueryFinalization: new Option(api.registry, "Bytes", null),
-            argsQueryOutcome: new Option(api.registry, "Bytes", null)
+            booleanModuleCallData: new Option(api.registry, "BooleanModuleCallData", api.registry.createType("BooleanModuleCallData", _booleanModuleCallData)),
+            numericModuleCallData: new Option(api.registry, "NumericModuleCallData", null),
+            smartContractCallData: new Option(api.registry, "SmartContractCallData", null),
         };
         let booleanConditionFalse = api.registry.createType("Condition", _booleanConditionFalse);
-
         return booleanConditionFalse;
     } else if (type === 3) {
-        let hash_1 = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
-
-        let u8_1 = api.registry.createType("u8", 1);
-        let hex1 = u8aToHex(u8_1.toU8a());
-        let bytes1 = api.registry.createType("Bytes", hex1);
-
-        let u32_10 = api.registry.createType("u32", 10);
-        let hex10 = u8aToHex(u32_10.toU8a());
-        let bytes10 = api.registry.createType("Bytes", hex10);
-
+        let _numericModuleCallData = {
+            numericAppNum: api.registry.createType("u32", 0),
+            numericSessionId: u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a())),
+            argsQueryFinalization: api.registry.createType("Bytes", u8aToHex(api.registry.createType("u8", 1).toU8a())),
+            argsQueryOutcome: api.registry.createType("Bytes", u8aToHex(api.registry.createType("u32", 10).toU8a())),
+        };
         let _numericCondition10 = {
             conditionType: api.registry.createType("ConditionType", _conditionType.NumericRuntimeModule),
             hashLock: new Option(api.registry, "Hash", null),
-            callIsFinalized: new Option(api.registry, "Call", null),
-            callGetOutcome: new Option(api.registry, "Call", null),
-            numericAppNum: new Option(api.registry, "u32", api.registry.createType("u32", 0)),
-            numericSessionId: new Option(api.registry, "Hash", hash_1),
-            argsQueryFinalization: new Option(api.registry, "Bytes", bytes1),
-            argsQueryOutcome: new Option(api.registry, "Bytes", bytes10)
-        };
-        let numericCondition10= api.registry.createType("Condition", _numericCondition10);
-
+            booleanModuleCallData: new Option(api.registry, "BooleanModuleCallData", null),
+            numericModuleCallData: new Option(api.registry, "NumericModuleCallData", api.registry.createType("NumericModuleCallData", _numericModuleCallData)),
+            smartContractCallData: new Option(api.registry, "SmartContractCallData", null),
+        }
+        let numericCondition10 = api.registry.createType("Condition", _numericCondition10);
         return numericCondition10;
     } else {
-        let hash_1 = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
-
-        let u8_1 = api.registry.createType("u8", 1);
-        let hex1= u8aToHex(u8_1.toU8a());
-        let bytes1 = api.registry.createType("Bytes", hex1);
-
-        let u32_25 = api.registry.createType("u32", 25);
-        let hex25 = u8aToHex(u32_25.toU8a());
-        let bytes25 = api.registry.createType("Bytes", hex25);
-
+        let _numericModuleCallData = {
+            numericAppNum: api.registry.createType("u32", 0),
+            numericSessionId: u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a())),
+            argsQueryFinalization: api.registry.createType("Bytes", u8aToHex(api.registry.createType("u8", 1).toU8a())),
+            argsQueryOutcome: api.registry.createType("Bytes", u8aToHex(api.registry.createType("u32", 25).toU8a())),
+        };
         let _numericCondition25 = {
             conditionType: api.registry.createType("ConditionType", _conditionType.NumericRuntimeModule),
             hashLock: new Option(api.registry, "Hash", null),
-            callIsFinalized: new Option(api.registry, "Call", null),
-            callGetOutcome: new Option(api.registry, "Call", null),
-            numericAppNum: new Option(api.registry, "u32", api.registry.createType("u32", 0)),
-            numericSessionId: new Option(api.registry, "Hash", hash_1),
-            argsQueryFinalization: new Option(api.registry, "Bytes", bytes1),
-            argsQueryOutcome: new Option(api.registry, "Bytes", bytes25),
-        };
-        let numericCondition25= api.registry.createType("Condition", _numericCondition25);
-
+            booleanModuleCallData: new Option(api.registry, "BooleanModuleCallData", null),
+            numericModuleCallData: new Option(api.registry, "NumericModuleCallData", api.registry.createType("NumericModuleCallData", _numericModuleCallData)),
+            smartContractCallData: new Option(api.registry, "SmartContractCallData", null),
+        }
+        let numericCondition25 = api.registry.createType("Condition", _numericCondition25);
         return numericCondition25;
     }
 }
@@ -730,7 +711,6 @@ async function getTransferFunc(
             maxTransfer: tokenTransfer
         };
         let transferFunc = api.registry.createType("TransferFunction", _transferFunc);
-        
         return transferFunc;
     } else if (logicType === 1) {
         let transferFuncType = api.registry.createType("TransferFunctionType", _logicType.BooleanOr);
@@ -739,7 +719,6 @@ async function getTransferFunc(
             maxTransfer: tokenTransfer
         };
         let transferFunc = api.registry.createType("TransferFunction", _transferFunc);
-        
         return transferFunc;
     } else if (logicType === 2) {
         let transferFuncType = api.registry.createType("TransferFunctionType", _logicType.BooleanCircut);
@@ -748,7 +727,6 @@ async function getTransferFunc(
             maxTransfer: tokenTransfer
         };
         let transferFunc = api.registry.createType("TransferFunction", _transferFunc);
-        
         return transferFunc;
     } else if (logicType === 3) {
         let transferFuncType = api.registry.createType("TransferFunctionType", _logicType.NumericAdd);
@@ -757,7 +735,6 @@ async function getTransferFunc(
             maxTransfer: tokenTransfer
         };
         let transferFunc = api.registry.createType("TransferFunction", _transferFunc);
-        
         return transferFunc;
     } else if (logicType === 4) {
         let transferFuncType = api.registry.createType("TransferFunctionType", _logicType.NumericMax);
@@ -766,7 +743,6 @@ async function getTransferFunc(
             maxTransfer: tokenTransfer
         };
         let transferFunc = api.registry.createType("TransferFunction", _transferFunc);
-        
         return transferFunc;
     } else {
         let transferFuncType = api.registry.createType("TransferFunctionType", _logicType.NumericMin);
@@ -775,7 +751,6 @@ async function getTransferFunc(
             maxTransfer: tokenTransfer
         };
         let transferFunc = api.registry.createType("TransferFunction", _transferFunc);
-        
         return transferFunc;
     }
 }
@@ -953,6 +928,7 @@ export async function getChannelPeers(api: ApiPromise): Promise<AccountId[]> {
 }
 
 export async function encodeCondPay(
+    api: ApiPromise,
     condPay: ConditionalPay
 ): Promise<Uint8Array> {
     let encodedCondPay = u8aConcat(
@@ -961,17 +937,53 @@ export async function encodeCondPay(
         condPay.dest.toU8a()
     );
     for (let i = 0; i < condPay.conditions.length; i++) {
-        encodedCondPay = u8aConcat(
-            encodedCondPay,
-            condPay.conditions[i].conditionType.toU8a(),
-            condPay.conditions[i].hashLock.toU8a(),
-            condPay.conditions[i].callIsFinalized.toU8a(),
-            condPay.conditions[i].callGetOutcome.toU8a(),
-            condPay.conditions[i].numericAppNum.toU8a(),
-            condPay.conditions[i].numericSessionId.toU8a(),
-            condPay.conditions[i].argsQueryFinalization.toU8a(),
-            condPay.conditions[i].argsQueryOutcome.toU8a()
-        );
+        if (condPay.conditions[i].conditionType.isHashLock) {
+            encodedCondPay = u8aConcat(
+                encodedCondPay,
+                condPay.conditions[i].conditionType.toU8a(),
+                condPay.conditions[i].hashLock.toU8a(),
+                condPay.conditions[i].booleanModuleCallData.toU8a(),
+                condPay.conditions[i].numericModuleCallData.toU8a(),
+                condPay.conditions[i].smartContractCallData.toU8a(),
+            );
+        } else if (condPay.conditions[i].conditionType.isBooleanRuntimeModule) {
+            encodedCondPay = u8aConcat(
+                encodedCondPay,
+                condPay.conditions[i].conditionType.toU8a(),
+                condPay.conditions[i].hashLock.toU8a(),
+                condPay.conditions[i].booleanModuleCallData.unwrap().callIsFinalized.toU8a(),
+                condPay.conditions[i].booleanModuleCallData.unwrap().callGetOutcome.toU8a(),
+                condPay.conditions[i].numericModuleCallData.toU8a(),
+                condPay.conditions[i].smartContractCallData.toU8a(),
+            );
+        } else if (condPay.conditions[i].conditionType.isNumericRuntimeModule) {
+            encodedCondPay = u8aConcat(
+                encodedCondPay,
+                condPay.conditions[i].conditionType.toU8a(),
+                condPay.conditions[i].hashLock.toU8a(),
+                condPay.conditions[i].booleanModuleCallData.toU8a(),
+                condPay.conditions[i].numericModuleCallData.unwrap().numericAppNum.toU8a(),
+                condPay.conditions[i].numericModuleCallData.unwrap().numericSessionId.toU8a(),
+                condPay.conditions[i].numericModuleCallData.unwrap().argsQueryFinalization.toU8a(),
+                condPay.conditions[i].numericModuleCallData.unwrap().argsQueryOutcome.toU8a(),
+                condPay.conditions[i].smartContractCallData.toU8a(),
+            );
+        } else if (condPay.conditions[i].conditionType.isSmartContract) {
+            encodedCondPay = u8aConcat(
+                encodedCondPay,
+                condPay.conditions[i].conditionType.toU8a(),
+                condPay.conditions[i].hashLock.toU8a(),
+                condPay.conditions[i].booleanModuleCallData.toU8a(),
+                condPay.conditions[i].numericModuleCallData.toU8a(),
+                condPay.conditions[i].smartContractCallData.unwrap().virtAddr.toU8a(),
+                condPay.conditions[i].smartContractCallData.unwrap().isFinalizedCallGasLimit.toU8a(),
+                condPay.conditions[i].smartContractCallData.unwrap().isFinalizedCallInputData.toU8a(),
+                condPay.conditions[i].smartContractCallData.unwrap().getOutcomeCallGasLimit.toU8a(),
+                condPay.conditions[i].smartContractCallData.unwrap().getOutcomeCallInputData.toU8a(),
+            );
+        } else {
+            throw new Error('Invalid condtion type');
+        }
     }
     encodedCondPay = u8aConcat(
        encodedCondPay,

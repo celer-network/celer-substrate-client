@@ -249,7 +249,7 @@ export async function calculatePayId(
     api: ApiPromise,
     condPay: ConditionalPay
 ): Promise<string> {
-    let encodedCondPay = await encodeCondPay(condPay);
+    let encodedCondPay = await encodeCondPay(api, condPay);
     let payHash = api.registry.createType("Hash", u8aToHex(blake2AsU8a(encodedCondPay)));
     let encoded = u8aConcat(
         payHash.toU8a(),

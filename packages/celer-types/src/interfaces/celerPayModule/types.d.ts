@@ -1,7 +1,6 @@
-import { Enum, Option, Set, Struct, Vec } from '@polkadot/types/codec';
-import { Bytes, bool, u128, u32, u8 } from '@polkadot/types/primitive';
-import { Signature } from '@polkadot/types/interfaces/extrinsics';
-import { AccountId, Balance, BlockNumber, Call, Hash, Moment } from '@polkadot/types/interfaces/runtime';
+import type { Bytes, Enum, Option, Set, Struct, Vec, bool, u128, u32, u64, u8 } from '@polkadot/types';
+import type { Signature } from '@polkadot/types/interfaces/extrinsics';
+import type { AccountId, Balance, BlockNumber, Call, Hash, Moment } from '@polkadot/types/interfaces/runtime';
 /** @name AccountAmtPair */
 export interface AccountAmtPair extends Struct {
     readonly account: Option<AccountId>;
@@ -10,6 +9,11 @@ export interface AccountAmtPair extends Struct {
 /** @name BalanceWrapper */
 export interface BalanceWrapper extends Struct {
     readonly amount: Balance;
+}
+/** @name BooleanModuleCallData */
+export interface BooleanModuleCallData extends Struct {
+    readonly callIsFinalized: Call;
+    readonly callGetOutcome: Call;
 }
 /** @name ChannelOf */
 export interface ChannelOf extends Struct {
@@ -34,12 +38,9 @@ export interface ChannelStatus extends Set {
 export interface Condition extends Struct {
     readonly conditionType: ConditionType;
     readonly hashLock: Option<Hash>;
-    readonly callIsFinalized: Option<Call>;
-    readonly callGetOutcome: Option<Call>;
-    readonly numericAppNum: Option<u32>;
-    readonly numericSessionId: Option<Hash>;
-    readonly argsQueryFinalization: Option<Bytes>;
-    readonly argsQueryOutcome: Option<Bytes>;
+    readonly booleanModuleCallData: Option<BooleanModuleCallData>;
+    readonly numericModuleCallData: Option<NumericModuleCallData>;
+    readonly smartContractCallData: Option<SmartContractCallData>;
 }
 /** @name ConditionalPay */
 export interface ConditionalPay extends Struct {
@@ -66,6 +67,7 @@ export interface ConditionType extends Enum {
     readonly isHashLock: boolean;
     readonly isBooleanRuntimeModule: boolean;
     readonly isNumericRuntimeModule: boolean;
+    readonly isSmartContract: boolean;
 }
 /** @name CondPayResult */
 export interface CondPayResult extends Struct {
@@ -121,6 +123,13 @@ export interface CooperativeWithdrawRequest extends Struct {
 export interface CooperativeWithdrawRequestOf extends Struct {
     readonly withdrawInfo: CooperativeWithdrawInfo;
     readonly sigs: Vec<Signature>;
+}
+/** @name NumericModuleCallData */
+export interface NumericModuleCallData extends Struct {
+    readonly numericAppNum: u32;
+    readonly numericSessionId: Hash;
+    readonly argsQueryFinalization: Option<Bytes>;
+    readonly argsQueryOutcome: Option<Bytes>;
 }
 /** @name OpenChannelRequest */
 export interface OpenChannelRequest extends Struct {
@@ -231,6 +240,14 @@ export interface SimplexPaymentChannel extends Struct {
     readonly pendingPayIds: Option<PayIdList>;
     readonly lastPayResolveDeadline: Option<BlockNumber>;
     readonly totalPendingAmount: Option<Balance>;
+}
+/** @name SmartContractCallData */
+export interface SmartContractCallData extends Struct {
+    readonly virtAddr: Hash;
+    readonly isFinalizedCallGasLimit: u64;
+    readonly isFinalizedCallInputData: Bytes;
+    readonly getOutcomeCallGasLimit: u64;
+    readonly getOutcomeCallInputData: Bytes;
 }
 /** @name TokenDistribution */
 export interface TokenDistribution extends Struct {

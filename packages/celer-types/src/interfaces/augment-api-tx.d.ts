@@ -1,12 +1,12 @@
-import { AnyNumber } from '@polkadot/types/types';
-import { Compact, Option, Vec } from '@polkadot/types/codec';
-import { Bytes, u32, u64, u8 } from '@polkadot/types/primitive';
-import { Extrinsic } from '@polkadot/types/interfaces/extrinsics';
-import { GrandpaEquivocationProof, KeyOwnerProof } from '@polkadot/types/interfaces/grandpa';
-import { AccountId, AccountIndex, Address, Balance, BalanceOf, BlockNumber, Call, ChangesTrieConfiguration, Hash, KeyValue, LookupSource, Moment, Perbill, Weight } from '@polkadot/types/interfaces/runtime';
-import { Key } from '@polkadot/types/interfaces/system';
-import { CooperativeSettleRequestOf, CooperativeWithdrawRequestOf, OpenChannelRequestOf, PayIdList, ResolvePaymentConditionsRequestOf, SignedSimplexStateArrayOf, VouchedCondPayResultOf } from 'celer-types/interfaces/celerPayModule';
-import { ApiTypes, SubmittableExtrinsic } from '@polkadot/api/types';
+import type { Bytes, Compact, Option, Vec, u128, u32, u64, u8 } from '@polkadot/types';
+import type { AnyNumber } from '@polkadot/types/types';
+import type { CodeHash, Gas, Schedule } from '@polkadot/types/interfaces/contracts';
+import type { Extrinsic } from '@polkadot/types/interfaces/extrinsics';
+import type { GrandpaEquivocationProof, KeyOwnerProof } from '@polkadot/types/interfaces/grandpa';
+import type { AccountId, AccountIndex, Address, Balance, BalanceOf, BlockNumber, Call, ChangesTrieConfiguration, Hash, KeyValue, LookupSource, Moment, Perbill, Weight } from '@polkadot/types/interfaces/runtime';
+import type { Key } from '@polkadot/types/interfaces/system';
+import type { CooperativeSettleRequestOf, CooperativeWithdrawRequestOf, OpenChannelRequestOf, PayIdList, ResolvePaymentConditionsRequestOf, SignedSimplexStateArrayOf, VouchedCondPayResultOf } from 'celer-types/interfaces/celerPayModule';
+import type { ApiTypes, SubmittableExtrinsic } from '@polkadot/api/types';
 declare module '@polkadot/api/types/submittable' {
     interface AugmentedSubmittables<ApiType> {
         balances: {
@@ -18,7 +18,7 @@ declare module '@polkadot/api/types/submittable' {
              * not assumed to be in the overlay.
              * # </weight>
              **/
-            forceTransfer: AugmentedSubmittable<(source: LookupSource | Address | AccountId | AccountIndex | LookupSource | string | Uint8Array, dest: LookupSource | Address | AccountId | AccountIndex | LookupSource | string | Uint8Array, value: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+            forceTransfer: AugmentedSubmittable<(source: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, dest: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, value: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
             /**
              * Set the balances of a given account.
              *
@@ -39,7 +39,7 @@ declare module '@polkadot/api/types/submittable' {
              * - DB Weight: 1 Read, 1 Write to `who`
              * # </weight>
              **/
-            setBalance: AugmentedSubmittable<(who: LookupSource | Address | AccountId | AccountIndex | LookupSource | string | Uint8Array, newFree: Compact<Balance> | AnyNumber | Uint8Array, newReserved: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+            setBalance: AugmentedSubmittable<(who: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, newFree: Compact<Balance> | AnyNumber | Uint8Array, newReserved: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
             /**
              * Transfer some liquid free balance to another account.
              *
@@ -69,7 +69,7 @@ declare module '@polkadot/api/types/submittable' {
              * - Origin account is already in memory, so no DB operations for them.
              * # </weight>
              **/
-            transfer: AugmentedSubmittable<(dest: LookupSource | Address | AccountId | AccountIndex | LookupSource | string | Uint8Array, value: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+            transfer: AugmentedSubmittable<(dest: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, value: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
             /**
              * Same as the [`transfer`] call, but with a check that the transfer will not kill the
              * origin account.
@@ -83,7 +83,7 @@ declare module '@polkadot/api/types/submittable' {
              * - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
              * #</weight>
              **/
-            transferKeepAlive: AugmentedSubmittable<(dest: LookupSource | Address | AccountId | AccountIndex | LookupSource | string | Uint8Array, value: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+            transferKeepAlive: AugmentedSubmittable<(dest: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, value: Compact<Balance> | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
         };
         celerPayModule: {
             /**
@@ -280,7 +280,7 @@ declare module '@polkadot/api/types/submittable' {
              * ## Weight
              * - Complexity: `O(1)`
              * - DB:
-             * - 2 storage reads `PoolBalances`
+             * - 1 storage reads `PoolBalances`
              * - 1 storage mutation `PoolBalances`
              * #</weight>
              **/
@@ -351,7 +351,7 @@ declare module '@polkadot/api/types/submittable' {
              * - DB:
              * - N storage reads `ChannelMap`
              * - N storage mutation `ChannelMap`
-             * - 2 * M storage reads `PayInfoMap`
+             * - M storage reads `PayInfoMap`
              * # </weight>
              **/
             intendSettle: AugmentedSubmittable<(signedSimplexStateArray: SignedSimplexStateArrayOf | {
@@ -390,8 +390,8 @@ declare module '@polkadot/api/types/submittable' {
              * - 1 storage write `ChannelMap`
              * - 1 storage reads `Wallets`
              * - 1 storage mutation `Wallets`
-             * - 1 storage reads `Balances`
-             * - 1 storage mutation `Balances`
+             * - 1 storage reads `PoolBalances`
+             * - 1 storage mutation `PoolBalances`
              * - 2 storage reads `Allowed`
              * - 1 storage mutation `Allowed`
              * - 1 storage write `WalletNum`
@@ -417,7 +417,7 @@ declare module '@polkadot/api/types/submittable' {
              * - Complexity: `O(N)`
              * - N: condtions-len
              * - DB:
-             * - 2 storage reads `PayRegistry`
+             * - 1 storage reads `PayRegistry`
              * - 1 storage mutation `PayRegistry`
              * # </weight>
              **/
@@ -436,7 +436,7 @@ declare module '@polkadot/api/types/submittable' {
              * - Complexity: `O(N)`
              * - N: conditions-len
              * - DB:
-             * - 2 storage reads `PayRegistry`
+             * - 1 storage reads `PayRegistry`
              * - 1 storage mutation `PayRegistry`
              * # </weight>
              **/
@@ -539,6 +539,56 @@ declare module '@polkadot/api/types/submittable' {
              **/
             withdrawFromPool: AugmentedSubmittable<(value: BalanceOf | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
         };
+        contracts: {
+            /**
+             * Makes a call to an account, optionally transferring some balance.
+             *
+             * * If the account is a smart-contract account, the associated code will be
+             * executed and any value will be transferred.
+             * * If the account is a regular account, any value will be transferred.
+             * * If no account exists and the call value is not less than `existential_deposit`,
+             * a regular account will be created and any value will be transferred.
+             **/
+            call: AugmentedSubmittable<(dest: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, value: Compact<BalanceOf> | AnyNumber | Uint8Array, gasLimit: Compact<Gas> | AnyNumber | Uint8Array, data: Bytes | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+            /**
+             * Allows block producers to claim a small reward for evicting a contract. If a block producer
+             * fails to do so, a regular users will be allowed to claim the reward.
+             *
+             * If contract is not evicted as a result of this call, no actions are taken and
+             * the sender is not eligible for the reward.
+             **/
+            claimSurcharge: AugmentedSubmittable<(dest: AccountId | string | Uint8Array, auxSender: Option<AccountId> | null | object | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+            /**
+             * Instantiates a new contract from the `codehash` generated by `put_code`, optionally transferring some balance.
+             *
+             * Instantiation is executed as follows:
+             *
+             * - The destination address is computed based on the sender and hash of the code.
+             * - The smart-contract account is created at the computed address.
+             * - The `ctor_code` is executed in the context of the newly-created account. Buffer returned
+             * after the execution is saved as the `code` of the account. That code will be invoked
+             * upon any call received by this account.
+             * - The contract is initialized.
+             **/
+            instantiate: AugmentedSubmittable<(endowment: Compact<BalanceOf> | AnyNumber | Uint8Array, gasLimit: Compact<Gas> | AnyNumber | Uint8Array, codeHash: CodeHash | string | Uint8Array, data: Bytes | string | Uint8Array, nonce: u128 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+            /**
+             * Stores the given binary Wasm code into the chain's storage and returns its `codehash`.
+             * You can instantiate contracts only with stored code.
+             **/
+            putCode: AugmentedSubmittable<(code: Bytes | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+            /**
+             * Updates the schedule for metering contracts.
+             *
+             * The schedule must have a greater version than the stored schedule.
+             **/
+            updateSchedule: AugmentedSubmittable<(schedule: Schedule | {
+                version?: any;
+                enablePrintln?: any;
+                limits?: any;
+                instructionWeights?: any;
+                hostFnWeights?: any;
+            } | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+        };
         grandpa: {
             /**
              * Note that the current authority set of the GRANDPA finality gadget has
@@ -600,7 +650,7 @@ declare module '@polkadot/api/types/submittable' {
              * - One DB change.
              * # </weight>
              **/
-            setKey: AugmentedSubmittable<(updated: LookupSource | Address | AccountId | AccountIndex | LookupSource | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
+            setKey: AugmentedSubmittable<(updated: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
             /**
              * Authenticates the sudo key and dispatches a function call with `Root` origin.
              *
@@ -630,7 +680,7 @@ declare module '@polkadot/api/types/submittable' {
              * - Weight of derivative `call` execution + 10,000.
              * # </weight>
              **/
-            sudoAs: AugmentedSubmittable<(who: LookupSource | Address | AccountId | AccountIndex | LookupSource | string | Uint8Array, call: Call | {
+            sudoAs: AugmentedSubmittable<(who: LookupSource | Address | AccountId | AccountIndex | string | Uint8Array, call: Call | {
                 callIndex?: any;
                 args?: any;
             } | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;

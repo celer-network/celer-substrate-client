@@ -252,17 +252,31 @@ exports.default = {
             balance: "Balance",
         },
         ConditionType: {
-            _enum: ['HashLock', 'BooleanRuntimeModule', 'NumericRuntimeModule']
+            _enum: ['HashLock', 'BooleanRuntimeModule', 'NumericRuntimeModule', 'SmartContract']
+        },
+        BooleanModuleCallData: {
+            callIsFinalized: "Call",
+            callGetOutcome: "Call",
+        },
+        NumericModuleCallData: {
+            numericAppNum: "u32",
+            numericSessionId: "Hash",
+            argsQueryFinalization: "Option<Vec<u8>>",
+            argsQueryOutcome: "Option<Vec<u8>>",
+        },
+        SmartContractCallData: {
+            virtAddr: "Hash",
+            isFinalizedCallGasLimit: "u64",
+            isFinalizedCallInputData: "Vec<u8>",
+            getOutcomeCallGasLimit: "u64",
+            getOutcomeCallInputData: "Vec<u8>",
         },
         Condition: {
             conditionType: 'ConditionType',
-            hashLock: 'Option<Hash>',
-            callIsFinalized: 'Option<Call>',
-            callGetOutcome: 'Option<Call>',
-            numericAppNum: 'Option<u32>',
-            numericSessionId: 'Option<Hash>',
-            argsQueryFinalization: 'Option<Vec<u8>>',
-            argsQueryOutcome: 'Option<Vec<u8>>',
+            hashLock: "Option<Hash>",
+            booleanModuleCallData: "Option<BooleanModuleCallData>",
+            numericModuleCallData: "Option<NumericModuleCallData>",
+            smartContractCallData: "Option<SmartContractCallData>",
         },
         TokenType: {
             _enum: ['Invalid', 'Celer']

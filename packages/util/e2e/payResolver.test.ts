@@ -106,7 +106,7 @@ describe('pay resolver test', () => {
             30,
             Date.now(),
             999999,
-           10,
+            10,
             1, // BooleanOr
         );
         payRequest = await getResolvePayByCondtionsRequest(

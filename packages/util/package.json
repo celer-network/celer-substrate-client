@@ -11,14 +11,15 @@
     "lint": "tsc --noEmit --pretty"
   },
   "dependencies": {
-    "@polkadot/api": "^1.4.0",
+    "@polkadot/api": "^2.7.2-0",
+    "@polkadot/api-contract": "^2.7.2-0",
     "@types/jest": "^26.0.14",
-    "celer-substrate-types": "^1.0.6",
+    "celer-substrate-types": "^1.0.7",
     "jest": "^26.5.2",
     "ts-jest": "^26.4.1"
   },
   "devDependencies": {
-    "@polkadot/typegen": "^1.4.0",
+    "@polkadot/typegen": "^2.7.2-0",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.8.2"
   },
