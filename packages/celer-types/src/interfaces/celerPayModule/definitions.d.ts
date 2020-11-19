@@ -207,15 +207,29 @@ declare const _default: {
         ConditionType: {
             _enum: string[];
         };
-        Condition: {
-            conditionType: string;
-            hashLock: string;
+        BooleanModuleCallData: {
             callIsFinalized: string;
             callGetOutcome: string;
+        };
+        NumericModuleCallData: {
             numericAppNum: string;
             numericSessionId: string;
             argsQueryFinalization: string;
             argsQueryOutcome: string;
+        };
+        SmartContractCallData: {
+            virtAddr: string;
+            isFinalizedCallGasLimit: string;
+            isFinalizedCallInputData: string;
+            getOutcomeCallGasLimit: string;
+            getOutcomeCallInputData: string;
+        };
+        Condition: {
+            conditionType: string;
+            hashLock: string;
+            booleanModuleCallData: string;
+            numericModuleCallData: string;
+            smartContractCallData: string;
         };
         TokenType: {
             _enum: string[];

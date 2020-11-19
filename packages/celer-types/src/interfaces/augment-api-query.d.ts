@@ -1,16 +1,14 @@
-import { AnyNumber, ITuple } from '@polkadot/types/types';
-import { Option, Vec } from '@polkadot/types/codec';
-import { Bytes, bool, u128, u32, u8 } from '@polkadot/types/primitive';
-import { AccountData, BalanceLock } from '@polkadot/types/interfaces/balances';
-import { SetId, StoredPendingChange, StoredState } from '@polkadot/types/interfaces/grandpa';
-import { AccountId, Balance, BalanceOf, BlockNumber, ExtrinsicsWeight, Hash, Moment, Releases } from '@polkadot/types/interfaces/runtime';
-import { SessionIndex } from '@polkadot/types/interfaces/session';
-import { AccountInfo, DigestOf, EventIndex, EventRecord, LastRuntimeUpgradeInfo, Phase } from '@polkadot/types/interfaces/system';
-import { Multiplier } from '@polkadot/types/interfaces/txpayment';
-import { ChannelOf, PayInfoOf, WalletOf } from 'celer-types/interfaces/celerPayModule';
-import { ApiTypes } from '@polkadot/api/types';
-import { Observable } from "rxjs";
-
+import type { Bytes, Option, Vec, bool, u128, u32, u64, u8 } from '@polkadot/types';
+import type { AnyNumber, ITuple, Observable } from '@polkadot/types/types';
+import type { AccountData, BalanceLock } from '@polkadot/types/interfaces/balances';
+import type { CodeHash, ContractInfo, PrefabWasmModule, Schedule } from '@polkadot/types/interfaces/contracts';
+import type { SetId, StoredPendingChange, StoredState } from '@polkadot/types/interfaces/grandpa';
+import type { AccountId, Balance, BalanceOf, BlockNumber, ExtrinsicsWeight, Hash, Moment, Releases } from '@polkadot/types/interfaces/runtime';
+import type { SessionIndex } from '@polkadot/types/interfaces/session';
+import type { AccountInfo, DigestOf, EventIndex, EventRecord, LastRuntimeUpgradeInfo, Phase } from '@polkadot/types/interfaces/system';
+import type { Multiplier } from '@polkadot/types/interfaces/txpayment';
+import type { ChannelOf, PayInfoOf, WalletOf } from 'celer-types/interfaces/celerPayModule';
+import type { ApiTypes } from '@polkadot/api/types';
 declare module '@polkadot/api/types/storage' {
     interface AugmentedQueries<ApiType> {
         balances: {
@@ -69,6 +67,34 @@ declare module '@polkadot/api/types/storage' {
              * Mapping the wallet id(channel id) to Wallet
              **/
             wallets: AugmentedQuery<ApiType, (arg: Hash | string | Uint8Array) => Observable<Option<WalletOf>>>;
+        };
+        contracts: {
+            /**
+             * The subtrie counter.
+             **/
+            accountCounter: AugmentedQuery<ApiType, () => Observable<u64>>;
+            /**
+             * A mapping between an original code hash and instrumented wasm code, ready for execution.
+             **/
+            codeStorage: AugmentedQuery<ApiType, (arg: CodeHash | string | Uint8Array) => Observable<Option<PrefabWasmModule>>>;
+            /**
+             * The code associated with a given account.
+             *
+             * TWOX-NOTE: SAFE since `AccountId` is a secure hash.
+             **/
+            contractInfoOf: AugmentedQuery<ApiType, (arg: AccountId | string | Uint8Array) => Observable<Option<ContractInfo>>>;
+            /**
+             * Current cost schedule for contracts.
+             **/
+            currentSchedule: AugmentedQuery<ApiType, () => Observable<Schedule>>;
+            /**
+             * A mapping from an original code hash to the original code, untouched by instrumentation.
+             **/
+            pristineCode: AugmentedQuery<ApiType, (arg: CodeHash | string | Uint8Array) => Observable<Option<Bytes>>>;
+            /**
+             * A mapping between virtual address(hash(code_hash, app nonce)) between deployed address
+             **/
+            virtToRealMap: AugmentedQuery<ApiType, (arg: Hash | string | Uint8Array) => Observable<Option<AccountId>>>;
         };
         grandpa: {
             /**
