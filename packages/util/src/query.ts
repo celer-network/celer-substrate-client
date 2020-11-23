@@ -1,5 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
-import { bool } from '@polkadot/types';
+import { bool, u128 } from '@polkadot/types';
 import { selectChannelPeer, encodeCondPay } from './utils';
 import { ConditionalPay } from 'celer-substrate-types';
 import { u8aConcat, u8aToHex } from '@polkadot/util';
@@ -257,4 +257,20 @@ export async function calculatePayId(
     );
     let payId = u8aToHex(blake2AsU8a(encoded));
     return payId;
+}
+
+export async function generateVirtualAddress(
+    code: Uint8Array,
+    nonce: u128
+): Promise<string> {
+    let codeHash = blake2AsU8a(code);
+    let virtAddr = u8aToHex(
+        blake2AsU8a(
+            u8aConcat(
+                blake2AsU8a(codeHash),
+                blake2AsU8a(nonce.toU8a())
+            )
+        )
+    );
+    return virtAddr;
 }
