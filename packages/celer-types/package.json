@@ -1,6 +1,6 @@
 {
   "name": "celer-substrate-types",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Celer substrate node type definitions",
   "main": "src/interfaces/index.js",
   "publishConfig": {
@@ -13,10 +13,10 @@
     "lint": "tsc --noEmit --pretty"
   },
   "dependencies": {
-    "@polkadot/api": "^2.7.2-0"
+    "@polkadot/api": "^2.4.1"
   },
   "devDependencies": {
-    "@polkadot/typegen": "^2.7.2-0",
+    "@polkadot/typegen": "^2.4.1",
     "rxjs": "^6.6.3",
     "ts-node": "^8.10.2",
     "tsconfig-paths": "^3.9.0",
