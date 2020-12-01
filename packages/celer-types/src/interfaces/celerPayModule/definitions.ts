@@ -251,17 +251,12 @@ export default {
             balance: "Balance",
         },
         ConditionType: {
-            _enum: ['HashLock', 'BooleanRuntimeModule', 'NumericRuntimeModule', 'SmartContract']
+            _enum: ['HashLock', 'RuntimeModule', 'SmartContract']
         },
-        BooleanModuleCallData: {
-            callIsFinalized: "Call",
-            callGetOutcome: "Call",
-        },
-        NumericModuleCallData: {
-            numericAppNum: "u32",
-            numericSessionId: "Hash",
-            argsQueryFinalization: "Option<Vec<u8>>",
-            argsQueryOutcome: "Option<Vec<u8>>",
+        RuntimeModuleCallData: {
+            registrationNum: "u32",
+            argsQueryFinalization: "Vec<u8>",
+            argsQueryOutcome: "Vec<u8>",
         },
         SmartContractCallData: {
             virtAddr: "Hash",
@@ -273,8 +268,7 @@ export default {
         Condition: {
             conditionType: 'ConditionType',
             hashLock: "Option<Hash>",
-            booleanModuleCallData: "Option<BooleanModuleCallData>",
-            numericModuleCallData: "Option<NumericModuleCallData>",
+            runtimeModuleCallData: "Option<RuntimeModuleCallData>",
             smartContractCallData: "Option<SmartContractCallData>",
         },
         TokenType: {

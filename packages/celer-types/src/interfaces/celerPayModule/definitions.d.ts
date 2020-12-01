@@ -207,13 +207,8 @@ declare const _default: {
         ConditionType: {
             _enum: string[];
         };
-        BooleanModuleCallData: {
-            callIsFinalized: string;
-            callGetOutcome: string;
-        };
-        NumericModuleCallData: {
-            numericAppNum: string;
-            numericSessionId: string;
+        RuntimeModuleCallData: {
+            registrationNum: string;
             argsQueryFinalization: string;
             argsQueryOutcome: string;
         };
@@ -227,8 +222,7 @@ declare const _default: {
         Condition: {
             conditionType: string;
             hashLock: string;
-            booleanModuleCallData: string;
-            numericModuleCallData: string;
+            runtimeModuleCallData: string;
             smartContractCallData: string;
         };
         TokenType: {

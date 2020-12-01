@@ -45,7 +45,9 @@ import type { Bounty, BountyIndex, BountyStatus, BountyStatusActive, BountyStatu
 import type { Multiplier } from '@polkadot/types/interfaces/txpayment';
 import type { Multisig, Timepoint } from '@polkadot/types/interfaces/utility';
 import type { VestingInfo } from '@polkadot/types/interfaces/vesting';
-import type { AccountAmtPair, BalanceWrapper, BooleanModuleCallData, ChannelOf, ChannelStatus, CondPayResult, Condition, ConditionType, ConditionalPay, ConditionalPayOf, CooperativeSettleInfo, CooperativeSettleInfoOf, CooperativeSettleRequest, CooperativeSettleRequestOf, CooperativeWithdrawInfo, CooperativeWithdrawInfoOf, CooperativeWithdrawRequest, CooperativeWithdrawRequestOf, NumericModuleCallData, OpenChannelRequest, OpenChannelRequestOf, PayIdList, PayInfo, PayInfoOf, PaymentChannelInitializer, PaymentChannelInitializerOf, PeerProfile, PeerProfileOf, PeerState, PeerStateOf, ResolvePaymentConditionsRequest, ResolvePaymentConditionsRequestOf, SeqNumWrapper, SignedSimplexState, SignedSimplexStateArray, SignedSimplexStateArrayOf, SimplexPaymentChannel, SmartContractCallData, TokenDistribution, TokenInfo, TokenTransfer, TokenType, TransferFunction, TransferFunctionType, VouchedCondPayResult, VouchedCondPayResultOf, Wallet, WalletOf, WithdrawIntent, WithdrawIntentOf } from 'celer-types/interfaces/celerPayModule';
+import type { AccountAmtPair, BalanceWrapper, ChannelOf, ChannelStatus, CondPayResult, Condition, ConditionType, ConditionalPay, ConditionalPayOf, CooperativeSettleInfo, CooperativeSettleInfoOf, CooperativeSettleRequest, CooperativeSettleRequestOf, CooperativeWithdrawInfo, CooperativeWithdrawInfoOf, CooperativeWithdrawRequest, CooperativeWithdrawRequestOf, OpenChannelRequest, OpenChannelRequestOf, PayIdList, PayInfo, PayInfoOf, PaymentChannelInitializer, PaymentChannelInitializerOf, PeerProfile, PeerProfileOf, PeerState, PeerStateOf, ResolvePaymentConditionsRequest, ResolvePaymentConditionsRequestOf, RuntimeModuleCallData, SeqNumWrapper, SignedSimplexState, SignedSimplexStateArray, SignedSimplexStateArrayOf, SimplexPaymentChannel, SmartContractCallData, TokenDistribution, TokenInfo, TokenTransfer, TokenType, TransferFunction, TransferFunctionType, VouchedCondPayResult, VouchedCondPayResultOf, Wallet, WalletOf, WithdrawIntent, WithdrawIntentOf } from 'celer-types/interfaces/celerPayModule';
+import type { BooleanArgsQueryFinalization, BooleanArgsQueryOutcome } from 'celer-types/interfaces/mockBooleanCondition';
+import type { NumericArgsQueryFinalization, NumericArgsQueryOutcome } from 'celer-types/interfaces/mockNumericCondition';
 declare module '@polkadot/types/types/registry' {
     interface InterfaceTypes {
         BitVec: BitVec;
@@ -1863,12 +1865,9 @@ declare module '@polkadot/types/types/registry' {
         ConditionType: ConditionType;
         'Option<ConditionType>': Option<ConditionType>;
         'Vec<ConditionType>': Vec<ConditionType>;
-        BooleanModuleCallData: BooleanModuleCallData;
-        'Option<BooleanModuleCallData>': Option<BooleanModuleCallData>;
-        'Vec<BooleanModuleCallData>': Vec<BooleanModuleCallData>;
-        NumericModuleCallData: NumericModuleCallData;
-        'Option<NumericModuleCallData>': Option<NumericModuleCallData>;
-        'Vec<NumericModuleCallData>': Vec<NumericModuleCallData>;
+        RuntimeModuleCallData: RuntimeModuleCallData;
+        'Option<RuntimeModuleCallData>': Option<RuntimeModuleCallData>;
+        'Vec<RuntimeModuleCallData>': Vec<RuntimeModuleCallData>;
         SmartContractCallData: SmartContractCallData;
         'Option<SmartContractCallData>': Option<SmartContractCallData>;
         'Vec<SmartContractCallData>': Vec<SmartContractCallData>;
@@ -1992,5 +1991,17 @@ declare module '@polkadot/types/types/registry' {
         ChannelOf: ChannelOf;
         'Option<ChannelOf>': Option<ChannelOf>;
         'Vec<ChannelOf>': Vec<ChannelOf>;
+        BooleanArgsQueryFinalization: BooleanArgsQueryFinalization;
+        'Option<BooleanArgsQueryFinalization>': Option<BooleanArgsQueryFinalization>;
+        'Vec<BooleanArgsQueryFinalization>': Vec<BooleanArgsQueryFinalization>;
+        BooleanArgsQueryOutcome: BooleanArgsQueryOutcome;
+        'Option<BooleanArgsQueryOutcome>': Option<BooleanArgsQueryOutcome>;
+        'Vec<BooleanArgsQueryOutcome>': Vec<BooleanArgsQueryOutcome>;
+        NumericArgsQueryFinalization: NumericArgsQueryFinalization;
+        'Option<NumericArgsQueryFinalization>': Option<NumericArgsQueryFinalization>;
+        'Vec<NumericArgsQueryFinalization>': Vec<NumericArgsQueryFinalization>;
+        NumericArgsQueryOutcome: NumericArgsQueryOutcome;
+        'Option<NumericArgsQueryOutcome>': Option<NumericArgsQueryOutcome>;
+        'Vec<NumericArgsQueryOutcome>': Vec<NumericArgsQueryOutcome>;
     }
 }
