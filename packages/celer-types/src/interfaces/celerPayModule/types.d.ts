@@ -1,6 +1,6 @@
 import type { Bytes, Enum, Option, Set, Struct, Vec, bool, u128, u32, u64, u8 } from '@polkadot/types';
 import type { Signature } from '@polkadot/types/interfaces/extrinsics';
-import type { AccountId, Balance, BlockNumber, Call, Hash, Moment } from '@polkadot/types/interfaces/runtime';
+import type { AccountId, Balance, BlockNumber, Hash, Moment } from '@polkadot/types/interfaces/runtime';
 /** @name AccountAmtPair */
 export interface AccountAmtPair extends Struct {
     readonly account: Option<AccountId>;
@@ -9,11 +9,6 @@ export interface AccountAmtPair extends Struct {
 /** @name BalanceWrapper */
 export interface BalanceWrapper extends Struct {
     readonly amount: Balance;
-}
-/** @name BooleanModuleCallData */
-export interface BooleanModuleCallData extends Struct {
-    readonly callIsFinalized: Call;
-    readonly callGetOutcome: Call;
 }
 /** @name ChannelOf */
 export interface ChannelOf extends Struct {
@@ -38,8 +33,7 @@ export interface ChannelStatus extends Set {
 export interface Condition extends Struct {
     readonly conditionType: ConditionType;
     readonly hashLock: Option<Hash>;
-    readonly booleanModuleCallData: Option<BooleanModuleCallData>;
-    readonly numericModuleCallData: Option<NumericModuleCallData>;
+    readonly runtimeModuleCallData: Option<RuntimeModuleCallData>;
     readonly smartContractCallData: Option<SmartContractCallData>;
 }
 /** @name ConditionalPay */
@@ -65,8 +59,7 @@ export interface ConditionalPayOf extends Struct {
 /** @name ConditionType */
 export interface ConditionType extends Enum {
     readonly isHashLock: boolean;
-    readonly isBooleanRuntimeModule: boolean;
-    readonly isNumericRuntimeModule: boolean;
+    readonly isRuntimeModule: boolean;
     readonly isSmartContract: boolean;
 }
 /** @name CondPayResult */
@@ -123,13 +116,6 @@ export interface CooperativeWithdrawRequest extends Struct {
 export interface CooperativeWithdrawRequestOf extends Struct {
     readonly withdrawInfo: CooperativeWithdrawInfo;
     readonly sigs: Vec<Signature>;
-}
-/** @name NumericModuleCallData */
-export interface NumericModuleCallData extends Struct {
-    readonly numericAppNum: u32;
-    readonly numericSessionId: Hash;
-    readonly argsQueryFinalization: Option<Bytes>;
-    readonly argsQueryOutcome: Option<Bytes>;
 }
 /** @name OpenChannelRequest */
 export interface OpenChannelRequest extends Struct {
@@ -213,6 +199,12 @@ export interface ResolvePaymentConditionsRequest extends Struct {
 export interface ResolvePaymentConditionsRequestOf extends Struct {
     readonly condPay: ConditionalPay;
     readonly hashPreimages: Vec<Hash>;
+}
+/** @name RuntimeModuleCallData */
+export interface RuntimeModuleCallData extends Struct {
+    readonly registrationNum: u32;
+    readonly argsQueryFinalization: Bytes;
+    readonly argsQueryOutcome: Bytes;
 }
 /** @name SeqNumWrapper */
 export interface SeqNumWrapper extends Struct {

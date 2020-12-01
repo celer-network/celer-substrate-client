@@ -585,8 +585,7 @@ export async function getCondition(
 ): Promise<Condition> {
     enum _conditionType {
         HashLock,
-        BooleanRuntimeModule,
-        NumericRuntimeModule,
+        RuntimeModule,
         SmartContract,
     }
      
@@ -595,74 +594,99 @@ export async function getCondition(
         let _conditionHashLock = {
             conditionType: api.registry.createType("ConditionType", _conditionType.HashLock),
             hashLock: new Option(api.registry, "Hash", trueHash),
-            booleanModuleCallData: new Option(api.registry, "BooleanModuleCallData", null),
-            numericModuleCallData: new Option(api.registry, "NumericModuleCallData", null),
+            runtimeModuleCallData: new Option(api.registry, "RuntimeModuleCallData", null),
             smartContractCallData: new Option(api.registry, "SmartContractCallData", null),
         };
         let conditionHashLock = api.registry.createType("Condition", _conditionHashLock);
         return conditionHashLock;
     } else if (type === 1) {
-        let appId = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
-        let callIsFinalizedTrue = api.tx.mockBooleanCondition.isFinalized(appId, 1);
-        let callGetOutcomeTrue = api.tx.mockBooleanCondition.getOutcome(appId, 1);
-        let _booleanModuleCallData = {
-            callIsFinalized: api.registry.createType("Call", callIsFinalizedTrue),
-            callGetOutcome: api.registry.createType("Call", callGetOutcomeTrue)
+        let _sessionId = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
+        let _booleanArgsQueryFinalization = {
+            sessionId: api.registry.createType("Hash", _sessionId),
+            queryData: api.registry.createType("u8", 1)
+        };
+        let _booleanArgsQueryOutcome = {
+            sessionId: api.registry.createType("Hash", _sessionId),
+            queryData: api.registry.createType("u8", 1)
+        };
+        let _booleanRuntimeModuleCallData = {
+            registrationNum: api.registry.createType("u32", 1),
+            argsQueryFinalization: api.registry.createType("Bytes", u8aToHex(api.registry.createType("BooleanArgsQueryFinalization", _booleanArgsQueryFinalization).toU8a())),
+            argsQueryOutcome: api.registry.createType("Bytes", u8aToHex(api.registry.createType("BooleanArgsQueryOutcome", _booleanArgsQueryOutcome).toU8a())),
         };
         let _booleanModuleConditionTrue = {
-            conditionType: api.registry.createType("ConditionType", _conditionType.BooleanRuntimeModule),
+            conditionType: api.registry.createType("ConditionType", _conditionType.RuntimeModule),
             hashLock: new Option(api.registry, "Hash", null),
-            booleanModuleCallData: new Option(api.registry, "BooleanModuleCallData", api.registry.createType("BooleanModuleCallData", _booleanModuleCallData)),
-            numericModuleCallData: new Option(api.registry, "NumericModuleCallData", null),
+            runtimeModuleCallData: new Option(api.registry, "RuntimeModuleCallData", api.registry.createType("RuntimeModuleCallData", _booleanRuntimeModuleCallData)),
             smartContractCallData: new Option(api.registry, "SmartContractCallData", null),
         };
         let booleanModuleConditionTrue = api.registry.createType("Condition", _booleanModuleConditionTrue);
         return booleanModuleConditionTrue;
     } else if (type === 2) {
-        let appId = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
-        let callIsFinalizedTrue = api.tx.mockBooleanCondition.isFinalized(appId, 1);
-        let callGetOutcomeFalse = api.tx.mockBooleanCondition.getOutcome(appId, 0);
-        let _booleanModuleCallData = {
-            callIsFinalized: api.registry.createType("Call", callIsFinalizedTrue),
-            callGetOutcome: api.registry.createType("Call", callGetOutcomeFalse)
+        let _sessionId = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
+        let _booleanArgsQueryFinalization = {
+            sessionId: api.registry.createType("Hash", _sessionId),
+            queryData: api.registry.createType("u8", 1)
+        };
+        let _booleanArgsQueryOutcome = {
+            sessionId: api.registry.createType("Hash", _sessionId),
+            queryData: api.registry.createType("u8", 0)
+        };
+        let _booleanRuntimeModuleCallData = {
+            registrationNum: api.registry.createType("u32", 1),
+            argsQueryFinalization: api.registry.createType("Bytes", u8aToHex(api.registry.createType("BooleanArgsQueryFinalization", _booleanArgsQueryFinalization).toU8a())),
+            argsQueryOutcome: api.registry.createType("Bytes", u8aToHex(api.registry.createType("BooleanArgsQueryOutcome", _booleanArgsQueryOutcome).toU8a())),
         };
         let _booleanModuleConditionFalse = {
-            conditionType: api.registry.createType("ConditionType", _conditionType.BooleanRuntimeModule),
+            conditionType: api.registry.createType("ConditionType", _conditionType.RuntimeModule),
             hashLock: new Option(api.registry, "Hash", null),
-            booleanModuleCallData: new Option(api.registry, "BooleanModuleCallData", api.registry.createType("BooleanModuleCallData", _booleanModuleCallData)),
-            numericModuleCallData: new Option(api.registry, "NumericModuleCallData", null),
+            runtimeModuleCallData: new Option(api.registry, "RuntimeModuleCallData", api.registry.createType("RuntimeModuleCallData", _booleanRuntimeModuleCallData)),
             smartContractCallData: new Option(api.registry, "SmartContractCallData", null),
         };
         let booleanModuleConditionFalse = api.registry.createType("Condition", _booleanModuleConditionFalse);
         return booleanModuleConditionFalse;
     } else if (type === 3) {
-        let _numericModuleCallData = {
-            numericAppNum: api.registry.createType("u32", 0),
-            numericSessionId: u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a())),
-            argsQueryFinalization: api.registry.createType("Bytes", u8aToHex(api.registry.createType("u8", 1).toU8a())),
-            argsQueryOutcome: api.registry.createType("Bytes", u8aToHex(api.registry.createType("u32", 10).toU8a())),
+        let _sessionId = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
+        let _numericArgsQueryFinalization = {
+            sessionId: api.registry.createType("Hash", _sessionId),
+            queryData: api.registry.createType("u8", 1)
+        };
+        let _numericArgsQueryOutcome = {
+            sessionId: api.registry.createType("Hash", _sessionId),
+            queryData: api.registry.createType("u32", 10)
+        };
+        let _numericRuntimeModuleCallData = {
+            registrationNum: api.registry.createType("u32", 0),
+            argsQueryFinalization: api.registry.createType("Bytes", u8aToHex(api.registry.createType("NumericArgsQueryFinalization", _numericArgsQueryFinalization).toU8a())),
+            argsQueryOutcome: api.registry.createType("Bytes", u8aToHex(api.registry.createType("NumericArgsQueryOutcome", _numericArgsQueryOutcome).toU8a())),
         };
         let _numericModuleCondition10 = {
-            conditionType: api.registry.createType("ConditionType", _conditionType.NumericRuntimeModule),
+            conditionType: api.registry.createType("ConditionType", _conditionType.RuntimeModule),
             hashLock: new Option(api.registry, "Hash", null),
-            booleanModuleCallData: new Option(api.registry, "BooleanModuleCallData", null),
-            numericModuleCallData: new Option(api.registry, "NumericModuleCallData", api.registry.createType("NumericModuleCallData", _numericModuleCallData)),
+            runtimeModuleCallData: new Option(api.registry, "RuntimeModuleCallData", api.registry.createType("RuntimeModuleCallData", _numericRuntimeModuleCallData)),
             smartContractCallData: new Option(api.registry, "SmartContractCallData", null),
         }
         let numericModuleCondition10 = api.registry.createType("Condition", _numericModuleCondition10);
         return numericModuleCondition10;
     } else if (type === 4) {
-        let _numericModuleCallData = {
-            numericAppNum: api.registry.createType("u32", 0),
-            numericSessionId: u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a())),
-            argsQueryFinalization: api.registry.createType("Bytes", u8aToHex(api.registry.createType("u8", 1).toU8a())),
-            argsQueryOutcome: api.registry.createType("Bytes", u8aToHex(api.registry.createType("u32", 25).toU8a())),
+        let _sessionId = u8aToHex(blake2AsU8a(api.registry.createType("u64", 1).toU8a()));
+        let _numericArgsQueryFinalization = {
+            sessionId: api.registry.createType("Hash", _sessionId),
+            queryData: api.registry.createType("u8", 1)
+        };
+        let _numericArgsQueryOutcome = {
+            sessionId: api.registry.createType("Hash", _sessionId),
+            queryData: api.registry.createType("u32", 25)
+        };
+        let _numericRuntimeModuleCallData = {
+            registrationNum: api.registry.createType("u32", 0),
+            argsQueryFinalization: api.registry.createType("Bytes", u8aToHex(api.registry.createType("NumericArgsQueryFinalization", _numericArgsQueryFinalization).toU8a())),
+            argsQueryOutcome: api.registry.createType("Bytes", u8aToHex(api.registry.createType("NumericArgsQueryOutcome", _numericArgsQueryOutcome).toU8a())),
         };
         let _numericModuleCondition25 = {
-            conditionType: api.registry.createType("ConditionType", _conditionType.NumericRuntimeModule),
+            conditionType: api.registry.createType("ConditionType", _conditionType.RuntimeModule),
             hashLock: new Option(api.registry, "Hash", null),
-            booleanModuleCallData: new Option(api.registry, "BooleanModuleCallData", null),
-            numericModuleCallData: new Option(api.registry, "NumericModuleCallData", api.registry.createType("NumericModuleCallData", _numericModuleCallData)),
+            runtimeModuleCallData: new Option(api.registry, "RuntimeModuleCallData", api.registry.createType("RuntimeModuleCallData", _numericRuntimeModuleCallData)),
             smartContractCallData: new Option(api.registry, "SmartContractCallData", null),
         }
         let numericModuleCondition25 = api.registry.createType("Condition", _numericModuleCondition25);
@@ -686,8 +710,7 @@ export async function getCondition(
         let _booleanContractConditionTrue = {
             conditionType: api.registry.createType("ConditionType", _conditionType.SmartContract),
             hashLock: new Option(api.registry, "Hash", null),
-            booleanModuleCallData: new Option(api.registry, "BooleanModuleCallData", null),
-            numericModuleCallData: new Option(api.registry, "NumericModuleCallData", null),
+            runtimeModuleCallData: new Option(api.registry, "RuntimeModuleCallData", null),
             smartContractCallData: new Option(api.registry, "SmartContractCallData", _smartContractCallData),
         };
         let booleanContractConditionTrue = api.registry.createType("Condition", _booleanContractConditionTrue);
@@ -712,8 +735,7 @@ export async function getCondition(
         let _booleanContractConditionFalse = {
             conditionType: api.registry.createType("ConditionType", _conditionType.SmartContract),
             hashLock: new Option(api.registry, "Hash", null),
-            booleanModuleCallData: new Option(api.registry, "BooleanModuleCallData", null),
-            numericModuleCallData: new Option(api.registry, "NumericModuleCallData", null),
+            runtimeModuleCallData: new Option(api.registry, "RuntimeModuleCallData", null),
             smartContractCallData: new Option(api.registry, "SmartContractCallData", _smartContractCallData),
         };
         let booleanContractConditionFalse = api.registry.createType("Condition", _booleanContractConditionFalse);
@@ -738,8 +760,7 @@ export async function getCondition(
         let _numericContractCondition10 = {
             conditionType: api.registry.createType("ConditionType", _conditionType.SmartContract),
             hashLock: new Option(api.registry, "Hash", null),
-            booleanModuleCallData: new Option(api.registry, "BooleanModuleCallData", null),
-            numericModuleCallData: new Option(api.registry, "NumericModuleCallData", null),
+            runtimeModuleCallData: new Option(api.registry, "RuntimeModuleCallData", null),
             smartContractCallData: new Option(api.registry, "SmartContractCallData", _smartContractCallData),
         };
         let numericContractCondition10 = api.registry.createType("Condition", _numericContractCondition10);
@@ -1045,30 +1066,17 @@ export async function encodeCondPay(
                 encodedCondPay,
                 condPay.conditions[i].conditionType.toU8a(),
                 condPay.conditions[i].hashLock.toU8a(),
-                condPay.conditions[i].booleanModuleCallData.toU8a(),
-                condPay.conditions[i].numericModuleCallData.toU8a(),
+                condPay.conditions[i].runtimeModuleCallData.toU8a(),
                 condPay.conditions[i].smartContractCallData.toU8a(),
             );
-        } else if (condPay.conditions[i].conditionType.isBooleanRuntimeModule) {
+        } else if (condPay.conditions[i].conditionType.isRuntimeModule) {
             encodedCondPay = u8aConcat(
                 encodedCondPay,
                 condPay.conditions[i].conditionType.toU8a(),
                 condPay.conditions[i].hashLock.toU8a(),
-                condPay.conditions[i].booleanModuleCallData.unwrap().callIsFinalized.toU8a(),
-                condPay.conditions[i].booleanModuleCallData.unwrap().callGetOutcome.toU8a(),
-                condPay.conditions[i].numericModuleCallData.toU8a(),
-                condPay.conditions[i].smartContractCallData.toU8a(),
-            );
-        } else if (condPay.conditions[i].conditionType.isNumericRuntimeModule) {
-            encodedCondPay = u8aConcat(
-                encodedCondPay,
-                condPay.conditions[i].conditionType.toU8a(),
-                condPay.conditions[i].hashLock.toU8a(),
-                condPay.conditions[i].booleanModuleCallData.toU8a(),
-                condPay.conditions[i].numericModuleCallData.unwrap().numericAppNum.toU8a(),
-                condPay.conditions[i].numericModuleCallData.unwrap().numericSessionId.toU8a(),
-                condPay.conditions[i].numericModuleCallData.unwrap().argsQueryFinalization.toU8a(),
-                condPay.conditions[i].numericModuleCallData.unwrap().argsQueryOutcome.toU8a(),
+                condPay.conditions[i].runtimeModuleCallData.unwrap().registrationNum.toU8a(),
+                condPay.conditions[i].runtimeModuleCallData.unwrap().argsQueryFinalization,
+                condPay.conditions[i].runtimeModuleCallData.unwrap().argsQueryOutcome,
                 condPay.conditions[i].smartContractCallData.toU8a(),
             );
         } else if (condPay.conditions[i].conditionType.isSmartContract) {
@@ -1080,9 +1088,9 @@ export async function encodeCondPay(
                 condPay.conditions[i].numericModuleCallData.toU8a(),
                 condPay.conditions[i].smartContractCallData.unwrap().virtAddr.toU8a(),
                 condPay.conditions[i].smartContractCallData.unwrap().isFinalizedCallGasLimit.toU8a(),
-                condPay.conditions[i].smartContractCallData.unwrap().isFinalizedCallInputData.toU8a(),
+                condPay.conditions[i].smartContractCallData.unwrap().isFinalizedCallInputData,
                 condPay.conditions[i].smartContractCallData.unwrap().getOutcomeCallGasLimit.toU8a(),
-                condPay.conditions[i].smartContractCallData.unwrap().getOutcomeCallInputData.toU8a(),
+                condPay.conditions[i].smartContractCallData.unwrap().getOutcomeCallInputData,
             );
         } else {
             throw new Error('Invalid condtion type');

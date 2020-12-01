@@ -1,7 +1,7 @@
 // Auto-generated via `yarn polkadot-types-from-chain`, do not edit
 /* eslint-disable */
 
-import type { Bytes, Compact, Option, Vec, u128, u32, u64, u8 } from '@polkadot/types';
+import type { Bytes, Compact, Option, Vec, u128, u32, u64 } from '@polkadot/types';
 import type { AnyNumber } from '@polkadot/types/types';
 import type { CodeHash, Gas, Schedule } from '@polkadot/types/interfaces/contracts';
 import type { Extrinsic } from '@polkadot/types/interfaces/extrinsics';
@@ -339,10 +339,9 @@ declare module '@polkadot/api/types/submittable' {
        * 
        * # <weight>
        * ## Weight
-       * Dev: Weight calculation based on pay hashes-len is not support yet
        * - Complexity: `O(N * M)`
        * - `N` signed_simplex_states-len
-       * - `M` pay_hashes-len
+       * - `M` pay_ids-len
        * - DB:
        * - N storage reads `ChannelMap`
        * - N storage mutation `ChannelMap`
@@ -594,10 +593,6 @@ declare module '@polkadot/api/types/submittable' {
        * reporter.
        **/
       reportEquivocationUnsigned: AugmentedSubmittable<(equivocationProof: GrandpaEquivocationProof | { setId?: any; equivocation?: any } | string | Uint8Array, keyOwnerProof: KeyOwnerProof | { session?: any; trieNodes?: any; validatorCount?: any } | string | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-    };
-    mockBooleanCondition: {
-      getOutcome: AugmentedSubmittable<(appId: Hash | string | Uint8Array, number: u8 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
-      isFinalized: AugmentedSubmittable<(appId: Hash | string | Uint8Array, number: u8 | AnyNumber | Uint8Array) => SubmittableExtrinsic<ApiType>>;
     };
     sudo: {
       /**
